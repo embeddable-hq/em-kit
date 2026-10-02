@@ -1,0 +1,86 @@
+import { useTheme } from '../../../../../runtime/react';
+import { Theme } from '../../../../theme/theme.types';
+import { getPieChartProOptions, getPieChartProData, createPieClickHandler } from '../pies.utils';
+import { DefaultPieChartProps } from '../pies.types';
+import { DataResponse, Measure } from '../../../../../runtime/core';
+import { getThemeFormatter } from '../../../../theme/formatter/formatter.utils';
+import { i18nSetup } from '../../../../theme/i18n/i18n';
+import { ChartCard, asChartCardHeaderProps } from '../../shared/ChartCard/ChartCard';
+import { DonutChart } from '@embeddable.com/remarkable-ui';
+import { mergician } from 'mergician';
+import { resolveI18nProps } from '../../../component.utils';
+
+export type DonutLabelChartProProps = DefaultPieChartProps & {
+  innerLabelMeasure: Measure;
+  innerLabelText?: string;
+  resultsInnerLabel: DataResponse;
+};
+
+const DonutChartPro = (props: DonutLabelChartProProps) => {
+  const theme = useTheme() as Theme;
+  const themeFormatter = getThemeFormatter(theme);
+  i18nSetup(theme);
+
+  const {
+    dimension,
+    maxLegendItems,
+    measure,
+    results,
+    showLegend,
+    showTooltips,
+    showValueLabels,
+    resultsInnerLabel,
+    innerLabelMeasure,
+    componentName,
+    trackingId,
+  } = props;
+
+  const resolvedI18nProps = resolveI18nProps(props);
+  const { innerLabelText, onSegmentClick } = resolvedI18nProps;
+
+  const data = getPieChartProData(
+    { data: results.data, dimension, measure, maxLegendItems },
+    theme,
+  );
+
+  const handleClick = createPieClickHandler({
+    results,
+    dimension,
+    measure,
+    componentName,
+    trackingId,
+    onClicked: onSegmentClick,
+  });
+
+  const label = themeFormatter.data(
+    innerLabelMeasure,
+    resultsInnerLabel?.data?.[0]?.[innerLabelMeasure.name],
+  );
+
+  const options = mergician(
+    getPieChartProOptions({ measure, dimension }, theme),
+    theme.charts.donutLabelChartPro?.options ?? {},
+  );
+
+  return (
+    <ChartCard
+      data={results}
+      dimensionsAndMeasures={[dimension, measure]}
+      errorMessage={results.error}
+      {...asChartCardHeaderProps(props)}
+    >
+      <DonutChart
+        label={label}
+        subLabel={innerLabelText}
+        data={data}
+        options={options}
+        showLegend={showLegend}
+        showTooltips={showTooltips}
+        showValueLabels={showValueLabels}
+        onClick={handleClick}
+      />
+    </ChartCard>
+  );
+};
+
+export default DonutChartPro;

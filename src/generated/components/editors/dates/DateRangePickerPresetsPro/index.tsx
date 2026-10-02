@@ -1,0 +1,205 @@
+import { useTheme } from '../../../../../runtime/react';
+import {
+  Button,
+  DateRangePicker,
+  Dropdown,
+  SelectFieldContent,
+  SelectFieldContentList,
+  SelectListOption,
+  DateRange,
+  SelectFieldTrigger,
+  isSameDateRange,
+  shallowEqual,
+} from '@embeddable.com/remarkable-ui';
+import { Theme } from '../../../../theme/theme.types';
+import { useLoadDayjsLocale } from '../../../../utils/date.utils';
+import { getDateRangeSelectFieldProOptions } from './DateRangePickerPresetsPro.utils';
+import { TimeRange } from '../../../../../runtime/core';
+import { resolveI18nProps } from '../../../component.utils';
+import { EditorCard, EditorCardHeaderProps } from '../../shared/EditorCard/EditorCard';
+import { IconCalendarFilled, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { i18n, i18nSetup } from '../../../../theme/i18n/i18n';
+import { useEffect, useState } from 'react';
+import styles from './DateRangePickerPresetsPro.module.css';
+import {
+  getDateRangeFromTimeRange,
+  getTimeRangeFromDateRange,
+  getTimeRangeFromPresets,
+  getTimeRangeLabel,
+} from '../dates.utils';
+import { dispatchEventUserInteraction } from '../../../../utils/events.utils';
+
+export type DateRangePickerPresetsProps = {
+  onChange: (newDateRange: TimeRange) => void;
+  placeholder?: string;
+  selectedValue?: TimeRange;
+
+  clearable?: boolean;
+  showCustomRangeOptions?: boolean;
+  showTwoMonths?: boolean;
+  componentName?: string;
+  trackingId?: string;
+} & EditorCardHeaderProps;
+
+const DateRangePickerPresets = (props: DateRangePickerPresetsProps) => {
+  const theme: Theme = useTheme() as Theme;
+  i18nSetup(theme);
+  const { dayjsLocaleReady } = useLoadDayjsLocale();
+  const {
+    onChange,
+    clearable,
+    selectedValue,
+    showCustomRangeOptions,
+    showTwoMonths,
+    componentName,
+    trackingId,
+  } = props;
+  const onlyDateRangePicker = !showCustomRangeOptions;
+  const [showDateRangePicker, setShowDateRangePicker] = useState(onlyDateRangePicker);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const dateRangeOptions = theme.defaults.dateRangesOptions;
+  const timezone = theme.clientContext.timezone;
+
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(
+    getDateRangeFromTimeRange(selectedValue, dateRangeOptions, timezone),
+  );
+
+  useEffect(() => {
+    if (!dayjsLocaleReady) {
+      return;
+    }
+    // Step 1: Convert relativeTimeString to actual time range (from/to)
+    const newTimeRange = getTimeRangeFromPresets(selectedValue, dateRangeOptions, timezone);
+
+    if (!shallowEqual(newTimeRange, selectedValue)) {
+      onChange(newTimeRange);
+      setDateRange({ from: newTimeRange?.from, to: newTimeRange?.to });
+    }
+  }, [selectedValue, dayjsLocaleReady, onChange, dateRangeOptions, timezone]);
+
+  if (!dayjsLocaleReady) {
+    return null;
+  }
+
+  const { description, placeholder, title, tooltip } = resolveI18nProps(props);
+
+  const options = getDateRangeSelectFieldProOptions(dateRangeOptions, timezone);
+
+  const handleOptionChange = (newValue: string | undefined) => {
+    const newTimeRange = getTimeRangeFromPresets(
+      { relativeTimeString: newValue } as TimeRange,
+      dateRangeOptions,
+      timezone,
+    );
+
+    dispatchEventUserInteraction({ componentName, trackingId, value: newTimeRange });
+    onChange(newTimeRange);
+    setDateRange({ from: newTimeRange?.from, to: newTimeRange?.to });
+  };
+
+  const handleDateRangeChange = (newDateRange: DateRange | undefined) => {
+    const newTimeRange = getTimeRangeFromDateRange(newDateRange);
+    dispatchEventUserInteraction({ componentName, trackingId, value: newTimeRange });
+    onChange(newTimeRange);
+    setIsOpen(false);
+  };
+
+  const handleClear = () => {
+    setDateRange(undefined);
+    dispatchEventUserInteraction({ componentName, trackingId, value: undefined });
+    onChange(undefined);
+  };
+
+  const getValueLabel = () => {
+    if (selectedValue?.relativeTimeString) {
+      const option = options.find((option) => option.value === selectedValue.relativeTimeString);
+      if (option) {
+        return option.label;
+      }
+    }
+
+    if (selectedValue?.from && selectedValue?.to) {
+      return getTimeRangeLabel(selectedValue, 'MMM DD');
+    }
+
+    return '';
+  };
+
+  const valueLabel = getValueLabel();
+
+  const locale = theme.i18n.language ?? theme.formatter.locale;
+  const isSubmitDisabled = isSameDateRange(dateRange, selectedValue);
+  const numberOfMonths = showTwoMonths ? 2 : 1;
+  return (
+    <EditorCard title={title} description={description} tooltip={tooltip}>
+      <Dropdown
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        avoidCollisions={false}
+        triggerComponent={
+          <SelectFieldTrigger
+            startIcon={IconCalendarFilled}
+            aria-label={placeholder}
+            placeholder={placeholder}
+            valueLabel={valueLabel}
+            onClear={handleClear}
+            isClearable={clearable}
+          />
+        }
+      >
+        <SelectFieldContent fitContent className={styles.dateRangePickerContent}>
+          {showDateRangePicker ? (
+            <div className={styles.dateRangePickerContainer}>
+              {!onlyDateRangePicker && (
+                <SelectListOption
+                  label={i18n.t('editors.dateRangePicker.backToPresets')}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowDateRangePicker(false);
+                  }}
+                  startIcon={<IconChevronLeft />}
+                />
+              )}
+              <DateRangePicker
+                locale={locale}
+                numberOfMonths={numberOfMonths}
+                value={dateRange}
+                onChange={setDateRange}
+              />
+              <Button
+                size="small"
+                disabled={isSubmitDisabled}
+                onClick={() => handleDateRangeChange(dateRange)}
+              >
+                {i18n.t('editors.dateRangePicker.apply')}
+              </Button>
+            </div>
+          ) : (
+            <SelectFieldContentList>
+              <SelectListOption
+                label={i18n.t('editors.dateRangePicker.custom')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowDateRangePicker(true);
+                }}
+                endIcon={<IconChevronRight />}
+              />
+              {options.map((option) => (
+                <SelectListOption
+                  key={option.value}
+                  {...option}
+                  isSelected={selectedValue?.relativeTimeString === option.value}
+                  onClick={() => handleOptionChange(option.value)}
+                />
+              ))}
+            </SelectFieldContentList>
+          )}
+        </SelectFieldContent>
+      </Dropdown>
+    </EditorCard>
+  );
+};
+
+export default DateRangePickerPresets;

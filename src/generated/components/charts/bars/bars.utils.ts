@@ -1,0 +1,275 @@
+import { DataResponse, Dimension, Measure } from '../../../../runtime/core';
+import { Theme } from '../../../theme/theme.types';
+import { remarkableTheme } from '../../../theme/theme.constants';
+import { ChartData, ChartOptions } from 'chart.js';
+import { getThemeFormatter } from '../../../theme/formatter/formatter.utils';
+import {
+  getDatalabelPercentage,
+  getDimensionWithoutTruncation,
+  groupTailAsOther,
+} from '../charts.utils';
+import { getDimensionFieldName } from '../../../utils/data.utils';
+import { getDimensionMeasureColor } from '../../../theme/styles/styles.utils';
+import { getChartColors } from '@embeddable.com/remarkable-ui';
+import { Context } from 'chartjs-plugin-datalabels';
+
+export const getBarStackedChartProData = (
+  props: {
+    data: DataResponse['data'];
+    dimension: Dimension;
+    groupDimension: Dimension;
+    measure: Measure;
+    axisOrder?: string[];
+  },
+  theme: Theme,
+): ChartData<'bar'> => {
+  const themeFormatter = getThemeFormatter(theme);
+  const { data = [], dimension, groupDimension, measure } = props;
+
+  const uniqueAxis = [...new Set(data.map((d) => d[dimension.name]).filter((d) => d != null))];
+  uniqueAxis.sort();
+
+  const axis = props.axisOrder ? props.axisOrder.filter((v) => uniqueAxis.includes(v)) : uniqueAxis;
+  const groupDimensionName = getDimensionFieldName(groupDimension);
+  const groupBy = [...new Set(data.map((d) => d[groupDimensionName]))].filter((d) => d != null);
+
+  const chartColors = getChartColors();
+  const datasets = groupBy.map((groupByItem, index) => {
+    const backgroundColor = getDimensionMeasureColor({
+      dimensionOrMeasure: groupDimension,
+      theme,
+      color: 'background',
+      value: `${groupDimension.name}.${groupByItem}`,
+      index,
+      chartColors,
+    });
+
+    const borderColor = getDimensionMeasureColor({
+      dimensionOrMeasure: groupDimension,
+      theme,
+      color: 'border',
+      value: `${groupDimension.name}.${groupByItem}`,
+      index,
+      chartColors,
+    });
+
+    return {
+      label: themeFormatter.data(groupDimension, groupByItem),
+      rawLabel: groupByItem,
+      backgroundColor,
+      borderColor,
+      data: axis.map((axisItem) => {
+        const record = data.find(
+          (d) => d[groupDimensionName] === groupByItem && d[dimension.name] === axisItem,
+        );
+        return record ? Number(record[measure.name]) : 0;
+      }),
+    };
+  });
+
+  return {
+    labels: axis,
+    datasets,
+  };
+};
+
+export const getBarChartProData = (
+  props: {
+    data: DataResponse['data'];
+    dimension: Dimension;
+    measures: Measure[];
+    maxItems?: number;
+  },
+  theme: Theme = remarkableTheme,
+): ChartData<'bar'> => {
+  if (!props.data) {
+    return {
+      labels: [],
+      datasets: [{ data: [] }],
+    };
+  }
+
+  const themeFormatter = getThemeFormatter(theme);
+  const groupedData = groupTailAsOther(props.data, props.dimension, props.measures, props.maxItems);
+  const chartColors = getChartColors();
+
+  return {
+    labels: groupedData.map((item) => {
+      return item[props.dimension.name];
+    }),
+    datasets: props.measures.map((measure, index) => {
+      const backgroundColor = getDimensionMeasureColor({
+        dimensionOrMeasure: measure,
+        theme,
+        color: 'background',
+        value: measure.name,
+        index,
+        chartColors,
+      });
+
+      const borderColor = getDimensionMeasureColor({
+        dimensionOrMeasure: measure,
+        theme,
+        color: 'border',
+        value: measure.name,
+        index,
+        chartColors,
+      });
+
+      return {
+        label: themeFormatter.dimensionOrMeasureTitle(measure),
+        data: groupedData.map((item) => item[measure.name] ?? 0),
+        backgroundColor,
+        borderColor,
+      };
+    }),
+  };
+};
+
+const getBarChartProDatalabelTotalFormatter = (
+  context: Context,
+  formatter: (value: number) => string,
+) => {
+  const { datasets } = context.chart.data;
+  const i = context.dataIndex;
+
+  const total = datasets.reduce((sum, ds) => {
+    const val = ds.data[i] as number;
+    return sum + (val || 0);
+  }, 0);
+
+  return formatter(total);
+};
+
+export const getBarChartProOptions = (
+  options: {
+    measures: Measure[];
+    dimension: Dimension;
+    horizontal: boolean;
+    data: ChartData<'bar'>;
+  },
+  theme: Theme,
+): Partial<ChartOptions<'bar'>> => {
+  const { measures, dimension, horizontal, data } = options;
+
+  const themeFormatter = getThemeFormatter(theme);
+  return {
+    plugins: {
+      legend: { position: theme.charts.legendPosition ?? 'bottom' },
+      datalabels: {
+        labels: {
+          total: {
+            formatter: (_value: string | number, context: Context) =>
+              getBarChartProDatalabelTotalFormatter(context, (value: number) =>
+                themeFormatter.data(measures[0]!, value),
+              ),
+          },
+          value: {
+            formatter: (value: string | number, context) => {
+              const measure = measures[context.datasetIndex % measures.length]!;
+
+              if (measure.inputs?.showValueAsPercentage) {
+                return getDatalabelPercentage(
+                  Number(value),
+                  context.dataset.data,
+                  measure.inputs?.decimalPlaces,
+                );
+              }
+              return themeFormatter.data(measure, value);
+            },
+          },
+        },
+      },
+      tooltip: {
+        callbacks: {
+          title: (context) => {
+            const label = context[0]?.label;
+            return themeFormatter.data(getDimensionWithoutTruncation(dimension), label);
+          },
+
+          label: (context) => {
+            const measure = measures[context.datasetIndex % measures.length]!;
+            const raw = context.raw as number;
+
+            const measureValue = themeFormatter.data(measure, raw);
+
+            let percentage = '';
+            if (measure.inputs?.showValueAsPercentage) {
+              percentage = `(${getDatalabelPercentage(raw, context.dataset.data, measure.inputs?.decimalPlaces)})`;
+            }
+
+            return `${context.dataset.label}: ${measureValue} ${percentage}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          callback: (value) => {
+            if (horizontal) {
+              return themeFormatter.data(measures[0]!, value);
+            }
+
+            if (!data || !data.labels) return undefined;
+
+            const label = data.labels[Number(value)] as string;
+
+            return themeFormatter.data(dimension, label);
+          },
+        },
+      },
+      y: {
+        ticks: {
+          callback: (value) => {
+            if (!horizontal) {
+              return themeFormatter.data(measures[0]!, value);
+            }
+            if (!data || !data.labels) return undefined;
+            const label = data.labels[Number(value)] as string;
+            return themeFormatter.data(dimension, label);
+          },
+        },
+      },
+    },
+  };
+};
+
+export const getBarStackedChartProOptions = (
+  options: {
+    measures: Measure[];
+    dimension: Dimension;
+    groupDimension: Dimension;
+    horizontal: boolean;
+    data: ChartData<'bar'>;
+  },
+  theme: Theme,
+): Partial<ChartOptions<'bar'>> => {
+  const { measures, groupDimension } = options;
+  const themeFormatter = getThemeFormatter(theme);
+  const base = getBarChartProOptions(options, theme);
+
+  base.plugins!.tooltip = {
+    callbacks: {
+      ...base.plugins!.tooltip!.callbacks,
+      label: (context) => {
+        const measure = measures[context.datasetIndex % measures.length]!;
+        const raw = context.raw as number;
+        const measureValue = themeFormatter.data(measure, raw);
+
+        let percentage = '';
+        if (measure.inputs?.showValueAsPercentage) {
+          percentage = `(${getDatalabelPercentage(raw, context.dataset.data, measure.inputs?.decimalPlaces)})`;
+        }
+
+        const label = themeFormatter.data(
+          getDimensionWithoutTruncation(groupDimension),
+          (context.dataset as { rawLabel?: string }).rawLabel,
+        );
+        return `${label}: ${measureValue} ${percentage}`;
+      },
+    },
+  };
+
+  return base;
+};

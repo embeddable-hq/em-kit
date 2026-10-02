@@ -1,0 +1,23 @@
+.chartCard {
+  height: 100%;
+  width: 100%;
+}
+
+.chartCardHeader {
+  width: calc(100% - var(--em-card-padding, 2rem));
+  display: flex;
+  gap: 0.5rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.chartCardRightContent {
+  position: absolute;
+  display: flex;
+  justify-content: end;
+  z-index: 3;
+  top: calc(var(--em-card-padding, 2rem));
+  right: calc(var(--em-card-padding, 2rem));
+}

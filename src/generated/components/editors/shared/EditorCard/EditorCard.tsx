@@ -1,0 +1,52 @@
+import { useTheme } from '../../../../../runtime/react';
+import { i18n, i18nSetup } from '../../../../theme/i18n/i18n';
+import styles from './EditorCard.module.css';
+import { FC } from 'react';
+import { Theme } from '../../../../theme/theme.types';
+import { Card, CardContent, CardFeedback, CardHeader } from '@embeddable.com/remarkable-ui';
+import { IconAlertCircle } from '@tabler/icons-react';
+
+export type EditorCardHeaderProps = {
+  title?: string;
+  description?: string;
+  tooltip?: string;
+};
+
+export type EditorCardProps = {
+  children: React.ReactNode;
+  errorMessage?: string;
+} & EditorCardHeaderProps;
+
+export const EditorCard: FC<EditorCardProps> = ({
+  title,
+  description,
+  tooltip,
+  children,
+  errorMessage,
+  ...props
+}) => {
+  const theme: Theme = useTheme() as Theme;
+  i18nSetup(theme);
+
+  const getDisplay = () => {
+    if (errorMessage) {
+      return (
+        <CardFeedback
+          variant="error"
+          icon={IconAlertCircle}
+          title={i18n.t('editors.errorTitle')}
+          message={errorMessage}
+        />
+      );
+    }
+
+    return children;
+  };
+
+  return (
+    <Card className={styles.editorCard} {...props}>
+      <CardHeader title={title} subtitle={description} tooltip={tooltip} />
+      <CardContent>{getDisplay()}</CardContent>
+    </Card>
+  );
+};

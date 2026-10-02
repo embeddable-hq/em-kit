@@ -1,0 +1,181 @@
+import { useTheme } from '../../../../../runtime/react';
+import { Theme } from '../../../../theme/theme.types';
+import { i18n, i18nSetup } from '../../../../theme/i18n/i18n';
+import {
+  ChartCard,
+  ChartCardHeaderProps,
+  asChartCardHeaderProps,
+} from '../../shared/ChartCard/ChartCard';
+import { DataResponse, Dimension, Measure } from '../../../../../runtime/core';
+import { PivotTable } from '@embeddable.com/remarkable-ui';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useFillGaps } from '../../charts.fillGaps.hooks';
+import { getPivotAggregationsFor, getPivotDimension, getPivotMeasures } from './PivotPro.utils';
+import { useGetTableSortedResults } from '../tables.hooks';
+import { sortArrayByProp } from '../../../../utils/array.utils';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+export type PivotTableProProps = {
+  results: DataResponse;
+  resultsSubRows?: DataResponse;
+  measures: Measure[];
+  rowDimension: Dimension;
+  subRowDimension?: Dimension;
+  columnDimension: Dimension;
+  displayNullAs?: string;
+  columnWidth?: number;
+  firstColumnWidth?: number;
+  expandedRowKeys: string[];
+  setExpandedRowKey: (expandedRowKeys: string) => void;
+} & ChartCardHeaderProps;
+
+const PivotTablePro = (props: PivotTableProProps) => {
+  const theme = useTheme() as Theme;
+  i18nSetup(theme);
+
+  const {
+    resultsSubRows,
+    measures,
+    rowDimension,
+    subRowDimension,
+    columnDimension,
+    displayNullAs,
+    columnWidth,
+    firstColumnWidth,
+    expandedRowKeys,
+    setExpandedRowKey,
+  } = props;
+
+  const columnOrder = Array.from(
+    new Set((props.results.data ?? []).filter(Boolean).map((d) => d[columnDimension.name])),
+  );
+
+  const rowOrder = Array.from(
+    new Set((props.results.data ?? []).filter(Boolean).map((d) => d[rowDimension.name])),
+  );
+
+  // Fill gaps for the column dimension
+  const resultsColumnDimensionFillGaps = useFillGaps({
+    results: props.results,
+    dimension: columnDimension,
+  });
+
+  // Fill gaps for the row dimension
+  const resultsRowColumnDimensionFillGaps = useFillGaps({
+    results: resultsColumnDimensionFillGaps,
+    dimension: rowDimension,
+  });
+
+  const results = useGetTableSortedResults({
+    results: resultsRowColumnDimensionFillGaps,
+    columnOrder,
+    rowOrder,
+    columnDimension,
+    rowDimension,
+    measures,
+  });
+
+  const cardContentRef = useRef<HTMLDivElement>(null);
+
+  const pivotMeasures = useMemo(
+    () => getPivotMeasures({ measures, displayNullAs }, theme),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [measures, displayNullAs, theme],
+  );
+  const pivotRowDimension = useMemo(
+    () => getPivotDimension({ dimension: rowDimension }, theme),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [rowDimension, theme],
+  );
+  const pivotSubRowDimension = useMemo(
+    () => (subRowDimension ? getPivotDimension({ dimension: subRowDimension }, theme) : undefined),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [subRowDimension, theme],
+  );
+  const pivotColumnDimension = useMemo(
+    () => getPivotDimension({ dimension: columnDimension }, theme),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [columnDimension, theme],
+  );
+  const pivotAggregations = useMemo(
+    () => getPivotAggregationsFor(measures),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [measures],
+  );
+
+  const [loadingRows, setLoadingRows] = useState(new Set<string>());
+  const [subRowsByRow, setSubRowsByRow] = useState(new Map<string, any[]>());
+
+  const handleRowExpand = (rowKey: string) => {
+    setLoadingRows((prev) => new Set(prev).add(rowKey));
+    setExpandedRowKey(rowKey);
+  };
+
+  useEffect(() => {
+    // No results or no expandedRowKeys, nothing to load
+    if (!resultsSubRows || !resultsSubRows?.data || expandedRowKeys.length === 0) {
+      setSubRowsByRow(new Map());
+      return;
+    }
+
+    const subRowsByRowData = new Map<string, any[]>();
+    expandedRowKeys.forEach((rowKey) => {
+      const containsSubRow = resultsSubRows.data?.some(
+        (row) => String(row[rowDimension.name]) === rowKey,
+      );
+
+      if (containsSubRow) {
+        const subRows =
+          resultsSubRows.data?.filter((row) => String(row[rowDimension.name]) === rowKey) ?? [];
+        const subRowsSorted = subRowDimension
+          ? sortArrayByProp(subRows, subRowDimension.name, 'asc')
+          : subRows;
+
+        subRowsByRowData.set(rowKey, subRowsSorted);
+        setLoadingRows((prev) => {
+          const next = new Set(prev);
+          next.delete(rowKey);
+          return next;
+        });
+      }
+    });
+    setSubRowsByRow(subRowsByRowData);
+  }, [resultsSubRows, expandedRowKeys, rowDimension, subRowDimension]);
+
+  const data: DataResponse = {
+    ...props.results,
+    isLoading: Boolean(props.results?.isLoading || resultsSubRows?.isLoading),
+  };
+
+  return (
+    <ChartCard
+      ref={cardContentRef}
+      data={data}
+      dimensionsAndMeasures={[rowDimension, columnDimension, ...measures]}
+      errorMessage={props.results?.error}
+      {...asChartCardHeaderProps(props)}
+    >
+      <PivotTable
+        firstColumnWidth={firstColumnWidth}
+        columnWidth={columnWidth}
+        data={results}
+        measures={pivotMeasures}
+        rowDimension={pivotRowDimension}
+        columnDimension={pivotColumnDimension}
+        {...pivotAggregations}
+        sumLabel={i18n.t('charts.pivotTable.sum')}
+        minLabel={i18n.t('charts.pivotTable.min')}
+        maxLabel={i18n.t('charts.pivotTable.max')}
+        averageLabel={i18n.t('charts.pivotTable.average')}
+        expandableRows={Boolean(subRowDimension)}
+        subRowsByRow={subRowsByRow}
+        loadingRows={loadingRows}
+        onRowExpand={handleRowExpand}
+        subRowDimension={pivotSubRowDimension}
+      />
+    </ChartCard>
+  );
+};
+
+export default PivotTablePro;

@@ -1,0 +1,22 @@
+import { DataResponse, Dimension, Measure, TimeRange } from '../../../../runtime/core';
+import { ChartCardHeaderProps } from '../shared/ChartCard/ChartCard';
+
+export type PieChartClickArg = {
+  dimensionValue: string | undefined;
+  dimensionTimeRange: TimeRange | undefined;
+};
+
+export type DefaultPieChartProps = {
+  dimension: Dimension;
+  maxLegendItems?: number;
+  measure: Measure;
+  results: DataResponse;
+  showLegend?: boolean;
+  showTooltips?: boolean;
+  showValueLabels?: boolean;
+  showValueLabelsAsPercentage?: boolean;
+
+  onSegmentClick?: (args: PieChartClickArg) => void;
+  componentName?: string;
+  trackingId?: string;
+} & ChartCardHeaderProps;

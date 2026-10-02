@@ -1,0 +1,45 @@
+import { en } from './i18n/translations/en';
+import { de } from './i18n/translations/de';
+import { remarkableThemeFormatter } from './formatter/formatter.constants';
+import { remarkableThemeStyles } from './styles/styles.constants';
+import { ThemeFonts } from './fonts/fonts.types';
+import { Theme, ThemeCharts, ThemeClientContext, ThemeDefaults } from './theme.types';
+import { defaultComparisonPeriodOptions } from './defaults/defaults.ComparisonPeriods.constants';
+import { defaultDateRangeOptions } from './defaults/defaults.DateRanges.constants';
+import { defaultChartMenuProOptions } from './defaults/defaults.ChartCardMenu.constants';
+import { defaultTableCellStyleOptions } from './defaults/defaults.TableCellStyle.constants';
+
+const remarkableThemeI18n = {
+  language: 'en',
+  translations: {
+    en,
+    de,
+  },
+};
+
+const remarkableThemeCharts: ThemeCharts = {
+  legendPosition: 'bottom',
+};
+
+const remarkableThemeDefaults: ThemeDefaults = {
+  comparisonPeriodsOptions: defaultComparisonPeriodOptions,
+  dateRangesOptions: defaultDateRangeOptions,
+  chartMenuOptions: defaultChartMenuProOptions,
+  tableCellStyleOptions: defaultTableCellStyleOptions,
+};
+
+const remarkableThemeFonts: ThemeFonts = {
+  google: [{ name: 'Inter', weights: '100..900' }],
+};
+
+const remakableThemeClientContext: ThemeClientContext = { timezone: undefined };
+
+export const remarkableTheme: Theme = {
+  i18n: remarkableThemeI18n,
+  charts: remarkableThemeCharts,
+  formatter: remarkableThemeFormatter,
+  styles: remarkableThemeStyles,
+  defaults: remarkableThemeDefaults,
+  fonts: remarkableThemeFonts,
+  clientContext: remakableThemeClientContext,
+} as const;

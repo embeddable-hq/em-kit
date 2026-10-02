@@ -1,0 +1,88 @@
+import { useEffect } from 'react';
+import { DataResponse, Dimension } from '../../../../runtime/core';
+import { getThemeFormatter } from '../../../theme/formatter/formatter.utils';
+import { useTheme } from '../../../../runtime/react';
+import { Theme } from '../../../theme/theme.types';
+import { EditorCard, EditorCardHeaderProps } from '../shared/EditorCard/EditorCard';
+import { resolveI18nProps } from '../../component.utils';
+import { i18n } from '../../../theme/i18n/i18n';
+import { SingleSelectField } from '@embeddable.com/remarkable-ui';
+import { dispatchEventUserInteraction } from '../../../utils/events.utils';
+
+export const MAX_OPTIONS = 200;
+
+export type SingleSelectFieldProProps = {
+  dimension: Dimension;
+  optionalSecondDimension?: Dimension;
+  placeholder?: string;
+  results: DataResponse;
+  selectedValue?: string;
+  maxOptions?: number;
+  clearable?: boolean;
+  componentName?: string;
+  trackingId?: string;
+  setSearchValue?: (search: string) => void;
+  onChange?: (selectedValue: string | null) => void;
+} & EditorCardHeaderProps;
+
+const SingleSelectFieldPro = (props: SingleSelectFieldProProps) => {
+  const theme: Theme = useTheme() as Theme;
+  const themeFormatter = getThemeFormatter(theme);
+
+  const { title, description, dimension, placeholder, tooltip } = resolveI18nProps(props);
+  const {
+    optionalSecondDimension,
+    results,
+    selectedValue,
+    clearable,
+    componentName,
+    trackingId,
+    setSearchValue,
+    onChange,
+  } = props;
+
+  const options =
+    results.data?.map((data) => {
+      return {
+        value: optionalSecondDimension ? data[optionalSecondDimension.name] : data[dimension.name],
+        label: themeFormatter.data(dimension, data[dimension.name]),
+      };
+    }) ?? [];
+
+  const showNoOptionsMessage = Boolean(!results.isLoading && (results.data?.length ?? 0) === 0);
+
+  // Auto-select first option when not clearable and there is no selection
+  useEffect(() => {
+    const autoSelectActive = !clearable && !selectedValue;
+
+    if (!autoSelectActive) return;
+
+    const firstOption = options?.[0];
+
+    if (firstOption) {
+      onChange?.(firstOption.value);
+    }
+  }, [clearable, selectedValue, options, onChange]);
+
+  return (
+    <EditorCard title={title} description={description} tooltip={tooltip}>
+      <SingleSelectField
+        clearable={clearable}
+        searchable
+        isLoading={results.isLoading}
+        value={selectedValue}
+        options={options}
+        placeholder={placeholder}
+        noOptionsMessage={showNoOptionsMessage ? i18n.t('common.noOptionsFound') : undefined}
+        onChange={(newValue) => {
+          dispatchEventUserInteraction({ componentName, trackingId, value: newValue });
+          onChange?.(newValue as string | null);
+        }}
+        onSearch={setSearchValue}
+        avoidCollisions={false}
+      />
+    </EditorCard>
+  );
+};
+
+export default SingleSelectFieldPro;
