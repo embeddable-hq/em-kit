@@ -6,8 +6,12 @@ export const de: ResourceLanguage = {
       other: 'Andere',
       noOptionsFound: 'Keine Optionen gefunden',
       noOptionsAvailable: 'Keine Optionen verfügbar',
+      selectAll: 'Alle auswählen',
+      deselectAll: 'Alle abwählen',
       compared: 'Verglichen',
       loading: 'Laden...',
+      search: 'Suchen…',
+      apply: 'Anwenden',
     },
     dimension: {
       'customers.country.United States': 'Vereinigte Staaten',
@@ -27,12 +31,17 @@ export const de: ResourceLanguage = {
       'menuOptions.downloadCSV': 'CSV herunterladen',
       'menuOptions.downloadPNG': 'PNG herunterladen',
       'menuOptions.downloadXLSX': 'XLSX herunterladen',
+      'menuOptions.maximize': 'Maximieren',
+      'menuOptions.minimize': 'Minimieren',
       errorTitle: 'Etwas ist schiefgelaufen.',
       errorMessage: 'Beim Laden des Diagramms ist ein Fehler aufgetreten.',
       emptyTitle: 'Keine Ergebnisse.',
       emptyMessage: 'Hier ist es etwas leer.',
       tablePaginated: {
         pagination: 'Seite {{page}} von {{totalPages}}',
+      },
+      tableScrollable: {
+        truncatedRows: '{{shown}} von {{total}} Zeilen',
       },
       pivotTable: {
         total: 'Gesamt',

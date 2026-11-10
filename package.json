@@ -5,7 +5,8 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "sync": "node scripts/sync.mjs && node scripts/props.mjs",
+    "sync": "node scripts/sync.mjs && node scripts/exports.mjs && node scripts/props.mjs",
+    "exports": "node scripts/exports.mjs",
     "types:check": "tsc --noEmit",
     "dev": "vite",
     "check": "npm run sync && npm run types:check && npm run test",

@@ -24,8 +24,17 @@ export type Dataset = {
   id: DatasetId;
   label: string;
   blurb: string;
-  specs: { category: FieldSpec; group: FieldSpec; time: FieldSpec; primary: FieldSpec; secondary: FieldSpec; size: FieldSpec };
+  specs: {
+    category: FieldSpec;
+    group: FieldSpec;
+    time: FieldSpec;
+    primary: FieldSpec;
+    secondary: FieldSpec;
+    size: FieldSpec;
+    stage: FieldSpec;
+  };
   category: Dimension;
+  stage: Dimension;
   group: Dimension;
   primary: Measure;
   secondary: Measure;
@@ -42,6 +51,8 @@ export type Dataset = {
   // aggregated from the days inside the window, and weeks that straddle either
   // edge are dropped, as they are at the edges of the full series.
   byTimeWindow: (granularity: Granularity, window: DateWindow) => Row[];
+  // The primary measure at each step of a funnel, ending at the year's total.
+  byStage: Row[];
   total: Row;
   previousTotal: Row;
 };
@@ -75,6 +86,8 @@ type Story = {
   specs: Dataset['specs'];
   categories: { name: string; weight: number }[];
   groups: { name: string; weight: number }[];
+  // Funnel steps in order; `kept` is the share that reaches it from the step before.
+  stages: { name: string; kept: number }[];
   dailyBase: number;
   secondaryRatio: number;
   sizeRange: [number, number];
@@ -95,7 +108,15 @@ const stories: Story[] = [
       primary: { varName: 'revenue', name: 'revenue', title: 'Revenue', inputs: { prefix: '$' } },
       secondary: { varName: 'customers', name: 'customers', title: 'Customers' },
       size: { varName: 'seats', name: 'seats', title: 'Seats' },
+      stage: { varName: 'dealStage', name: 'deal_stage', title: 'Deal stage' },
     },
+    stages: [
+      { name: 'Lead', kept: 1 },
+      { name: 'Qualified', kept: 0.42 },
+      { name: 'Proposal', kept: 0.55 },
+      { name: 'Negotiation', kept: 0.62 },
+      { name: 'Won', kept: 0.58 },
+    ],
     categories: [
       { name: 'North America', weight: 0.36 },
       { name: 'Europe', weight: 0.28 },
@@ -126,7 +147,15 @@ const stories: Story[] = [
       primary: { varName: 'sessions', name: 'sessions', title: 'Sessions' },
       secondary: { varName: 'conversions', name: 'conversions', title: 'Conversions' },
       size: { varName: 'bounceRate', name: 'bounce_rate', title: 'Bounce rate', inputs: { suffix: '%' } },
+      stage: { varName: 'funnelStep', name: 'funnel_step', title: 'Funnel step' },
     },
+    stages: [
+      { name: 'Landing page', kept: 1 },
+      { name: 'Product page', kept: 0.48 },
+      { name: 'Add to cart', kept: 0.31 },
+      { name: 'Checkout', kept: 0.56 },
+      { name: 'Purchase', kept: 0.62 },
+    ],
     categories: [
       { name: 'Organic search', weight: 0.34 },
       { name: 'Direct', weight: 0.21 },
@@ -158,7 +187,15 @@ const stories: Story[] = [
       primary: { varName: 'sales', name: 'sales', title: 'Sales', inputs: { prefix: '$' } },
       secondary: { varName: 'units', name: 'units', title: 'Units' },
       size: { varName: 'margin', name: 'margin', title: 'Margin', inputs: { suffix: '%' } },
+      stage: { varName: 'orderStage', name: 'order_stage', title: 'Order stage' },
     },
+    stages: [
+      { name: 'Browsed', kept: 1 },
+      { name: 'Added to basket', kept: 0.36 },
+      { name: 'Checkout', kept: 0.61 },
+      { name: 'Paid', kept: 0.83 },
+      { name: 'Kept', kept: 0.88 },
+    ],
     categories: [
       { name: 'Apparel', weight: 0.31 },
       { name: 'Footwear', weight: 0.24 },
@@ -268,6 +305,15 @@ const buildDataset = (story: Story): Dataset => {
     };
   });
 
+  // Its own random stream too. Work back from the last step, which holds the
+  // year's total, dividing by each step's (jittered) share kept.
+  const stageRandom = mulberry32(story.seed + 13);
+  const kept = story.stages.map((st, i) => (i === 0 ? 1 : st.kept * (0.94 + stageRandom() * 0.12)));
+  const byStage = story.stages.map((st, i) => {
+    const toEnd = kept.slice(i + 1).reduce((a, b) => a * b, 1);
+    return { [specs.stage.name]: st.name, [specs.primary.name]: round(yearTotal / toEnd) };
+  });
+
   const last30 = daily.slice(-30).reduce((sum, d) => sum + d.byGroup.reduce((a, b) => a + b, 0), 0);
   const prior30 = daily.slice(-60, -30).reduce((sum, d) => sum + d.byGroup.reduce((a, b) => a + b, 0), 0);
 
@@ -283,6 +329,7 @@ const buildDataset = (story: Story): Dataset => {
     blurb: story.blurb,
     specs,
     category: toDimension(specs.category),
+    stage: toDimension(specs.stage),
     group: toDimension(specs.group),
     primary: toMeasure(specs.primary),
     secondary: toMeasure(specs.secondary),
@@ -295,6 +342,7 @@ const buildDataset = (story: Story): Dataset => {
     byTimeGroup: (granularity) => memo(`tg:${granularity}`, () => timeRows(granularity, true)),
     byTimeWindow: (granularity, window) =>
       memo(`tw:${granularity}:${window.from}:${window.to}`, () => timeRows(granularity, false, window)),
+    byStage,
     total: { [specs.primary.name]: round(last30) },
     previousTotal: { [specs.primary.name]: round(prior30) },
   };

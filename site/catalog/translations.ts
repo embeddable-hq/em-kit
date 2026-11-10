@@ -27,6 +27,9 @@ const fields: Dict = {
   product_category: { de: 'Kategorie', fr: 'Catégorie' },
   store: { de: 'Filiale', fr: 'Magasin' },
   'orders.ordered_at': { de: 'Bestelldatum', fr: 'Date de commande' },
+  deal_stage: { de: 'Phase', fr: 'Étape' },
+  funnel_step: { de: 'Funnel-Schritt', fr: 'Étape du tunnel' },
+  order_stage: { de: 'Bestellschritt', fr: 'Étape de commande' },
 };
 
 const values: Record<string, Dict> = {
@@ -62,6 +65,27 @@ const values: Record<string, Dict> = {
     Accessories: { de: 'Accessoires', fr: 'Accessoires' },
     Beauty: { de: 'Beauty', fr: 'Beauté' },
   },
+  deal_stage: {
+    Lead: { de: 'Lead', fr: 'Prospect' },
+    Qualified: { de: 'Qualifiziert', fr: 'Qualifié' },
+    Proposal: { de: 'Angebot', fr: 'Proposition' },
+    Negotiation: { de: 'Verhandlung', fr: 'Négociation' },
+    Won: { de: 'Gewonnen', fr: 'Gagné' },
+  },
+  funnel_step: {
+    'Landing page': { de: 'Landingpage', fr: 'Page d’accueil' },
+    'Product page': { de: 'Produktseite', fr: 'Page produit' },
+    'Add to cart': { de: 'In den Warenkorb', fr: 'Ajout au panier' },
+    Checkout: { de: 'Kasse', fr: 'Paiement' },
+    Purchase: { de: 'Kauf', fr: 'Achat' },
+  },
+  order_stage: {
+    Browsed: { de: 'Angesehen', fr: 'Consulté' },
+    'Added to basket': { de: 'Im Warenkorb', fr: 'Ajouté au panier' },
+    Checkout: { de: 'Kasse', fr: 'Paiement' },
+    Paid: { de: 'Bezahlt', fr: 'Payé' },
+    Kept: { de: 'Behalten', fr: 'Conservé' },
+  },
   store: {
     Online: { de: 'Online', fr: 'En ligne' },
     Flagship: { de: 'Flagship-Store', fr: 'Boutique phare' },
@@ -87,6 +111,7 @@ const chartTitles: Dict = {
   'line-comparison-with-kpi-tabs': { de: 'Vorzeitraum nach Kennzahl', fr: 'Période précédente par mesure' },
   area: { de: 'Anteil im Zeitverlauf', fr: 'Contribution dans le temps' },
   pie: { de: 'Anteil am Gesamtwert', fr: 'Part du total' },
+  funnel: { de: 'Trichter', fr: 'Entonnoir' },
   donut: { de: 'Anteil am Gesamtwert', fr: 'Part du total' },
   'donut-label': { de: 'Anteil am Gesamtwert', fr: 'Part du total' },
   scatter: { de: 'Korrelation', fr: 'Corrélation' },

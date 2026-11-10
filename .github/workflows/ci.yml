@@ -1,0 +1,28 @@
+# On every push and PR: the committed generated trees must type-check and
+# pass the tests. No upstream sync here; that's sync-upstream.yml.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # The generated exports must match the manifest.
+      - run: npm run exports && git diff --exit-code -- src/components.generated.ts
+
+      - run: npm run types:check
+
+      - run: npm test

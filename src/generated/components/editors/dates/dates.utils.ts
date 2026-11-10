@@ -2,9 +2,11 @@ import { TimeRange } from '../../../../runtime/core';
 import { DateRange } from '../../../../generated-ui/index';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
+import timezone from 'dayjs/plugin/timezone.js';
 import { DateRangeOption } from '../../../theme/defaults/defaults.DateRanges.constants';
 
 dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const getTimeRangeFromPresets = (
   receivedTimeRange: TimeRange,
@@ -44,15 +46,18 @@ export const getTimeRangeLabel = (
 
   const { from, to } = dateRange;
 
-  const currentUTCYear = new Date().getUTCFullYear();
+  // Format in the target zone so the label reflects the same calendar day the
+  // range was anchored to — not the UTC day, which can differ near midnight.
+  const zoned = (date: Date | undefined) =>
+    timezone ? dayjs(date).tz(timezone) : dayjs(date).utc();
 
-  const isDifferentYear =
-    currentUTCYear !== from?.getUTCFullYear() || currentUTCYear !== to?.getUTCFullYear();
+  const currentYear = zoned(new Date()).year();
+  const isDifferentYear = currentYear !== zoned(from).year() || currentYear !== zoned(to).year();
 
   const format = isDifferentYear ? 'DD MMM YYYY' : dateFormat;
 
-  const labelFrom = dayjs(from).utc().format(format);
-  const labelTo = dayjs(to).utc().format(format);
+  const labelFrom = zoned(from).format(format);
+  const labelTo = zoned(to).format(format);
 
   if (labelFrom === labelTo) {
     return labelFrom;
@@ -79,14 +84,30 @@ export const getDateRangeFromTimeRange = (
   return finalTimeRange;
 };
 
-export const getTimeRangeFromDateRange = (dateRange: DateRange | undefined): TimeRange => {
+// Anchors `date` to the start of its calendar day in `tz` (or in UTC when no
+// timezone is given). Matches defaults.DateRanges.constants.ts so manual
+// picks line up with preset ranges.
+const startOfDayIn = (date: Date | undefined, tz?: string) =>
+  tz ? dayjs(date).tz(tz).startOf('day') : dayjs.utc(date).startOf('day');
+
+export const getTimeRangeFromDateRange = (
+  dateRange: DateRange | undefined,
+  timezone?: string,
+): TimeRange => {
   if (!dateRange) {
     return dateRange;
   }
 
+  // Single click leaves `to` undefined; treat it as a single-day pick instead of "now".
+  const to = dateRange.to ?? dateRange.from;
+
+  // `to` arrives pre-forced to 23:59:59.999 UTC; re-derive its day start so it
+  // resolves through `timezone` the same way `from` does, instead of tipping over.
+  const toDayStart = dayjs.utc(to).startOf('day').toDate();
+
   return {
     relativeTimeString: undefined,
-    from: dayjs.utc(dateRange.from).toDate(),
-    to: dayjs.utc(dateRange.to).toDate(),
+    from: startOfDayIn(dateRange.from, timezone).toDate(),
+    to: startOfDayIn(toDayStart, timezone).endOf('day').toDate(),
   };
 };

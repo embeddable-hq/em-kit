@@ -243,10 +243,10 @@ const printCode = ({ entry, ds, settings, rawProps, usedFields, rowVars, hoisted
   if (usesGranularity) lines.push(`import type { Granularity } from '${BRAND.packageName}';`);
   lines.push('');
 
-  const slots: FieldSlot[] = ['category', 'group', 'primary', 'secondary', 'size'];
+  const slots: FieldSlot[] = ['category', 'group', 'stage', 'primary', 'secondary', 'size'];
   for (const slot of slots) {
     if (!usedFields.has(slot)) continue;
-    const kind = slot === 'category' || slot === 'group' ? 'dimension' : 'measure';
+    const kind = slot === 'category' || slot === 'group' || slot === 'stage' ? 'dimension' : 'measure';
     const spec = ds.specs[slot];
     if (lines.some((l) => l.startsWith(`const ${spec.varName} =`))) continue;
     lines.push(printField(spec, kind));

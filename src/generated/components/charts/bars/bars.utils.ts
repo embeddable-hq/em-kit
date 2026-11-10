@@ -7,6 +7,7 @@ import {
   getDatalabelPercentage,
   getDimensionWithoutTruncation,
   groupTailAsOther,
+  uniqueSortedWithOtherLast,
 } from '../charts.utils';
 import { getDimensionFieldName } from '../../../utils/data.utils';
 import { getDimensionMeasureColor } from '../../../theme/styles/styles.utils';
@@ -31,7 +32,7 @@ export const getBarStackedChartProData = (
 
   const axis = props.axisOrder ? props.axisOrder.filter((v) => uniqueAxis.includes(v)) : uniqueAxis;
   const groupDimensionName = getDimensionFieldName(groupDimension);
-  const groupBy = [...new Set(data.map((d) => d[groupDimensionName]))].filter((d) => d != null);
+  const groupBy = uniqueSortedWithOtherLast(data.map((d) => d[groupDimensionName]));
 
   const chartColors = getChartColors();
   const datasets = groupBy.map((groupByItem, index) => {
@@ -92,6 +93,8 @@ export const getBarChartProData = (
   const themeFormatter = getThemeFormatter(theme);
   const groupedData = groupTailAsOther(props.data, props.dimension, props.measures, props.maxItems);
   const chartColors = getChartColors();
+  const usedBackgroundColors = new Set<string>();
+  const usedBorderColors = new Set<string>();
 
   return {
     labels: groupedData.map((item) => {
@@ -105,6 +108,7 @@ export const getBarChartProData = (
         value: measure.name,
         index,
         chartColors,
+        usedColors: usedBackgroundColors,
       });
 
       const borderColor = getDimensionMeasureColor({
@@ -114,6 +118,7 @@ export const getBarChartProData = (
         value: measure.name,
         index,
         chartColors,
+        usedColors: usedBorderColors,
       });
 
       return {

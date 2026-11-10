@@ -1395,6 +1395,174 @@
       }
     }
   },
+  "FunnelChartPro": {
+    "label": "Funnel Chart",
+    "fields": {
+      "sectionDimension": {
+        "kind": "dimension",
+        "label": "Section",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "countMeasure": {
+        "kind": "measure",
+        "label": "Count",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "orderDimension": {
+        "kind": "dimension",
+        "label": "Order (optional)",
+        "required": false,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
   "KpiChartNumberComparisonPro": {
     "label": "Kpi Chart - Number Comparison",
     "fields": {
@@ -2023,6 +2191,12 @@
             "label": "Reverse positive/negative colors",
             "type": "boolean",
             "defaultValue": false
+          },
+          {
+            "name": "reverseTrendDirection",
+            "label": "Reverse trend direction",
+            "type": "boolean",
+            "description": "Reverses the up/down trend arrow independently of \"Reverse positive/negative colors\" above. Existing dashboards keep their current look until this is changed explicitly."
           },
           {
             "name": "displayChangeAsPercentage",

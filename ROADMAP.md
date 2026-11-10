@@ -15,18 +15,21 @@ Work top to bottom. Each phase can ship on its own. Estimates assume one person.
 
 ## Phase 0: Secure the work (~1 hour)
 
-- [ ] Commit everything since the initial commit (a month of work is uncommitted).
+- [x] Commit everything since the initial commit (a month of work is uncommitted).
 - [ ] Once the name is chosen: create the GitHub repo (confirm first) and push.
 
-## Phase 1: Automatic intake of new Remarkable components (~2 days)
+## Phase 1: Automatic intake of new Remarkable components (done 2026-11-10, except the upstream fix loop)
 
-Today `sync.mjs` copies every upstream component, but `src/index.ts`, the gallery, the spec and the tests are hand-written. A new upstream component lands silently and stays invisible. **`FunnelChartPro` already shows this:** it is synced but not exported.
+Before this phase, `sync.mjs` copied every upstream component, but `src/index.ts`, the gallery, the spec and the tests were hand-written. A new upstream component landed silently and stayed invisible. It also synced local `main`, which was 32 commits behind GitHub, so `FunnelChartPro` hadn't arrived at all.
 
-- [ ] **Component manifest** (`components.manifest.ts`): one entry per upstream component directory, with its public name, group and status (`exported`, or `skipped` with a reason). Sync **fails** when upstream has a component directory the manifest doesn't list, so every new component forces a decision.
-- [ ] **Generate from the manifest:** `src/index.ts` exports, a gallery registry stub, and smoke-test rows. Hand-written gallery props stay optional overrides.
-- [ ] **Export `FunnelChart`** as the first manifest-driven addition.
-- [ ] **Scheduled sync in CI:** a weekly GitHub Action syncs upstream `main`, runs `npm run check`, and opens a PR with the diff and any new-component failures. Needs read access to the upstream repos.
-- [ ] **Upstream fix loop:** send the queued fixes upstream (CSS variable scoping, the `hideMenu` header split, the `TableScrollable` StrictMode duplicate page, `TableChartPaginated`'s module-time `getStyleNumber`). Each fix removes a `contentRewrites` entry.
+- [x] **Component manifest** (`scripts/components.manifest.mjs`): all 43 upstream components (every `*.emb.ts` directory), each `exported`, `wrapped` or `skipped` with a reason. Sync **fails** when upstream gains or loses a component, and prints the line to add.
+- [x] **Generated exports** (`scripts/exports.mjs` → `src/components.generated.ts`). `tests/manifest.test.tsx` fails until each published component is exported and has a gallery entry, and the gallery entry puts it in the smoke suite. The gallery entry itself stays hand-written: it is where sample data and toggles are chosen.
+- [x] **Sync from `origin/main`**, fetched first, instead of whatever local `main` happens to be.
+- [x] **Latest upstream synced** (remarkable-pro `a362e0ac`, remarkable-ui `0474f921`): colour assignment, time-zone handling, "Other" bucketing, PNG card export, maximize, TableScrollable auto height. Shim additions: `HEIGHT_MODES`/`useEmbeddableLayout` (exposed as `TableScrollable`'s `heightMode` prop) and `LoadDataRequest`.
+- [x] **`FunnelChart` exported**, with a gallery entry and funnel-stage data in all three sample datasets (translated de/fr).
+- [x] **CI:** `ci.yml` (types, tests, generated exports) and `sync-upstream.yml` (weekly sync PR). Both are untested until the repo is on GitHub.
+- [ ] **Upstream fix loop:** send the queued fixes upstream (CSS variable scoping, the `hideMenu` header split, `TableChartPaginated`'s module-time `getStyleNumber`, and the `TableScrollable` StrictMode duplicate page, which needs rechecking after this sync). Each fix removes a `contentRewrites` entry.
+- [ ] **Builder defaults:** the sync found upstream's export menu is now opt-in, with its default set only in Embeddable's builder input, so standalone users silently lost CSV/PNG export (patched with a content rewrite). Other inputs may have the same gap. Extract every input's `defaultValue` from the definitions (`extract-field-inputs.mjs` already bundles them) and fail the sync where a component's own default differs.
 - [ ] **Editors (if in scope):** extend the shim so the standalone-safe editors sync. The Embeddable-bound pickers (dimension/measure selects, filter builder) stay excluded.
 
 ## Phase 2: A real npm package (~3 days)

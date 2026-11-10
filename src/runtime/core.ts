@@ -54,6 +54,14 @@ export type DataResponse = {
   total?: number;
 };
 
+// The paging part of an Embeddable data request. Standalone, the host runs its
+// own query; components only use this shape to describe the page they want.
+export type LoadDataRequest = {
+  limit?: number;
+  offset?: number;
+  countRows?: boolean;
+};
+
 export type DimensionSubInputs = {
   granularity?: Granularity;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

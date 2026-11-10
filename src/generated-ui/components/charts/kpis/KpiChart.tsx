@@ -3,7 +3,7 @@ import styles from './KpiChart.module.css';
 import { KpiChartChange } from './components/KpiChartChange';
 import { KpiChartProps } from './KpiChart.types';
 import { AutoTextSize } from 'auto-text-size';
-import ConditionalWrapper from '../../shared/ConditionalWrapper/ConditionalWrapper';
+import { ConditionalWrapper } from '../../shared/ConditionalWrapper/ConditionalWrapper';
 import { getStyleNumber } from '../../../styles/styles.utils';
 
 export const getKpiDisplayValue = ({
@@ -34,6 +34,7 @@ export const KpiChart: FC<KpiChartProps> = ({
   comparisonValue,
   comparisonLabel,
   invertChangeColors,
+  invertTrendDirection,
   showChangeAsPercentage,
   percentageDecimalPlaces = 1,
   equalComparisonLabel = 'No change',
@@ -41,7 +42,8 @@ export const KpiChart: FC<KpiChartProps> = ({
   displayNullAs = '',
   valueFormatter,
 }) => {
-  const hasComparisonValue = comparisonValue !== undefined && value != null;
+  const hasComparisonValue = comparisonValue !== undefined;
+  const shouldRenderComparison = hasComparisonValue && value != null;
 
   const displayValue = getKpiDisplayValue({ value, displayNullAs, valueFormatter });
 
@@ -67,14 +69,15 @@ export const KpiChart: FC<KpiChartProps> = ({
         </ConditionalWrapper>
       </div>
 
-      {hasComparisonValue && (
+      {shouldRenderComparison && (
         <div className={styles.kpiComparisonContainer} style={{ fontSize: trendFontSize }}>
-          <div style={{ visibility: hasComparisonValue ? 'visible' : 'hidden' }}>
+          <div style={{ visibility: shouldRenderComparison ? 'visible' : 'hidden' }}>
             <KpiChartChange
               equalComparisonLabel={equalComparisonLabel}
               comparisonLabel={comparisonLabel}
               comparisonValue={comparisonValue}
               invertChangeColors={invertChangeColors}
+              invertTrendDirection={invertTrendDirection}
               percentageDecimalPlaces={percentageDecimalPlaces}
               showChangeAsPercentage={showChangeAsPercentage}
               value={value}

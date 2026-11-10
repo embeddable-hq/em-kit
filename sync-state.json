@@ -1,14 +1,14 @@
 {
   "sources": {
     "remarkable-ui": {
-      "ref": "main",
-      "sha": "677e56de50e23d5b51ed848492003c8102ed3ee9",
-      "syncedAt": "2026-10-02T13:56:50.639Z"
+      "ref": "origin/main",
+      "sha": "0474f92157bef22a20ec97675fd1709d25d44d4a",
+      "syncedAt": "2026-11-10T16:36:24.060Z"
     },
     "remarkable-pro": {
-      "ref": "main",
-      "sha": "78a14a7e528d70583b21204c6c1ef55f3dca5920",
-      "syncedAt": "2026-10-02T13:56:50.815Z"
+      "ref": "origin/main",
+      "sha": "a362e0ac9b92b81db3c6b5f813213ebedb1eaf60",
+      "syncedAt": "2026-11-10T16:36:24.263Z"
     }
   }
 }

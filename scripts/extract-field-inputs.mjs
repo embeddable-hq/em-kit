@@ -105,6 +105,9 @@ export const extractFieldInputs = async (proSrcRoot) => {
       logLevel: 'error',
       jsx: 'automatic',
       external: ['react', 'react-dom', 'react/*'],
+      // The upstream source is extracted to a temp dir with no node_modules;
+      // its npm dependencies are carried in this package.
+      nodePaths: [path.join(ROOT, 'node_modules')],
       plugins: [stubPlugin(importedEmbeddableNames(walk(proSrcRoot).filter((f) => /\.tsx?$/.test(f))))],
     });
     const mod = await import(pathToFileURL(outfile).href);

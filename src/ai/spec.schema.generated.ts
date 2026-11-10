@@ -1887,6 +1887,10 @@ export const chartSpecSchema = {
           "type": "boolean",
           "description": "Reverse positive/negative colors."
         },
+        "reverseTrendDirection": {
+          "type": "boolean",
+          "description": "Reverse trend direction. Reverses the up/down trend arrow independently of \"Reverse positive/negative colors\" above. Existing dashboards keep their current look until this is changed explicitly."
+        },
         "displayChangeAsPercentage": {
           "type": "boolean",
           "description": "Display change as %."
@@ -2548,6 +2552,10 @@ export const chartSpecToolSchema: ToolInputSchema = {
         "invertChangeColors": {
           "type": "boolean",
           "description": "Reverse positive/negative colors."
+        },
+        "reverseTrendDirection": {
+          "type": "boolean",
+          "description": "Reverse trend direction. Reverses the up/down trend arrow independently of \"Reverse positive/negative colors\" above. Existing dashboards keep their current look until this is changed explicitly."
         },
         "displayChangeAsPercentage": {
           "type": "boolean",

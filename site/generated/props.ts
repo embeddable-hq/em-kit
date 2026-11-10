@@ -1389,6 +1389,171 @@ export const componentFieldOptions: Record<string, Record<string, FieldDoc>> = {
       ]
     }
   },
+  "FunnelChart": {
+    "sectionDimension": {
+      "kind": "dimension",
+      "label": "Section",
+      "inputs": [
+        {
+          "name": "prefix",
+          "label": "Prefix",
+          "type": "string"
+        },
+        {
+          "name": "suffix",
+          "label": "Suffix",
+          "type": "string"
+        },
+        {
+          "name": "displayName",
+          "label": "Display name",
+          "type": "string"
+        },
+        {
+          "name": "maxCharacters",
+          "label": "Maximum characters",
+          "type": "number",
+          "supportedTypes": [
+            "string"
+          ]
+        },
+        {
+          "name": "decimalPlaces",
+          "label": "Decimal places",
+          "type": "number",
+          "supportedTypes": [
+            "number"
+          ]
+        },
+        {
+          "name": "currency",
+          "label": "Currency",
+          "type": "string",
+          "description": "e.g. EUR",
+          "supportedTypes": [
+            "number"
+          ]
+        },
+        {
+          "name": "abbreviateLargeNumber",
+          "label": "Abbreviate large number",
+          "type": "boolean",
+          "supportedTypes": [
+            "number"
+          ]
+        }
+      ]
+    },
+    "countMeasure": {
+      "kind": "measure",
+      "label": "Count",
+      "inputs": [
+        {
+          "name": "prefix",
+          "label": "Prefix",
+          "type": "string"
+        },
+        {
+          "name": "suffix",
+          "label": "Suffix",
+          "type": "string"
+        },
+        {
+          "name": "displayName",
+          "label": "Display name",
+          "type": "string"
+        },
+        {
+          "name": "maxCharacters",
+          "label": "Maximum characters",
+          "type": "number",
+          "supportedTypes": [
+            "string"
+          ]
+        },
+        {
+          "name": "decimalPlaces",
+          "label": "Decimal places",
+          "type": "number",
+          "supportedTypes": [
+            "number"
+          ]
+        },
+        {
+          "name": "currency",
+          "label": "Currency",
+          "type": "string",
+          "description": "e.g. EUR",
+          "supportedTypes": [
+            "number"
+          ]
+        },
+        {
+          "name": "abbreviateLargeNumber",
+          "label": "Abbreviate large number",
+          "type": "boolean",
+          "supportedTypes": [
+            "number"
+          ]
+        }
+      ]
+    },
+    "orderDimension": {
+      "kind": "dimension",
+      "label": "Order (optional)",
+      "required": false,
+      "inputs": [
+        {
+          "name": "prefix",
+          "label": "Prefix",
+          "type": "string"
+        },
+        {
+          "name": "suffix",
+          "label": "Suffix",
+          "type": "string"
+        },
+        {
+          "name": "displayName",
+          "label": "Display name",
+          "type": "string"
+        },
+        {
+          "name": "maxCharacters",
+          "label": "Maximum characters",
+          "type": "number",
+          "supportedTypes": [
+            "string"
+          ]
+        },
+        {
+          "name": "decimalPlaces",
+          "label": "Decimal places",
+          "type": "number",
+          "supportedTypes": [
+            "number"
+          ]
+        },
+        {
+          "name": "currency",
+          "label": "Currency",
+          "type": "string",
+          "description": "e.g. EUR",
+          "supportedTypes": [
+            "number"
+          ]
+        },
+        {
+          "name": "abbreviateLargeNumber",
+          "label": "Abbreviate large number",
+          "type": "boolean",
+          "supportedTypes": [
+            "number"
+          ]
+        }
+      ]
+    }
+  },
   "LineChart": {
     "measures": {
       "kind": "measure",
@@ -2230,6 +2395,12 @@ export const componentFieldOptions: Record<string, Record<string, FieldDoc>> = {
           "label": "Reverse positive/negative colors",
           "type": "boolean",
           "defaultValue": false
+        },
+        {
+          "name": "reverseTrendDirection",
+          "label": "Reverse trend direction",
+          "type": "boolean",
+          "description": "Reverses the up/down trend arrow independently of \"Reverse positive/negative colors\" above. Existing dashboards keep their current look until this is changed explicitly."
         },
         {
           "name": "displayChangeAsPercentage",
@@ -4236,6 +4407,100 @@ export const componentProps: Record<string, PropDoc[]> = {
       "doc": "Fixed height in px. The card fills its parent, so give the chart a\ndefinite height when the parent (e.g. a chat bubble) has none."
     }
   ],
+  "TableScrollable": [
+    {
+      "name": "allResults",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "clickDimension",
+      "type": "Dimension",
+      "required": false
+    },
+    {
+      "name": "dimensionsAndMeasures",
+      "type": "DimensionOrMeasure[]",
+      "required": true
+    },
+    {
+      "name": "displayNullAs",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "results",
+      "type": "DataResponse",
+      "required": true
+    },
+    {
+      "name": "showIndex",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "state",
+      "type": "TableScrollableState",
+      "required": false,
+      "payload": "TableScrollableState = { page: number; pageSize?: number | undefined; sort?: { id: string; direction: OrderDirection; } | undefined; isLoadingDownloadData: boolean; heightMode?: HeightMode | undefined; }"
+    },
+    {
+      "name": "onRowClicked",
+      "type": "((rowDimensionValue: TableScrollableOnRowClickArg) => void)",
+      "required": false,
+      "payload": "TableScrollableOnRowClickArg = { dimensionValue: string | null | undefined; dimensionTimeRange: TimeRange; }"
+    },
+    {
+      "name": "setState",
+      "type": "(value: SetStateAction<TableScrollableState>) => void",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "hideMenu",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "menuOptions",
+      "type": "unknown[]",
+      "required": false
+    },
+    {
+      "name": "resetKey",
+      "type": "unknown",
+      "required": false
+    },
+    {
+      "name": "heightMode",
+      "type": "HeightMode",
+      "required": false
+    }
+  ],
   "BarChart": [
     {
       "name": "dimension",
@@ -4509,6 +4774,26 @@ export const componentProps: Record<string, PropDoc[]> = {
       "required": false
     },
     {
+      "name": "resultsGroupOrder",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "resultsGroupOther",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "groupOrderCacheKey",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "setGroupOrderAndCacheKey",
+      "type": "((values: string[], cacheKey: string) => void)",
+      "required": false
+    },
+    {
       "name": "showLegend",
       "type": "boolean",
       "required": false
@@ -4651,6 +4936,26 @@ export const componentProps: Record<string, PropDoc[]> = {
       "required": false
     },
     {
+      "name": "resultsGroupOrder",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "resultsGroupOther",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "groupOrderCacheKey",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "setGroupOrderAndCacheKey",
+      "type": "((values: string[], cacheKey: string) => void)",
+      "required": false
+    },
+    {
       "name": "showLegend",
       "type": "boolean",
       "required": false
@@ -4789,6 +5094,26 @@ export const componentProps: Record<string, PropDoc[]> = {
     },
     {
       "name": "setAxisOrderAndCacheKey",
+      "type": "((values: string[], cacheKey: string) => void)",
+      "required": false
+    },
+    {
+      "name": "resultsGroupOrder",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "resultsGroupOther",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "groupOrderCacheKey",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "setGroupOrderAndCacheKey",
       "type": "((values: string[], cacheKey: string) => void)",
       "required": false
     },
@@ -4936,6 +5261,26 @@ export const componentProps: Record<string, PropDoc[]> = {
     },
     {
       "name": "setAxisOrderAndCacheKey",
+      "type": "((values: string[], cacheKey: string) => void)",
+      "required": false
+    },
+    {
+      "name": "resultsGroupOrder",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "resultsGroupOther",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "groupOrderCacheKey",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "setGroupOrderAndCacheKey",
       "type": "((values: string[], cacheKey: string) => void)",
       "required": false
     },
@@ -5194,6 +5539,98 @@ export const componentProps: Record<string, PropDoc[]> = {
       "required": false
     }
   ],
+  "FunnelChart": [
+    {
+      "name": "sectionDimension",
+      "type": "Dimension",
+      "required": true
+    },
+    {
+      "name": "countMeasure",
+      "type": "Measure",
+      "required": true
+    },
+    {
+      "name": "orderDimension",
+      "type": "Dimension",
+      "required": false
+    },
+    {
+      "name": "startColor",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "endColor",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "results",
+      "type": "DataResponse",
+      "required": true
+    },
+    {
+      "name": "showLegend",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "showTooltips",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "showValueLabels",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "showSectionLabels",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "displayPercentages",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "shrinkAnchor",
+      "type": "PositionValue",
+      "required": false
+    },
+    {
+      "name": "shrinkFraction",
+      "type": "number",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "hideMenu",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "menuOptions",
+      "type": "unknown[]",
+      "required": false
+    }
+  ],
   "LineChart": [
     {
       "name": "xAxis",
@@ -5252,6 +5689,11 @@ export const componentProps: Record<string, PropDoc[]> = {
     },
     {
       "name": "yAxisRangeMin",
+      "type": "number",
+      "required": false
+    },
+    {
+      "name": "xAxisMaxItems",
       "type": "number",
       "required": false
     },
@@ -5326,7 +5768,32 @@ export const componentProps: Record<string, PropDoc[]> = {
     {
       "name": "results",
       "type": "DataResponse",
-      "required": true
+      "required": false
+    },
+    {
+      "name": "resultsGroupOrder",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "resultsGroupOther",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "groupOrderCacheKey",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "setGroupOrderAndCacheKey",
+      "type": "((values: string[], cacheKey: string) => void)",
+      "required": false
+    },
+    {
+      "name": "xAxisMaxItems",
+      "type": "number",
+      "required": false
     },
     {
       "name": "reverseXAxis",
@@ -5630,6 +6097,11 @@ export const componentProps: Record<string, PropDoc[]> = {
       "required": false
     },
     {
+      "name": "xAxisMaxItems",
+      "type": "number",
+      "required": false
+    },
+    {
       "name": "granularity",
       "type": "Granularity",
       "required": false
@@ -5841,6 +6313,46 @@ export const componentProps: Record<string, PropDoc[]> = {
   ],
   "AreaChart": [
     {
+      "name": "results",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "hideMenu",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "menuOptions",
+      "type": "unknown[]",
+      "required": false
+    },
+    {
       "name": "xAxis",
       "type": "Dimension",
       "required": true
@@ -5856,9 +6368,29 @@ export const componentProps: Record<string, PropDoc[]> = {
       "required": true
     },
     {
-      "name": "results",
+      "name": "resultsGroupOrder",
       "type": "DataResponse",
-      "required": true
+      "required": false
+    },
+    {
+      "name": "resultsGroupOther",
+      "type": "DataResponse",
+      "required": false
+    },
+    {
+      "name": "groupOrderCacheKey",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "setGroupOrderAndCacheKey",
+      "type": "((values: string[], cacheKey: string) => void)",
+      "required": false
+    },
+    {
+      "name": "xAxisMaxItems",
+      "type": "number",
+      "required": false
     },
     {
       "name": "reverseXAxis",
@@ -5913,41 +6445,6 @@ export const componentProps: Record<string, PropDoc[]> = {
     {
       "name": "setGranularity",
       "type": "((granularity: Granularity) => void)",
-      "required": false
-    },
-    {
-      "name": "componentName",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "trackingId",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "title",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "description",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "tooltip",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "hideMenu",
-      "type": "boolean",
-      "required": false
-    },
-    {
-      "name": "menuOptions",
-      "type": "unknown[]",
       "required": false
     },
     {
@@ -6601,6 +7098,11 @@ export const componentProps: Record<string, PropDoc[]> = {
       "required": false
     },
     {
+      "name": "reverseTrendDirection",
+      "type": "boolean",
+      "required": false
+    },
+    {
       "name": "percentageDecimalPlaces",
       "type": "number",
       "required": false
@@ -6922,95 +7424,6 @@ export const componentProps: Record<string, PropDoc[]> = {
     {
       "name": "menuOptions",
       "type": "unknown[]",
-      "required": false
-    }
-  ],
-  "TableScrollable": [
-    {
-      "name": "results",
-      "type": "DataResponse",
-      "required": true
-    },
-    {
-      "name": "componentName",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "trackingId",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "title",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "description",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "tooltip",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "hideMenu",
-      "type": "boolean",
-      "required": false
-    },
-    {
-      "name": "menuOptions",
-      "type": "unknown[]",
-      "required": false
-    },
-    {
-      "name": "allResults",
-      "type": "DataResponse",
-      "required": false
-    },
-    {
-      "name": "clickDimension",
-      "type": "Dimension",
-      "required": false
-    },
-    {
-      "name": "dimensionsAndMeasures",
-      "type": "DimensionOrMeasure[]",
-      "required": true
-    },
-    {
-      "name": "displayNullAs",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "showIndex",
-      "type": "boolean",
-      "required": false
-    },
-    {
-      "name": "state",
-      "type": "TableScrollableState",
-      "required": false,
-      "payload": "TableScrollableState = { page: number; pageSize?: number | undefined; sort?: { id: string; direction: OrderDirection; } | undefined; isLoadingDownloadData: boolean; }"
-    },
-    {
-      "name": "onRowClicked",
-      "type": "((rowDimensionValue: TableScrollableOnRowClickArg) => void)",
-      "required": false,
-      "payload": "TableScrollableOnRowClickArg = { dimensionValue: string | null | undefined; dimensionTimeRange: TimeRange; }"
-    },
-    {
-      "name": "setState",
-      "type": "(value: SetStateAction<TableScrollableState>) => void",
-      "required": false
-    },
-    {
-      "name": "resetKey",
-      "type": "unknown",
       "required": false
     }
   ]

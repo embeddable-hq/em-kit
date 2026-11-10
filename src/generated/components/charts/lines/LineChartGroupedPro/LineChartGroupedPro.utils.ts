@@ -6,7 +6,11 @@ import { mergician } from 'mergician';
 import { getDimensionMeasureColor } from '../../../../theme/styles/styles.utils';
 import { setColorAlpha } from '../../../../utils/color.utils';
 import { getChartColors } from '../../../../../generated-ui/index';
-import { getDimensionWithoutTruncation } from '../../charts.utils';
+import {
+  getDimensionWithoutTruncation,
+  groupTailAsOtherPerGroup,
+  uniqueSortedWithOtherLast,
+} from '../../charts.utils';
 
 export const getLineChartGroupedProData = (
   props: {
@@ -15,14 +19,17 @@ export const getLineChartGroupedProData = (
     groupDimension: Dimension;
     measure: Measure;
     hasMinMaxYAxisRange: boolean;
+    maxItems?: number;
   },
   theme: Theme,
 ): ChartData<'line'> => {
   const themeFormatter = getThemeFormatter(theme);
-  const { data = [], dimension, groupDimension, measure, hasMinMaxYAxisRange } = props;
+  const { dimension, groupDimension, measure, hasMinMaxYAxisRange, maxItems } = props;
 
-  const axis = [...new Set(data.map((d) => d[dimension.name]).filter((d) => d != null))].sort();
-  const groupBy = [...new Set(data.map((d) => d[groupDimension.name]))].filter((d) => d != null);
+  const data = groupTailAsOtherPerGroup(props.data, dimension, groupDimension, measure, maxItems);
+
+  const axis = uniqueSortedWithOtherLast(data.map((d) => d[dimension.name]));
+  const groupBy = uniqueSortedWithOtherLast(data.map((d) => d[groupDimension.name]));
 
   const chartColors = getChartColors();
   const datasets: ChartData<'line'>['datasets'] = groupBy.map((groupByItem, index) => {

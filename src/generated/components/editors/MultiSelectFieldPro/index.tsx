@@ -18,6 +18,8 @@ export type MultiSelectFieldProProps = {
   results: DataResponse;
   selectedValues?: string[];
   maxOptions?: number;
+  showSelectAll?: boolean;
+  autoApply?: boolean;
   clearable?: boolean;
   componentName?: string;
   trackingId?: string;
@@ -35,6 +37,9 @@ const MultiSelectFieldPro = (props: MultiSelectFieldProProps) => {
     optionalSecondDimension,
     results,
     selectedValues,
+    maxOptions,
+    showSelectAll,
+    autoApply,
     clearable,
     componentName,
     trackingId,
@@ -51,6 +56,15 @@ const MultiSelectFieldPro = (props: MultiSelectFieldProProps) => {
     }) ?? [];
 
   const showNoOptionsMessage = Boolean(!results.isLoading && (results.data?.length ?? 0) === 0);
+
+  // Even when enabled, only offer select/deselect all when every value is loaded: a result
+  // set that reaches maxOptions may be truncated by the load limit, so the full list is unknown
+  const displaySelectAll = Boolean(
+    showSelectAll &&
+    typeof maxOptions === 'number' &&
+    options.length > 0 &&
+    options.length < maxOptions,
+  );
 
   const firstOptionValue = options[0]?.value;
 
@@ -72,7 +86,13 @@ const MultiSelectFieldPro = (props: MultiSelectFieldProProps) => {
         values={selectedValues ?? []}
         options={options}
         placeholder={placeholder}
+        searchPlaceholder={i18n.t('common.search')}
+        submitLabel={i18n.t('common.apply')}
         noOptionsMessage={showNoOptionsMessage ? i18n.t('common.noOptionsFound') : undefined}
+        showSelectAll={displaySelectAll}
+        autoApply={autoApply}
+        selectAllLabel={i18n.t('common.selectAll')}
+        deselectAllLabel={i18n.t('common.deselectAll')}
         onChange={(newValues) => {
           dispatchEventUserInteraction({ componentName, trackingId, value: newValues });
           onChange?.(newValues);

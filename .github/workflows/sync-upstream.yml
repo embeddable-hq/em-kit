@@ -1,0 +1,77 @@
+# Weekly: pull the latest remarkable-pro and remarkable-ui, regenerate, check,
+# and open (or update) a PR with the result.
+#
+# The job fails, without a PR, when the sync itself fails. Its log says why:
+# usually a new upstream component that scripts/components.manifest.mjs
+# doesn't list yet, or a content rewrite that no longer matches.
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      REMARKABLE_PRO_DIR: ${{ github.workspace }}/upstream/remarkable-pro
+      REMARKABLE_UI_DIR: ${{ github.workspace }}/upstream/remarkable-ui
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: embeddable-hq/remarkable-pro
+          path: upstream/remarkable-pro
+          fetch-depth: 0
+
+      - uses: actions/checkout@v4
+        with:
+          repository: embeddable-hq/remarkable-ui
+          path: upstream/remarkable-ui
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Syncs origin/main of both upstreams, regenerates exports and props,
+      # then type-checks and runs the tests.
+      - run: npm run check
+
+      - name: Summarise upstream changes
+        id: summary
+        # Upstream commits since the sync recorded in the committed sync-state.json.
+        run: |
+          previous() { git show HEAD:sync-state.json | node -e "process.stdout.write(JSON.parse(require('fs').readFileSync(0)).sources['$1'].sha)"; }
+          {
+            echo 'body<<EOF'
+            echo 'Automated weekly sync from upstream `origin/main`. `npm run check` passed.'
+            echo
+            git diff --stat -- src | tail -1
+            for repo in remarkable-pro remarkable-ui; do
+              echo
+              echo "### $repo"
+              git -C "upstream/$repo" log --oneline "$(previous $repo)..origin/main" -- src
+            done
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: sync/upstream
+          title: Sync upstream Remarkable
+          commit-message: Sync upstream Remarkable
+          body: ${{ steps.summary.outputs.body }}
+          add-paths: |
+            src
+            site/generated
+            sync-state.json

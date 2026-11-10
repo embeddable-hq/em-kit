@@ -415,9 +415,10 @@ describe('every chart kind renders from a minimal spec', () => {
       granularity: 'month',
       rows: byMonthPlan,
     });
+    // Series are ordered by group value (Free, Pro), not row order.
     expect(onlyChart(stacked).values).toEqual([
-      [60, 90, 70],
       [40, 50, null],
+      [60, 90, 70],
     ]);
   });
 
@@ -530,9 +531,10 @@ describe('normalization', () => {
     // month buckets as ISO strings rather than "Jan 2024".
     expect(onlyChart(html)).toEqual({
       labels: [month(1), month(2), month(3)],
+      // Series are ordered by group value (Free, Pro), not row order.
       values: [
-        [60, 90, 70],
         [40, 50, 0],
+        [60, 90, 70],
       ],
     });
   });

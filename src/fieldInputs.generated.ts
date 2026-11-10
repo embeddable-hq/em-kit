@@ -48,6 +48,8 @@ export type GeneratedFieldInputs = {
   previousLineDashed?: boolean;
   /** Reverse positive/negative colors. */
   invertChangeColors?: boolean;
+  /** Reverse trend direction. Reverses the up/down trend arrow independently of "Reverse positive/negative colors" above. Existing dashboards keep their current look until this is changed explicitly. */
+  reverseTrendDirection?: boolean;
   /** Display change as %. */
   displayChangeAsPercentage?: boolean;
   /** Percentage decimal places. */

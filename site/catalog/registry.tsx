@@ -49,7 +49,7 @@ export const withInputs = (ref: CodeRef, inputs: FieldInputs): CodeRef => {
   };
 };
 
-export type FieldSlot = 'category' | 'group' | 'primary' | 'secondary' | 'size' | 'time';
+export type FieldSlot = 'category' | 'group' | 'primary' | 'secondary' | 'size' | 'stage' | 'time';
 
 export type BuildContext = {
   ds: Dataset;
@@ -113,6 +113,8 @@ const T = {
   index: { key: 'showIndex', label: 'Row index', default: false },
   changePercent: { key: 'displayChangeAsPercentage', label: 'Change as %', default: true },
   hideMenu: { key: 'hideMenu', label: 'Hide header', default: false },
+  sectionLabels: { key: 'showSectionLabels', label: 'Step labels', default: true },
+  stepPercent: { key: 'displayPercentages', label: 'Values as %', default: false },
 } satisfies Record<string, Toggle>;
 
 const pick = (ctx: BuildContext, toggles: Toggle[]) =>
@@ -672,6 +674,32 @@ export const chartEntries: ChartEntry[] = [
     }),
   },
   {
+    id: 'funnel',
+    name: 'Funnel chart',
+    exportName: 'FunnelChart',
+    group: 'Funnels',
+    description: 'How much of a total survives each step of a process, in order.',
+    defaultTitle: 'Funnel',
+    toggles: [T.legend, T.tooltips, T.valueLabels, T.sectionLabels, T.stepPercent, T.hideMenu],
+    notes: [
+      'Steps sort largest first. When a later step can outgrow an earlier one, pass `orderDimension`: a field holding each step’s position.',
+    ],
+    props: (ctx) => ({
+      title: ctx.title,
+      sectionDimension: ctx.field('stage'),
+      countMeasure: ctx.field('primary'),
+      results: ctx.rows('rows', ctx.ds.byStage),
+      ...pick(ctx, [
+        { ...T.legend, default: false },
+        T.tooltips,
+        { ...T.valueLabels, default: true },
+        T.sectionLabels,
+        T.stepPercent,
+        T.hideMenu,
+      ]),
+    }),
+  },
+  {
     id: 'scatter',
     name: 'Scatter chart',
     exportName: 'ScatterChart',
@@ -841,7 +869,7 @@ export const chartEntries: ChartEntry[] = [
   },
 ];
 
-export const chartGroups = ['KPIs', 'Bars', 'Stacked', 'Lines', 'Pies', 'Scatter', 'Tables'] as const;
+export const chartGroups = ['KPIs', 'Bars', 'Stacked', 'Lines', 'Pies', 'Funnels', 'Scatter', 'Tables'] as const;
 
 export const getEntry = (id: string) => chartEntries.find((e) => e.id === id);
 

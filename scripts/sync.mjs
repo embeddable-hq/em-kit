@@ -5,15 +5,18 @@
 // @embeddable.com import may remain anywhere.
 //
 //   REMARKABLE_PRO_DIR  path to a remarkable-pro checkout (default ../remarkable-pro)
-//   REMARKABLE_PRO_REF  git ref to sync from (default main; uncommitted work is never synced)
+//   REMARKABLE_PRO_REF  git ref to sync from (default origin/main, fetched first;
+//                       uncommitted work is never synced)
 //   REMARKABLE_UI_DIR   path to a remarkable-ui checkout (default ../remarkable-ui)
-//   REMARKABLE_UI_REF   git ref to sync from (default main)
+//   REMARKABLE_UI_REF   git ref to sync from (default origin/main, fetched first)
+//   SYNC_NO_FETCH=1     use the refs as they are locally, without fetching
 
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { checkManifest, discoverUpstreamComponents } from './components.manifest.mjs';
 import { extractFieldInputs, writeFieldInputs } from './extract-field-inputs.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -56,7 +59,7 @@ const SOURCES = [
   {
     name: 'remarkable-ui',
     dir: path.resolve(ROOT, process.env.REMARKABLE_UI_DIR ?? '../remarkable-ui'),
-    ref: process.env.REMARKABLE_UI_REF ?? 'main',
+    ref: process.env.REMARKABLE_UI_REF ?? 'origin/main',
     out: UI_OUT,
     exclude: EXCLUDE_UI,
     keep: [],
@@ -73,7 +76,7 @@ const SOURCES = [
   {
     name: 'remarkable-pro',
     dir: path.resolve(ROOT, process.env.REMARKABLE_PRO_DIR ?? '../remarkable-pro'),
-    ref: process.env.REMARKABLE_PRO_REF ?? 'main',
+    ref: process.env.REMARKABLE_PRO_REF ?? 'origin/main',
     out: path.join(ROOT, 'src/generated'),
     exclude: EXCLUDE_PRO,
     keep: KEEP_OVERRIDE_PRO,
@@ -94,6 +97,12 @@ const SOURCES = [
         why: 'colour assignments persist under a neutral key',
       },
       {
+        file: 'components/charts/shared/ChartCard/ChartCard.tsx',
+        from: '    onCustomDownload,\n    menuOptions,\n  } = props;',
+        to: "    onCustomDownload,\n    // Embeddable's builder supplies this default; standalone there is no builder.\n    menuOptions = ['csv', 'xlsx', 'png', 'maximize'],\n  } = props;",
+        why: "the menu is opt-in upstream and the default lives in the builder input (component.inputs.constants.ts); keep in step with it",
+      },
+      {
         file: 'components/charts/scatter/ScatterChartPro/ScatterChartPro.utils.ts',
         from: "          value: {\n            display: 'auto',\n",
         to: '          value: {\n',
@@ -108,7 +117,11 @@ const SOURCES = [
     ],
     // definition.ts files are excluded above, but the per-field options they
     // declare (prefix, decimalPlaces, columnAggregation, …) are public API here.
-    afterExtract: async (srcRoot) => writeFieldInputs(await extractFieldInputs(srcRoot)),
+    afterExtract: async (srcRoot, errors) => {
+      // Every upstream component must be exported or skipped in the manifest.
+      errors.push(...checkManifest(discoverUpstreamComponents(walk(srcRoot))).map((e) => `remarkable-pro: ${e}`));
+      writeFieldInputs(await extractFieldInputs(srcRoot));
+    },
   },
 ];
 
@@ -153,6 +166,9 @@ const walk = (dir, base = dir) =>
   });
 
 const syncSource = async (source, errors) => {
+  if (!process.env.SYNC_NO_FETCH && source.ref.startsWith('origin/')) {
+    execSync(`git -C "${source.dir}" fetch --quiet origin`);
+  }
   const sha = execSync(`git -C "${source.dir}" rev-parse ${source.ref}`).toString().trim();
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'charts-ui-sync-'));
   execSync(`git -C "${source.dir}" archive ${sha} src | tar -x -C "${tmp}"`);
@@ -192,7 +208,7 @@ const syncSource = async (source, errors) => {
     }
   }
 
-  await source.afterExtract?.(srcRoot);
+  await source.afterExtract?.(srcRoot, errors);
   fs.rmSync(tmp, { recursive: true, force: true });
   console.log(`Synced ${source.name}@${sha.slice(0, 8)}: ${kept} files kept, ${skipped} excluded.`);
   return { ref: source.ref, sha, syncedAt: new Date().toISOString() };

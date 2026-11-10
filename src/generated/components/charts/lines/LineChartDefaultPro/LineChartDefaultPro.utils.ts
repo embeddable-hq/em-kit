@@ -6,7 +6,7 @@ import { getChartColors, getStyleNumber } from '../../../../../generated-ui/inde
 import { getDimensionMeasureColor } from '../../../../theme/styles/styles.utils';
 import { mergician } from 'mergician';
 import { isColorValid, setColorAlpha } from '../../../../utils/color.utils';
-import { getDimensionWithoutTruncation } from '../../charts.utils';
+import { getDimensionWithoutTruncation, groupTailAsOther } from '../../charts.utils';
 
 export const getLineChartProData = (
   props: {
@@ -14,6 +14,7 @@ export const getLineChartProData = (
     dimension: Dimension;
     measures: Measure[];
     hasMinMaxYAxisRange: boolean;
+    maxItems?: number;
   },
   theme: Theme,
 ): ChartData<'line'> => {
@@ -26,7 +27,9 @@ export const getLineChartProData = (
 
   const themeFormatter = getThemeFormatter(theme);
 
-  const groupedData = props.data;
+  const groupedData = groupTailAsOther(props.data, props.dimension, props.measures, props.maxItems);
+  const usedBackgroundColors = new Set<string>();
+  const usedBorderColors = new Set<string>();
 
   return {
     labels: groupedData.map((item) => {
@@ -38,6 +41,10 @@ export const getLineChartProData = (
 
       const lineColor = measure.inputs?.['lineColor'];
       const chartColors = getChartColors();
+      if (isColorValid(lineColor)) {
+        usedBackgroundColors.add(lineColor);
+        usedBorderColors.add(lineColor);
+      }
       const backgroundColor = isColorValid(lineColor)
         ? lineColor
         : getDimensionMeasureColor({
@@ -47,6 +54,7 @@ export const getLineChartProData = (
             value: measure.name,
             chartColors,
             index,
+            usedColors: usedBackgroundColors,
           });
 
       const borderColor = isColorValid(lineColor)
@@ -58,6 +66,7 @@ export const getLineChartProData = (
             value: measure.name,
             chartColors,
             index,
+            usedColors: usedBorderColors,
           });
 
       return {

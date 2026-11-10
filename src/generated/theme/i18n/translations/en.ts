@@ -6,8 +6,12 @@ export const en: ResourceLanguage = {
       other: 'Other',
       noOptionsFound: 'No options found',
       noOptionsAvailable: 'No options available',
+      selectAll: 'Select all',
+      deselectAll: 'Deselect all',
       compared: 'Compared',
       loading: 'Loading...',
+      search: 'Search…',
+      apply: 'Apply',
     },
     charts: {
       label: 'Label',
@@ -16,12 +20,17 @@ export const en: ResourceLanguage = {
       'menuOptions.downloadCSV': 'Download CSV',
       'menuOptions.downloadPNG': 'Download PNG',
       'menuOptions.downloadXLSX': 'Download XLSX',
+      'menuOptions.maximize': 'Maximize',
+      'menuOptions.minimize': 'Minimize',
       errorTitle: 'Something went wrong.',
       errorMessage: 'An error occurred while loading the chart.',
       emptyTitle: 'No results.',
       emptyMessage: "It's a bit empty here.",
       tablePaginated: {
         pagination: 'Page {{page}} of {{totalPages}}',
+      },
+      tableScrollable: {
+        truncatedRows: 'Showing {{shown}} of {{total}} rows',
       },
       pivotTable: {
         total: 'Total',

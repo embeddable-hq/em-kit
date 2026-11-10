@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useId, useMemo, useRef, useState } from 'react';
 import {
   SelectListOption,
   SelectListOptionProps,
@@ -11,8 +11,15 @@ import {
   SelectFieldContentList,
 } from '../shared/SelectFieldContent/SelectFieldContent';
 import { groupOptionsByCategory } from '../shared/SelectFieldContent/SelectFieldContent.utils';
-import { IconProps, IconSearch, IconSquare, IconSquareCheckFilled } from '@tabler/icons-react';
+import {
+  IconProps,
+  IconSearch,
+  IconSquare,
+  IconSquareCheckFilled,
+  IconSquareMinus,
+} from '@tabler/icons-react';
 import { Button } from '../../../shared/Button/Button';
+import { Divider } from '../../../shared/Divider/Divider';
 import styles from '../selects.module.css';
 import { useSelectSearchFocus } from '../shared/useSelectSearchFocus.hook';
 import { SelectFieldCategory } from '../shared/SelectFieldContent/SelectFieldOptions/SelectFieldCategory/SelectFieldCategory';
@@ -32,6 +39,11 @@ export type MultiSelectFieldProps<T extends SelectOptionValue> = {
   noOptionsMessage?: string;
   options: (SelectListOptionProps<T> | SelectListOptionPropsWithCategory<T>)[];
   placeholder?: string;
+  searchPlaceholder?: string;
+  autoApply?: boolean;
+  showSelectAll?: boolean;
+  selectAllLabel?: string;
+  deselectAllLabel?: string;
   submitLabel?: string;
   values?: T[];
   avoidCollisions?: boolean;
@@ -41,6 +53,8 @@ export type MultiSelectFieldProps<T extends SelectOptionValue> = {
   error?: boolean;
   errorMessage?: string;
   triggerComponent?: React.ReactNode;
+  ariaLabel?: string;
+  clearLabel?: string;
 } & FieldHeaderProps;
 
 export function MultiSelectField<T extends SelectOptionValue>({
@@ -55,6 +69,11 @@ export function MultiSelectField<T extends SelectOptionValue>({
   noOptionsMessage,
   options,
   placeholder,
+  searchPlaceholder = 'Search…',
+  autoApply = false,
+  showSelectAll,
+  selectAllLabel = 'Select all',
+  deselectAllLabel = 'Deselect all',
   submitLabel = 'Apply',
   values = [],
   avoidCollisions,
@@ -64,7 +83,13 @@ export function MultiSelectField<T extends SelectOptionValue>({
   error = false,
   errorMessage,
   triggerComponent,
+  ariaLabel,
+  clearLabel,
 }: MultiSelectFieldProps<T>) {
+  const baseId = useId();
+  const labelId = `${baseId}-label`;
+  const triggerId = `${baseId}-trigger`;
+  const errorId = `${baseId}-error`;
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState<string>('');
   const [preValues, setPreValues] = useState<T[]>(values);
@@ -107,24 +132,59 @@ export function MultiSelectField<T extends SelectOptionValue>({
 
   const groupedOptions = useMemo(() => groupOptionsByCategory(displayOptions), [displayOptions]);
 
+  // Select all only acts on the options currently displayed (e.g. after searching);
+  // deduplicated so repeated option values cannot be added to the selection twice
+  const selectableValues = [
+    ...new Set(
+      displayOptions
+        .map((option) => option.value)
+        .filter((value): value is T => value !== undefined),
+    ),
+  ];
+  const areAllSelected =
+    selectableValues.length > 0 && selectableValues.every((value) => preValues.includes(value));
+  const isAnySelected = selectableValues.some((value) => preValues.includes(value));
+
+  let selectAllIcon = <IconSquare />;
+  if (areAllSelected) {
+    selectAllIcon = <IconSquareCheckFilled />;
+  } else if (isAnySelected) {
+    selectAllIcon = <IconSquareMinus />;
+  }
+
   const isSubmitDisabled =
     preValues.every((preValue) => values.includes(preValue)) &&
     values.every((value) => preValues.includes(value));
+
+  // With autoApply every toggle is committed immediately via onChange
+  const updateSelection = (next: T[]) => {
+    setPreValues(next);
+    onPendingChange?.(next);
+    if (autoApply) {
+      onChange(next);
+    }
+  };
 
   const handleSelectOption = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, newValue?: T) => {
     e.preventDefault();
 
     if (newValue === undefined) return;
 
-    if (preValues.includes(newValue)) {
-      const next = preValues.filter((v) => v !== newValue);
-      setPreValues(next);
-      onPendingChange?.(next);
-    } else {
-      const next = [...preValues, newValue];
-      setPreValues(next);
-      onPendingChange?.(next);
-    }
+    updateSelection(
+      preValues.includes(newValue)
+        ? preValues.filter((v) => v !== newValue)
+        : [...preValues, newValue],
+    );
+  };
+
+  const handleToggleSelectAll = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault();
+
+    updateSelection(
+      areAllSelected
+        ? preValues.filter((value) => !selectableValues.includes(value))
+        : [...preValues, ...selectableValues.filter((value) => !preValues.includes(value))],
+    );
   };
 
   const handleSearch = (newSearch: string) => {
@@ -137,6 +197,15 @@ export function MultiSelectField<T extends SelectOptionValue>({
     setIsOpen(false);
     setSearchValue('');
     onSearch?.('');
+  };
+
+  // With autoApply there is no save step to reset the search, so reset it on close
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (!open && autoApply) {
+      setSearchValue('');
+      onSearch?.('');
+    }
   };
 
   const handleClearAll = () => {
@@ -170,17 +239,23 @@ export function MultiSelectField<T extends SelectOptionValue>({
 
   return (
     <div>
-      <FieldHeader label={label} required={required} />
+      <FieldHeader id={labelId} label={label} required={required} requiredAriaHidden />
       <Dropdown
         open={isOpen}
-        onOpenChange={setIsOpen}
+        onOpenChange={handleOpenChange}
         disabled={disabled}
         avoidCollisions={avoidCollisions}
         triggerComponent={
           triggerComponent ?? (
             <SelectFieldTrigger
               startIcon={startIcon}
-              aria-label="Select options"
+              aria-label={ariaLabel}
+              aria-labelledby={label ? `${labelId} ${triggerId}` : undefined}
+              aria-required={required || undefined}
+              aria-invalid={hasError || undefined}
+              aria-describedby={errorMessage ? errorId : undefined}
+              id={triggerId}
+              clearLabel={clearLabel}
               placeholder={placeholder}
               disabled={disabled}
               valueLabel={selectedLabel}
@@ -198,7 +273,7 @@ export function MultiSelectField<T extends SelectOptionValue>({
               ref={searchFieldRef}
               startIcon={IconSearch}
               aria-label="Search options"
-              placeholder="Search…"
+              placeholder={searchPlaceholder}
               role="searchbox"
               value={searchValue}
               onKeyDown={(e) => e.stopPropagation()}
@@ -207,6 +282,16 @@ export function MultiSelectField<T extends SelectOptionValue>({
             />
           )}
           <SelectFieldContentList disabled={isLoading}>
+            {showSelectAll && selectableValues.length > 0 && (
+              <>
+                <SelectListOption
+                  label={areAllSelected ? deselectAllLabel : selectAllLabel}
+                  onClick={handleToggleSelectAll}
+                  startIcon={selectAllIcon}
+                />
+                <Divider className={styles.selectAllDivider} />
+              </>
+            )}
             {groupedOptions
               ? Object.entries(groupedOptions).map(([category, categoryOptions]) => (
                   <Fragment key={category}>
@@ -219,19 +304,21 @@ export function MultiSelectField<T extends SelectOptionValue>({
               <SelectListOption disabled value="empty" label={noOptionsMessage} />
             )}
           </SelectFieldContentList>
-          <Button
-            className={styles.submitButton}
-            disabled={isSubmitDisabled || isLoading || disableApplyButton}
-            variant="primary"
-            size="medium"
-            onClick={() => handleSave(preValues)}
-            role="button"
-          >
-            {submitLabel}
-          </Button>
+          {!autoApply && (
+            <Button
+              className={styles.submitButton}
+              disabled={isSubmitDisabled || isLoading || disableApplyButton}
+              variant="primary"
+              size="medium"
+              onClick={() => handleSave(preValues)}
+              role="button"
+            >
+              {submitLabel}
+            </Button>
+          )}
         </SelectFieldContent>
       </Dropdown>
-      {errorMessage && <FieldFeedback message={errorMessage} variant="error" />}
+      {errorMessage && <FieldFeedback id={errorId} message={errorMessage} variant="error" />}
     </div>
   );
 }
