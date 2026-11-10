@@ -17,7 +17,13 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkManifest, discoverUpstreamComponents } from './components.manifest.mjs';
-import { extractFieldInputs, writeFieldInputs } from './extract-field-inputs.mjs';
+import {
+  builderDefaults,
+  extractDefinitionMetas,
+  extractFieldInputs,
+  writeBuilderDefaults,
+  writeFieldInputs,
+} from './extract-field-inputs.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const RUNTIME_DIR = path.join(ROOT, 'src/runtime');
@@ -97,12 +103,6 @@ const SOURCES = [
         why: 'colour assignments persist under a neutral key',
       },
       {
-        file: 'components/charts/shared/ChartCard/ChartCard.tsx',
-        from: '    onCustomDownload,\n    menuOptions,\n  } = props;',
-        to: "    onCustomDownload,\n    // Embeddable's builder supplies this default; standalone there is no builder.\n    menuOptions = ['csv', 'xlsx', 'png', 'maximize'],\n  } = props;",
-        why: "the menu is opt-in upstream and the default lives in the builder input (component.inputs.constants.ts); keep in step with it",
-      },
-      {
         file: 'components/charts/scatter/ScatterChartPro/ScatterChartPro.utils.ts',
         from: "          value: {\n            display: 'auto',\n",
         to: '          value: {\n',
@@ -116,11 +116,14 @@ const SOURCES = [
       },
     ],
     // definition.ts files are excluded above, but the per-field options they
-    // declare (prefix, decimalPlaces, columnAggregation, …) are public API here.
+    // declare (prefix, decimalPlaces, columnAggregation, …) are public API
+    // here, and their input defaults become the components' defaults.
     afterExtract: async (srcRoot, errors) => {
       // Every upstream component must be exported or skipped in the manifest.
       errors.push(...checkManifest(discoverUpstreamComponents(walk(srcRoot))).map((e) => `remarkable-pro: ${e}`));
-      writeFieldInputs(await extractFieldInputs(srcRoot));
+      const metas = await extractDefinitionMetas(srcRoot);
+      writeFieldInputs(await extractFieldInputs(srcRoot, metas));
+      writeBuilderDefaults(builderDefaults(metas));
     },
   },
 ];

@@ -2,6 +2,8 @@ import GeneratedTableScrollable, {
   TableScrollableProProps,
 } from './generated/components/charts/tables/TableScrollable';
 import { HeightMode, LayoutContext } from './runtime/react';
+import { componentDefaults } from './componentDefaults.generated';
+import { withDefaults } from './withDefaults';
 
 export type { TableScrollableProState as TableScrollableState } from './generated/components/charts/tables/TableScrollable';
 export { TABLE_SCROLLABLE_SIZE } from './generated/components/charts/tables/TableScrollable/TableScrollable.utils';
@@ -21,9 +23,15 @@ export type TableScrollableProps = Omit<TableScrollableProProps, 'dataset'> & {
 // Upstream reads an Embeddable dataset prop purely as a "query changed" signal;
 // resetKey is that signal without the Embeddable shape. Serve pages of
 // TABLE_SCROLLABLE_SIZE rows: a shorter page means there is no more data.
+const DefaultedTableScrollable = withDefaults(
+  GeneratedTableScrollable,
+  componentDefaults.TableScrollable,
+  'TableScrollableBase',
+);
+
 export const TableScrollable = ({ resetKey, heightMode, ...props }: TableScrollableProps) => (
   <LayoutContext.Provider value={{ heightMode }}>
-    <GeneratedTableScrollable
+    <DefaultedTableScrollable
       {...props}
       dataset={{ embeddableId: '', datasetId: '', inputName: '', variableValues: { resetKey } }}
     />

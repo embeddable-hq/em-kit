@@ -51,29 +51,33 @@ import {
 import { ThemeContext } from './runtime/react';
 import { Theme } from './generated/theme/theme.types';
 import { ChartCard } from './generated/components/charts/shared/ChartCard/ChartCard';
-import BarChartDefaultPro from './generated/components/charts/bars/BarChartDefaultPro';
-import BarChartDefaultHorizontalPro from './generated/components/charts/bars/BarChartDefaultHorizontalPro';
-import BarChartGroupedPro from './generated/components/charts/bars/BarChartGroupedPro';
-import BarChartGroupedHorizontalPro from './generated/components/charts/bars/BarChartGroupedHorizontalPro';
-import BarChartStackedPro from './generated/components/charts/bars/BarChartStackedPro';
-import BarChartStackedHorizontalPro from './generated/components/charts/bars/BarChartStackedHorizontalPro';
-import BarLineChartPro from './generated/components/charts/combo/BarLineChartPro';
-import LineChartDefaultPro from './generated/components/charts/lines/LineChartDefaultPro';
-import LineChartGroupedPro from './generated/components/charts/lines/LineChartGroupedPro';
-import AreaChartPro from './generated/components/charts/lines/AreaChartPro';
-import PieChartPro from './generated/components/charts/pies/PieChartPro';
-import DonutChartPro from './generated/components/charts/pies/DonutChartPro';
-import DonutLabelChartPro from './generated/components/charts/pies/DonutLabelChartPro';
-import LineChartComparisonDefaultPro from './generated/components/charts/lines/LineChartComparisonDefaultPro';
-import LineChartWithKpiTabsPro from './generated/components/charts/lines/LineChartWithKpiTabsPro';
-import LineChartComparisonWithKpiTabsPro from './generated/components/charts/lines/LineChartComparisonWithKpiTabsPro';
-import ScatterChartPro from './generated/components/charts/scatter/ScatterChartPro';
-import BubbleChartPro from './generated/components/charts/scatter/BubbleChartPro';
-import KpiChartNumberPro from './generated/components/charts/kpis/KpiChartNumberPro';
-import KpiChartNumberComparisonPro from './generated/components/charts/kpis/KpiChartNumberComparisonPro';
-import HeatMapPro from './generated/components/charts/tables/HeatMapPro';
-import PivotTablePro from './generated/components/charts/tables/PivotTablePro';
-import TableChartPaginated from './generated/components/charts/tables/TableChartPaginated';
+// The exported components, with their builder defaults, under the upstream
+// names the renderer was written against.
+import {
+  BarChart as BarChartDefaultPro,
+  BarChartHorizontal as BarChartDefaultHorizontalPro,
+  BarChartGrouped as BarChartGroupedPro,
+  BarChartGroupedHorizontal as BarChartGroupedHorizontalPro,
+  BarChartStacked as BarChartStackedPro,
+  BarChartStackedHorizontal as BarChartStackedHorizontalPro,
+  BarLineChart as BarLineChartPro,
+  LineChart as LineChartDefaultPro,
+  LineChartGrouped as LineChartGroupedPro,
+  AreaChart as AreaChartPro,
+  PieChart as PieChartPro,
+  DonutChart as DonutChartPro,
+  DonutLabelChart as DonutLabelChartPro,
+  LineChartComparison as LineChartComparisonDefaultPro,
+  LineChartWithKpiTabs as LineChartWithKpiTabsPro,
+  LineChartComparisonWithKpiTabs as LineChartComparisonWithKpiTabsPro,
+  ScatterChart as ScatterChartPro,
+  BubbleChart as BubbleChartPro,
+  KpiNumber as KpiChartNumberPro,
+  KpiNumberComparison as KpiChartNumberComparisonPro,
+  HeatMap as HeatMapPro,
+  PivotTable as PivotTablePro,
+  TablePaginated as TableChartPaginated,
+} from './components.generated';
 
 dayjs.extend(utc);
 dayjs.extend(isoWeek);

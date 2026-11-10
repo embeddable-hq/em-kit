@@ -8,7 +8,7 @@ Work top to bottom. Each phase can ship on its own. Estimates assume one person.
 
 ## Decisions needed first (blocking)
 
-1. **Licence and permission.** Embeddable has to agree to publish Remarkable-derived code under an open-source licence (MIT is the current placeholder). Everything else depends on this.
+1. ~~**Licence.**~~ Decided 2026-11-10: **MIT.** The upstream remarkable-pro and remarkable-ui repos are already public under MIT, so a no-resale licence on this package couldn't stop anyone reselling the same components taken from upstream. It would only add friction for users.
 2. **Public name.** Gates npm, the GitHub repo, the shadcn namespace and the domain. Mason UI is a candidate. Avoid "remarkable" because of the reMarkable trademark.
 3. **Embeddable's place in the brand.** Options: none, a "by Embeddable" footer, or an "upgrade to Embeddable for hosted data" path.
 4. **Scope v1.** Charts and tables only, or also the standalone-safe editors (date range pickers, granularity and comparison-period selects)? Bklit has no editors, so these pair well with the charts.
@@ -28,8 +28,16 @@ Before this phase, `sync.mjs` copied every upstream component, but `src/index.ts
 - [x] **Latest upstream synced** (remarkable-pro `a362e0ac`, remarkable-ui `0474f921`): colour assignment, time-zone handling, "Other" bucketing, PNG card export, maximize, TableScrollable auto height. Shim additions: `HEIGHT_MODES`/`useEmbeddableLayout` (exposed as `TableScrollable`'s `heightMode` prop) and `LoadDataRequest`.
 - [x] **`FunnelChart` exported**, with a gallery entry and funnel-stage data in all three sample datasets (translated de/fr).
 - [x] **CI:** `ci.yml` (types, tests, generated exports) and `sync-upstream.yml` (weekly sync PR). Both are untested until the repo is on GitHub.
-- [ ] **Upstream fix loop:** send the queued fixes upstream (CSS variable scoping, the `hideMenu` header split, `TableChartPaginated`'s module-time `getStyleNumber`, and the `TableScrollable` StrictMode duplicate page, which needs rechecking after this sync). Each fix removes a `contentRewrites` entry.
-- [ ] **Builder defaults:** the sync found upstream's export menu is now opt-in, with its default set only in Embeddable's builder input, so standalone users silently lost CSV/PNG export (patched with a content rewrite). Other inputs may have the same gap. Extract every input's `defaultValue` from the definitions (`extract-field-inputs.mjs` already bundles them) and fail the sync where a component's own default differs.
+- [ ] **Upstream fix loop:** open PRs on embeddable-hq/remarkable-pro and remarkable-ui (all rechecked against the 2026-11-10 sync, all still present). Each fix removes a workaround here.
+  1. CSS variables are read from `document.documentElement` (`styles.utils.ts` `getStyleValue`), so a nested `ChartsProvider` can't restyle chart.js colours/fonts. (remarkable-ui)
+  2. `hideMenu` hides the whole card header, title included. (remarkable-pro `ChartCard.tsx`)
+  3. `TableScrollable` shows its first page twice under React StrictMode in dev (confirmed: 112 rows, 62 unique). (remarkable-pro)
+  4. `TableChartPaginated` reads row/header heights at import time, so theme overrides are ignored. It no longer throws without a DOM. (remarkable-pro)
+  5. KPI change percentages use `toFixed`, so German shows `+7.4%` instead of `+7,4%`. (remarkable-ui `KpiChartChange.tsx`)
+  6. Scatter value and point labels are forced on, ignoring `showValueLabels`/`showPointLabels` (content rewrite here). (remarkable-pro)
+  7. A host page's global `h2` font-size pins the KPI number and defeats auto-sizing (content rewrite here). (remarkable-ui)
+  8. Not rechecked: y-axis labels clip their first character when a locale widens numbers (French `$7 000`).
+- [x] **Builder defaults:** the sync found upstream's export menu is now opt-in, with its default set only in Embeddable's builder input, so standalone users silently lost CSV/PNG export. Fixed generally: the sync records every input's `defaultValue` from the definitions, and each exported component applies the ones that are props (`withDefaults`, type-checked with `satisfies`). Standalone charts now match Embeddable's out-of-the-box look, including value labels on bar, line, pie and scatter charts.
 - [ ] **Editors (if in scope):** extend the shim so the standalone-safe editors sync. The Embeddable-bound pickers (dimension/measure selects, filter builder) stay excluded.
 
 ## Phase 2: A real npm package (~3 days)

@@ -9,6 +9,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 import { createGenerator } from 'ts-json-schema-generator';
+import { components } from './components.manifest.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const INDEX = path.join(ROOT, 'src/index.ts');
@@ -41,14 +42,12 @@ for (const exported of exports) {
   if (symbol.flags & ts.SymbolFlags.Alias) symbol = checker.getAliasedSymbol(symbol);
   const type = checker.getDeclaredTypeOfSymbol(symbol);
 
-  // Charts live in a folder named after the upstream component, which is how
-  // the field options are keyed.
-  const component = exports.find((e) => e.name === componentName);
-  const componentSymbol = component.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(component) : component;
-  const declarationFile = componentSymbol.declarations?.[0]?.getSourceFile().fileName ?? '';
-  const isChart = declarationFile.includes('/src/generated/components/charts/');
+  // Field options are keyed by the upstream component's folder name, which the
+  // manifest records for every published chart.
+  const manifestEntry = components.find((c) => c.name === componentName);
+  const isChart = manifestEntry?.path.startsWith('components/charts/');
   if (isChart) {
-    const upstream = path.basename(path.dirname(declarationFile));
+    const upstream = manifestEntry.path.split('/').pop();
     if (fieldInputs[upstream]) fieldOptions[componentName] = fieldInputs[upstream].fields;
     else missingFieldOptions.push(`${componentName} (${upstream})`);
   }

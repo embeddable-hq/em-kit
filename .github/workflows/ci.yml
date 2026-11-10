@@ -20,8 +20,8 @@ jobs:
 
       - run: npm ci
 
-      # The generated exports must match the manifest.
-      - run: npm run exports && git diff --exit-code -- src/components.generated.ts
+      # The generated exports and defaults must match the manifest and the synced tree.
+      - run: npm run exports && git diff --exit-code -- src/components.generated.ts src/componentDefaults.generated.ts
 
       - run: npm run types:check
 

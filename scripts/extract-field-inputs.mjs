@@ -85,7 +85,9 @@ const describeSubInput = (sub) => {
   return out;
 };
 
-export const extractFieldInputs = async (proSrcRoot) => {
+// Bundles and evaluates every chart's definition.ts; returns each one's
+// directory (relative to src/, as the component manifest spells it) and meta.
+export const extractDefinitionMetas = async (proSrcRoot) => {
   const chartsDir = path.join(proSrcRoot, 'components/charts');
   const definitions = walk(chartsDir).filter((f) => /(^|[\\/])definition\.ts$/.test(f)).sort();
 
@@ -111,12 +113,20 @@ export const extractFieldInputs = async (proSrcRoot) => {
       plugins: [stubPlugin(importedEmbeddableNames(walk(proSrcRoot).filter((f) => /\.tsx?$/.test(f))))],
     });
     const mod = await import(pathToFileURL(outfile).href);
-
-    const result = {};
-    definitions.forEach((file, i) => {
+    return definitions.map((file, i) => {
       const exported = Object.values(mod[`d${i}`]).find((v) => v && typeof v === 'object' && v.meta);
       if (!exported) throw new Error(`No exported definition with meta in ${file}`);
-      const { meta } = exported;
+      const dir = path.relative(proSrcRoot, path.dirname(file)).split(path.sep).join('/');
+      return { path: dir, meta: exported.meta };
+    });
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+};
+
+export const extractFieldInputs = async (proSrcRoot, metas) => {
+  const result = {};
+  for (const { meta } of metas ?? (await extractDefinitionMetas(proSrcRoot))) {
       const fields = {};
       for (const input of meta.inputs ?? []) {
         if (!FIELD_TYPES.has(input.type)) continue;
@@ -129,12 +139,31 @@ export const extractFieldInputs = async (proSrcRoot) => {
         };
       }
       result[meta.name] = { label: meta.label, fields };
-    });
-    return result;
-  } finally {
-    fs.rmSync(tmp, { recursive: true, force: true });
   }
+  return result;
 };
+
+export const BUILDER_DEFAULTS_OUT = path.join(ROOT, 'src/builderDefaults.generated.json');
+
+// Each chart's builder input defaults, keyed by its directory: what Embeddable
+// passes for every input the author leaves unset. Fields and the dataset are
+// data, not settings, so they are left out. scripts/exports.mjs keeps the
+// ones that are props and applies them.
+export const builderDefaults = (metas) => {
+  const result = {};
+  for (const { path: dir, meta } of metas) {
+    const defaults = {};
+    for (const input of meta.inputs ?? []) {
+      if (input.defaultValue === undefined || FIELD_TYPES.has(input.type) || input.type === 'dataset') continue;
+      defaults[input.name] = input.defaultValue;
+    }
+    result[dir] = defaults;
+  }
+  return result;
+};
+
+export const writeBuilderDefaults = (data, outFile = BUILDER_DEFAULTS_OUT) =>
+  fs.writeFileSync(outFile, `${JSON.stringify(data, null, 2)}\n`);
 
 export const FIELD_INPUTS_TYPES_OUT = path.join(ROOT, 'src/fieldInputs.generated.ts');
 

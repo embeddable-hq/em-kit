@@ -66,8 +66,7 @@ export const ChartCard = React.forwardRef<HTMLDivElement, ChartCardProps>((props
     dimensionsAndMeasures = [],
     hideMenu = false,
     onCustomDownload,
-    // Embeddable's builder supplies this default; standalone there is no builder.
-    menuOptions = ['csv', 'xlsx', 'png', 'maximize'],
+    menuOptions,
   } = props;
 
   const chartRef = useRef<HTMLDivElement>(null);

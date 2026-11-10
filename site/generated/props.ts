@@ -14,6 +14,109 @@ export type FieldOptionDoc = {
 export type FieldDoc = { kind: string; label: string; array?: boolean; required?: boolean; inputs: FieldOptionDoc[] };
 
 export const componentFieldOptions: Record<string, Record<string, FieldDoc>> = {
+  "TableScrollable": {
+    "dimensionsAndMeasures": {
+      "kind": "dimensionOrMeasure",
+      "label": "Columns",
+      "array": true,
+      "inputs": [
+        {
+          "name": "prefix",
+          "label": "Prefix",
+          "type": "string"
+        },
+        {
+          "name": "suffix",
+          "label": "Suffix",
+          "type": "string"
+        },
+        {
+          "name": "displayName",
+          "label": "Display name",
+          "type": "string"
+        },
+        {
+          "name": "maxCharacters",
+          "label": "Maximum characters",
+          "type": "number",
+          "supportedTypes": [
+            "string"
+          ]
+        },
+        {
+          "name": "decimalPlaces",
+          "label": "Decimal places",
+          "type": "number",
+          "supportedTypes": [
+            "number"
+          ]
+        },
+        {
+          "name": "currency",
+          "label": "Currency",
+          "type": "string",
+          "description": "e.g. EUR",
+          "supportedTypes": [
+            "number"
+          ]
+        },
+        {
+          "name": "abbreviateLargeNumber",
+          "label": "Abbreviate large number",
+          "type": "boolean",
+          "supportedTypes": [
+            "number"
+          ]
+        },
+        {
+          "name": "width",
+          "label": "Width",
+          "type": "number",
+          "description": "You can input a number in pixels e.g. 400"
+        },
+        {
+          "name": "align",
+          "label": "Align",
+          "type": "align",
+          "options": [
+            "left",
+            "center",
+            "right"
+          ]
+        },
+        {
+          "name": "displayFormat",
+          "label": "Display format",
+          "type": "DisplayFormat",
+          "options": [
+            "Markdown",
+            "Json"
+          ]
+        },
+        {
+          "name": "tableCellStyle",
+          "label": "Table cell style",
+          "type": "tableCellStyle",
+          "options": [
+            "Bold",
+            "Italic",
+            "Positive vs Negative"
+          ]
+        }
+      ]
+    },
+    "clickDimension": {
+      "kind": "dimension",
+      "label": "Dimension to set on click",
+      "required": false,
+      "inputs": []
+    },
+    "sortColumn": {
+      "kind": "dimensionOrMeasure",
+      "label": "Default sort column",
+      "inputs": []
+    }
+  },
   "BarChart": {
     "measures": {
       "kind": "measure",

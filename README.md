@@ -64,10 +64,12 @@ CI: `.github/workflows/ci.yml` checks types, tests and generated exports on ever
 | `src/build/` | hand-written | `charts-ui/build`: the toolkit for custom charts (theme and i18n, `getThemeFormatter`, `useFillGaps`, colours and tokens, `ChartCard`, the Chart.js primitives and the Pro data/option builders), under the upstream names. Curated: nothing is re-exported wholesale. Worked example live on the docs site at `#/docs` → "Build your own chart". |
 | `src/fieldInputs.ts`, `src/fieldInputs.generated.*` | hand-written + generated | `FieldInputs`: every per-field option a chart reads from a field's `inputs`, extracted from remarkable-pro's chart definitions by `scripts/extract-field-inputs.mjs` during sync. |
 | `scripts/components.manifest.mjs` | hand-written | Every upstream component and its fate: exported (under which name), wrapped, or skipped (and why). |
-| `src/components.generated.ts` | `scripts/exports.mjs` | One export per manifest component under its standalone name: the upstream `Pro` suffix is dropped (`BarChartDefaultPro` → `BarChart`, `KpiChartNumberPro` → `KpiNumber`, …). |
+| `src/components.generated.ts`, `src/componentDefaults.generated.ts` | `scripts/exports.mjs` | One export per manifest component under its standalone name, with its Embeddable builder defaults applied (see below): the upstream `Pro` suffix is dropped (`BarChartDefaultPro` → `BarChart`, `KpiChartNumberPro` → `KpiNumber`, …). |
 | `src/index.ts` | hand-written | Public API (v1: charts, KPIs, tables): the generated component exports plus providers, helpers, wrappers and the AI spec. |
 
-The sync drops `*.emb.ts`, `definition.ts`, `*.loadData.utils.ts`, builder input constants, preview mocks, `src/editors`, filter builders, dimension/measure pickers, and tests. `*.type.emb.ts` files are kept and renamed `*.type.ts`, because chart code imports their option constants. Declared content rewrites fail the sync when they stop matching upstream. Currently: the colour-cache `sessionStorage` key `embeddable` → `charts-ui`; the chart card's default menu options (opt-in upstream, defaulted by Embeddable's builder); two upstream bug fixes awaiting an upstream release (scatter labels forced on in remarkable-pro, the KPI number's font size in remarkable-ui). After a sync, no `@embeddable.com` import may remain anywhere, in either tree.
+The sync drops `*.emb.ts`, `definition.ts`, `*.loadData.utils.ts`, builder input constants, preview mocks, `src/editors`, filter builders, dimension/measure pickers, and tests. `*.type.emb.ts` files are kept and renamed `*.type.ts`, because chart code imports their option constants. Declared content rewrites fail the sync when they stop matching upstream. Currently: the colour-cache `sessionStorage` key `embeddable` → `charts-ui`; two upstream bug fixes awaiting an upstream release (scatter labels forced on in remarkable-pro, the KPI number's font size in remarkable-ui). After a sync, no `@embeddable.com` import may remain anywhere, in either tree.
+
+**Builder defaults.** Embeddable's builder fills every input an author leaves unset with the default declared in the component's `definition.ts`, so upstream components can rely on it (the export menu, for one, only appears when `menuOptions` is passed). The sync records those defaults (`src/builderDefaults.generated.json`), `scripts/exports.mjs` keeps the ones that are props and type-checks them (`src/componentDefaults.generated.ts`), and every exported component applies them through `src/withDefaults.tsx`. A prop passed as `undefined` gets the default too. Charts therefore look as they do in Embeddable out of the box: value labels on for bars, lines, pies and scatter, export menu with CSV, XLSX, PNG and Maximize.
 
 ## Data contract
 
@@ -77,6 +79,10 @@ The sync drops `*.emb.ts`, `definition.ts`, `*.loadData.utils.ts`, builder input
 - Time values are ISO strings without a zone: `YYYY-MM-DDTHH:mm:ss.sss`. For a time dimension with a granularity, supply the value under both `name` and `name.granularity` (line charts read the first, grouping charts the second; Cube returns both).
 - Tables are controlled: pass `state`/`setState` from `useState`, then slice and sort your data from `state.page`, `state.pageSize`, `state.sort`.
 - `TableScrollable` (default `heightMode: 'fixed'`) accumulates pages as the user scrolls: serve pages of `TABLE_SCROLLABLE_SIZE` rows (fewer means no more data), and change `resetKey` whenever the query behind the rows changes so it resets to the first page. With `heightMode: 'auto'` the card grows to fit: pass every row at once (up to your own cap) with `results.total`, and the table says when rows were left out.
+
+## Licence
+
+MIT, like the upstream remarkable-pro and remarkable-ui repositories it is built from (`LICENSE`, copyright Embeddable.com).
 
 ## Todo
 

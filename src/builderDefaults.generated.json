@@ -1,0 +1,329 @@
+{
+  "components/charts/bars/BarChartDefaultHorizontalPro": {
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "showLogarithmicScale": false,
+    "reverseYAxis": false,
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/bars/BarChartDefaultPro": {
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/bars/BarChartGroupedHorizontalPro": {
+    "maxResults": 1000,
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": false,
+    "showLogarithmicScale": false,
+    "reverseYAxis": false,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/bars/BarChartGroupedPro": {
+    "maxResults": 1000,
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": false,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/bars/BarChartStackedHorizontalPro": {
+    "maxResults": 1000,
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": false,
+    "showLogarithmicScale": false,
+    "reverseYAxis": false,
+    "showTotalLabels": false,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/bars/BarChartStackedPro": {
+    "maxResults": 1000,
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": false,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "showTotalLabels": false,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/combo/BarLineChartPro": {
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "showValueLabelsLine": true,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/funnel/FunnelChartPro": {
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "showSectionLabels": false,
+    "displayPercentages": false,
+    "shrinkAnchor": "middle",
+    "shrinkFraction": 1,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/kpis/KpiChartNumberComparisonPro": {
+    "displayChangeAsPercentage": false,
+    "percentageDecimalPlaces": 1,
+    "reversePositiveNegativeColors": false,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/kpis/KpiChartNumberPro": {
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/lines/AreaChartPro": {
+    "maxResults": 1000,
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/lines/LineChartComparisonDefaultPro": {
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "showComparisonAxis": true,
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/lines/LineChartComparisonWithKpiTabsPro": {
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "showComparisonAxis": true,
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/lines/LineChartDefaultPro": {
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/lines/LineChartGroupedPro": {
+    "maxResults": 1000,
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/lines/LineChartWithKpiTabsPro": {
+    "showLegend": true,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/pies/DonutChartPro": {
+    "showLegend": true,
+    "maxLegendItems": 10,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/pies/DonutLabelChartPro": {
+    "showLegend": true,
+    "maxLegendItems": 10,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/pies/PieChartPro": {
+    "showLegend": true,
+    "maxLegendItems": 10,
+    "showTooltips": true,
+    "showValueLabels": true,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/scatter/BubbleChartPro": {
+    "bubbleRadiusMin": 3,
+    "bubbleRadiusMax": 20,
+    "showLegend": true,
+    "showTooltips": true,
+    "showPointLabels": false,
+    "showValueLabels": true,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/scatter/ScatterChartPro": {
+    "showLegend": true,
+    "showTooltips": true,
+    "showPointLabels": false,
+    "showValueLabels": true,
+    "showLogarithmicScale": false,
+    "reverseXAxis": false,
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/tables/HeatMapPro": {
+    "showValues": true,
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/tables/PivotTablePro": {
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/tables/TableChartPaginated": {
+    "showIndex": true,
+    "maxResults": 1000,
+    "menuOptions": [
+      "csv",
+      "xlsx",
+      "png",
+      "maximize"
+    ]
+  },
+  "components/charts/tables/TableScrollable": {
+    "showIndex": true,
+    "maxResults": 1000,
+    "autoHeightMaxResults": 100,
+    "menuOptions": [
+      "csv",
+      "xlsx"
+    ]
+  }
+}
