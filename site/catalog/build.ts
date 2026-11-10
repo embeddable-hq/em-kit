@@ -1,4 +1,4 @@
-import type { DataResponse, Granularity } from '../../src';
+import type { DataResponse, FieldInputs, Granularity } from '../../src';
 import { BRAND } from '../config';
 import { Dataset, datasets, DatasetId, FieldSpec, Row } from './datasets';
 import {
@@ -8,17 +8,27 @@ import {
   CodeRef,
   DataState,
   FieldSlot,
+  getVariant,
   isCodeRef,
   TableState,
+  titleId,
+  withInputs,
 } from './registry';
-import { getThemePreset, LanguageId, languages, ThemeId } from './themes';
+import { getThemePreset, LanguageId, languages, ThemeId, themeStyles } from './themes';
 import { chartTitleKey, snippetTranslations } from './translations';
 
 export type ChartSettings = {
+  // A preset from the entry's `variants`, layered over its props.
+  variantId?: string;
   datasetId: DatasetId;
   dataState: DataState;
   toggles: Record<string, boolean>;
-  title?: string;
+  // Prop values set in the playground; overlaid onto the registry props, so
+  // the preview and the generated code pick them up together.
+  overrides?: Record<string, unknown>;
+  // Field options set in the playground, by field prop (e.g. measures): merged
+  // into the inputs of every field that prop holds.
+  fieldOverrides?: Record<string, FieldInputs>;
   themeId: ThemeId;
   languageId: LanguageId;
 };
@@ -44,6 +54,9 @@ const resultsCode = (varName: string, state: DataState) => {
   return `results(${varName})`;
 };
 
+const isField = (value: unknown) =>
+  typeof value === 'object' && value !== null && '__type__' in value && 'name' in value;
+
 const unwrap = (value: unknown): unknown => {
   if (isCodeRef(value)) return value.value;
   if (Array.isArray(value)) return value.map(unwrap);
@@ -68,13 +81,11 @@ export const buildChart = (entry: ChartEntry, settings: ChartSettings, runtime: 
   const rowVars = new Map<string, Row[]>();
   const hoisted: string[] = [];
 
-  const field = (slot: FieldSlot): CodeRef => {
-    usedFields.add(slot);
-    return {
-      __code: ds.specs[slot].varName,
-      value: slot === 'time' ? ds.time(runtime.granularity) : ds[slot],
-    };
-  };
+  const field = (slot: FieldSlot): CodeRef => ({
+    __code: ds.specs[slot].varName,
+    value: slot === 'time' ? ds.time(runtime.granularity) : ds[slot],
+    slot,
+  });
 
   const rows = (varName: string, data: Row[]): CodeRef => {
     if (settings.dataState === 'ready') rowVars.set(varName, data);
@@ -90,6 +101,7 @@ export const buildChart = (entry: ChartEntry, settings: ChartSettings, runtime: 
     (runtime.tableState.page + 1) * pageSize,
   );
 
+  const variant = getVariant(entry, settings.variantId);
   const ctx: BuildContext = {
     ds,
     field,
@@ -113,16 +125,34 @@ export const buildChart = (entry: ChartEntry, settings: ChartSettings, runtime: 
       },
     },
     toggles: settings.toggles,
-    title: settings.title ?? chartTitleKey(ds, entry.id, entry.defaultTitle),
+    title: chartTitleKey(ds, titleId(entry, variant), variant?.title ?? entry.defaultTitle),
   };
 
-  const rawProps = entry.props(ctx);
-  for (const value of Object.values(rawProps)) {
-    if (isCodeRef(value) && value.declare) hoisted.push(value.declare);
+  const rawProps = { ...entry.props(ctx), ...variant?.props(ctx) };
+  for (const [key, value] of Object.entries(settings.overrides ?? {})) {
+    if (value !== undefined) rawProps[key] = value;
+  }
+  for (const [key, inputs] of Object.entries(settings.fieldOverrides ?? {})) {
+    const set = Object.fromEntries(Object.entries(inputs).filter(([, v]) => v !== undefined)) as FieldInputs;
+    if (!Object.keys(set).length || rawProps[key] === undefined) continue;
+    const apply = (v: unknown) => (isCodeRef(v) && isField(v.value) ? withInputs(v, set) : v);
+    const current = rawProps[key];
+    rawProps[key] = Array.isArray(current) ? current.map(apply) : apply(current);
+  }
+  // Fields and declarations come from the final props, so a field the
+  // variant replaced isn't declared in the snippet.
+  const refs = Object.values(rawProps).flatMap((v) => (Array.isArray(v) ? v : [v])).filter(isCodeRef);
+  for (const ref of refs) {
+    if (ref.slot) usedFields.add(ref.slot);
+    if (ref.declare && !hoisted.includes(ref.declare)) hoisted.push(ref.declare);
   }
 
   const props = Object.fromEntries(Object.entries(rawProps).map(([k, v]) => [k, unwrap(v)]));
-  if (entry.usesTableState && settings.dataState === 'ready') rowVars.set('pageRows', pageRows);
+  // Entries that build their own page rows (e.g. the scrollable table's daily
+  // pages) have already registered 'pageRows'; don't clobber them.
+  if (entry.usesTableState && settings.dataState === 'ready' && !rowVars.has('pageRows')) {
+    rowVars.set('pageRows', pageRows);
+  }
 
   return {
     props,
@@ -200,8 +230,11 @@ const printCode = ({ entry, ds, settings, rawProps, usedFields, rowVars, hoisted
   const usesTable = Boolean(entry.usesTableState);
 
   const helpers = ['ChartsProvider', entry.exportName as string];
-  if ([...usedFields].some((s) => s === 'category' || s === 'group' || s === 'time')) helpers.push('dimension');
-  if ([...usedFields].some((s) => s === 'primary' || s === 'secondary' || s === 'size')) helpers.push('measure');
+  const declares = (fn: string) => hoisted.some((h) => h.includes(`${fn}(`));
+  if ([...usedFields].some((s) => s === 'category' || s === 'group' || s === 'time') || declares('dimension'))
+    helpers.push('dimension');
+  if ([...usedFields].some((s) => s === 'primary' || s === 'secondary' || s === 'size') || declares('measure'))
+    helpers.push('measure');
   if (settings.dataState === 'ready' || settings.dataState === 'empty') helpers.push('results');
 
   const lines: string[] = [];
@@ -224,9 +257,10 @@ const printCode = ({ entry, ds, settings, rawProps, usedFields, rowVars, hoisted
   if (hasTheme) {
     lines.push('');
     lines.push('const theme = {');
-    if (Object.keys(preset.styles).length) {
+    const styles = themeStyles(preset);
+    if (Object.keys(styles).length) {
       lines.push('  styles: {');
-      Object.entries(preset.styles).forEach(([k, v]) => lines.push(`    '${k}': '${v}',`));
+      Object.entries(styles).forEach(([k, v]) => lines.push(`    '${k}': '${v}',`));
       lines.push('  },');
     }
     if (language.id !== 'en') {
@@ -236,7 +270,7 @@ const printCode = ({ entry, ds, settings, rawProps, usedFields, rowVars, hoisted
           | 'measure'
           | 'dimension',
       }));
-      const content = snippetTranslations(ds, entry.id, fieldNames, language.id);
+      const content = snippetTranslations(ds, titleId(entry, getVariant(entry, settings.variantId)), fieldNames, language.id);
       lines.push('  i18n: {');
       lines.push(`    language: '${language.id}',`);
       if (content) {
@@ -274,8 +308,13 @@ const printCode = ({ entry, ds, settings, rawProps, usedFields, rowVars, hoisted
   }
   if (usesTable) {
     lines.push(`  const [state, setState] = useState({ page: 0, isLoadingDownloadData: false });`);
-    lines.push('  // Your data hook: fetch one sorted page. pageSize is measured from the available height.');
-    lines.push('  const { pageRows, total } = usePagedRows({ page: state.page, pageSize: state.pageSize, sort: state.sort });');
+    if (entry.exportName === 'TableScrollable') {
+      lines.push('  // Your data hook: serve pages of TABLE_SCROLLABLE_SIZE rows; the table appends each page as the user scrolls.');
+      lines.push('  const { pageRows } = usePagedRows({ page: state.page, sort: state.sort });');
+    } else {
+      lines.push('  // Your data hook: fetch one sorted page. pageSize is measured from the available height.');
+      lines.push('  const { pageRows, total } = usePagedRows({ page: state.page, pageSize: state.pageSize, sort: state.sort });');
+    }
   }
 
   lines.push('  return (');

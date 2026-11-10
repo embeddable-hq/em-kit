@@ -3,7 +3,7 @@ import { Theme } from '../../../../theme/theme.types';
 import { i18nSetup } from '../../../../theme/i18n/i18n';
 import { ChartCard, asChartCardHeaderProps } from '../../shared/ChartCard/ChartCard';
 import { resolveI18nProps } from '../../../component.utils';
-import { BarChart } from '@embeddable.com/remarkable-ui';
+import { BarChart } from '../../../../../generated-ui/index';
 import { getBarStackedChartProData, getBarStackedChartProOptions } from '../bars.utils';
 import { mergician } from 'mergician';
 import { Dimension } from '../../../../../runtime/core';

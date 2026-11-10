@@ -1,4 +1,4 @@
-import { Divider } from '@embeddable.com/remarkable-ui';
+import { Divider } from '../../../../generated-ui/index';
 import styles from './HorizontalDividerPro.module.css';
 
 type HorizontalDividerProProps = {

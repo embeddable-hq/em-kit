@@ -1,7 +1,13 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { CodeBlock } from '../components/CodeBlock';
+import { chartGuidance, renderChartTool } from '../../src/ai';
+import { aiParseCode, aiRenderCode, aiToolSetupCode } from '../catalog/aiSnippets';
 import { chartEntries, chartGroups } from '../catalog/registry';
+import { datasets } from '../catalog/datasets';
 import { BRAND } from '../config';
+import { TargetLineChart } from '../examples/TargetLineChart';
+import targetLineChartSource from '../examples/TargetLineChart.tsx?raw';
+import { useSiteSettings } from '../state';
 import { href } from '../router';
 
 const pkg = BRAND.packageName;
@@ -14,11 +20,55 @@ const sections = [
   { id: 'time', title: 'Time series' },
   { id: 'states', title: 'Loading, empty and errors' },
   { id: 'events', title: 'Events' },
+  { id: 'ai', title: 'Use with AI' },
   { id: 'tables', title: 'Tables' },
   { id: 'theming', title: 'Theming' },
   { id: 'localisation', title: 'Localisation' },
+  { id: 'build', title: 'Build your own chart' },
   { id: 'components', title: 'Components' },
 ];
+
+// The example's real source, with the site's relative imports shown as the
+// package paths a user would write.
+const targetLineChartCode = targetLineChartSource
+  .replace("from '../../src/build'", `from '${pkg}/build'`)
+  .replace("from '../../src'", `from '${pkg}'`);
+
+const buildToolkit: { need: string; use: string }[] = [
+  { need: 'Theme and translations', use: 'useChartsTheme, i18nSetup, resolveI18nProps' },
+  { need: 'Formatting every value', use: 'getThemeFormatter(theme).data(field, value)' },
+  { need: 'Time series', use: 'useFillGaps, getDimensionWithGranularity, getTimeRangeFromDimensionValue' },
+  { need: 'Comparison periods', use: 'defaultComparisonPeriodOptions, getComparisonPeriodDateRange' },
+  { need: 'Series colours', use: 'getChartColors, getDimensionMeasureColor' },
+  { need: 'Theme tokens', use: 'getStyle, getStyleNumber' },
+  { need: 'Card, states and menu', use: 'ChartCard, EditorCard' },
+  { need: 'Chart.js primitives', use: 'BarChart, LineChart, PieChart, DonutChart, KpiChart' },
+  { need: 'Data and option builders', use: 'getLineChartProData, getLineChartProOptions, getBarChartProData, …' },
+];
+
+// The worked example, live on the site's current dataset and theme.
+const TargetLineDemo = () => {
+  const { datasetId } = useSiteSettings();
+  const ds = datasets[datasetId];
+  const rows = ds.byTime('month');
+  const target = useMemo(() => {
+    const values = rows.map((r) => Number(r[ds.specs.primary.name] ?? 0));
+    const mean = values.reduce((a, b) => a + b, 0) / Math.max(values.length, 1);
+    return Math.round((mean * 1.05) / 1000) * 1000;
+  }, [rows, ds]);
+  return (
+    <div className="build-demo">
+      <TargetLineChart
+        title={`${ds.specs.primary.title} against target`}
+        description="Monthly, with a flat target line"
+        xAxis={ds.time('month')}
+        measure={ds.primary}
+        results={{ isLoading: false, data: rows }}
+        target={target}
+      />
+    </div>
+  );
+};
 
 const Section = ({ id, title, children }: { id: string; title: string; children: ReactNode }) => (
   <section id={id} className="doc-section">
@@ -27,7 +77,7 @@ const Section = ({ id, title, children }: { id: string; title: string; children:
   </section>
 );
 
-const quickStart = `import { ChartsProvider, LineChartDefaultPro, dimension, measure, results } from '${pkg}';
+const quickStart = `import { ChartsProvider, LineChart, dimension, measure, results } from '${pkg}';
 
 const month = dimension({ name: 'month', title: 'Month', type: 'time', granularity: 'month' });
 const revenue = measure({ name: 'revenue', title: 'Revenue', inputs: { prefix: '$' } });
@@ -38,7 +88,7 @@ export function RevenueTrend() {
   return (
     <ChartsProvider>
       <div style={{ height: 360 }}>
-        <LineChartDefaultPro
+        <LineChart
           title="Revenue"
           xAxis={month}
           measures={[revenue]}
@@ -104,7 +154,7 @@ const orderedAt = dimension({
   inputs: { showGranularityDropdown: true }, // shows the built-in picker
 });
 
-<LineChartDefaultPro
+<LineChart
   xAxis={orderedAt}
   measures={[sales]}
   results={results(rows)}
@@ -112,11 +162,11 @@ const orderedAt = dimension({
   setGranularity={setGranularity}   // called with the user's choice
 />`;
 
-const statesCode = `<BarChartDefaultPro results={{ isLoading: true }} … />            // skeleton
-<BarChartDefaultPro results={results([])} … />                    // empty state
-<BarChartDefaultPro results={{ isLoading: false, error: 'Query timed out' }} … />  // error`;
+const statesCode = `<BarChart results={{ isLoading: true }} … />            // skeleton
+<BarChart results={results([])} … />                    // empty state
+<BarChart results={{ isLoading: false, error: 'Query timed out' }} … />  // error`;
 
-const eventsCode = `<BarChartDefaultPro
+const eventsCode = `<BarChart
   dimension={region}
   measures={[revenue]}
   results={results(rows)}
@@ -127,7 +177,7 @@ const tableCode = `const [state, setState] = useState({ page: 0, isLoadingDownlo
 // state.pageSize is measured from the available height; state.sort is set by header clicks.
 const { rows, total } = useOrders({ page: state.page, pageSize: state.pageSize, sort: state.sort });
 
-<TableChartPaginatedPro
+<TablePaginated
   dimensionsAndMeasures={[customer, orders, revenue]}
   results={results(rows)}
   totalResults={{ isLoading: false, total }}
@@ -200,7 +250,7 @@ const translationsCode = `<ChartsProvider
     },
   }}
 >
-  <BarChartDefaultPro
+  <BarChart
     title="dashboard.revenue|Revenue by region"   // key|fallback
     dimension={region}
     measures={[revenue]}
@@ -218,8 +268,12 @@ const newLanguageCode = `<ChartsProvider
   }}
 >`;
 
+const schemaJson = JSON.stringify(renderChartTool.input_schema, null, 2);
+const kb = (text: string) => `${(text.length / 1024).toFixed(1)} KB`;
+
 export const Docs = () => {
   const [active, setActive] = useState(sections[0]!.id);
+  const [schemaOpen, setSchemaOpen] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -325,9 +379,12 @@ export const Docs = () => {
                   <code>inputs</code>
                 </td>
                 <td>
-                  Display options: <code>prefix</code>, <code>suffix</code>, <code>decimalPlaces</code>,{' '}
-                  <code>currency</code>, <code>abbreviateLargeNumber</code>, <code>displayName</code>,{' '}
-                  <code>displayNullAs</code>, <code>maxCharacters</code>.
+                  Per-field options. Formatting works everywhere: <code>prefix</code>, <code>suffix</code>,{' '}
+                  <code>decimalPlaces</code>, <code>currency</code>, <code>abbreviateLargeNumber</code>,{' '}
+                  <code>displayName</code>, <code>displayNullAs</code>, <code>maxCharacters</code>. Others are
+                  chart-specific, such as a line&rsquo;s <code>dashedLine</code> or a pivot table&rsquo;s{' '}
+                  <code>columnAggregation</code> totals. Each chart page lists the options it reads under{' '}
+                  <em>Field options</em>, and the <code>FieldInputs</code> type covers them all.
                 </td>
               </tr>
             </tbody>
@@ -374,6 +431,60 @@ export const Docs = () => {
           <CodeBlock code={eventsCode} />
         </Section>
 
+        <Section id="ai" title="Use with AI">
+          <p>
+            Every chart can also be driven by a model. <code>ChartFromSpec</code> renders a JSON{' '}
+            <code>ChartSpec</code> — the chart kind, the fields and the rows — with the same themed, localised
+            components, and it never trusts its input: dates, row keys and types are normalised, an unknown chart kind
+            falls back to a table, and a malformed spec renders the error card instead of crashing.
+          </p>
+          <h3>1. Give the model the tool</h3>
+          <p>
+            <code>renderChartTool</code> is the JSON Schema of every chart spec; <code>chartGuidance</code> is a short
+            system-prompt snippet that tells the model which chart to pick and how to shape the rows. Neither imports
+            React, so both are safe in a server route.
+          </p>
+          <CodeBlock code={aiToolSetupCode} />
+          <h3>2. Read the tool call</h3>
+          <p>
+            The model answers with a <code>render_chart</code> call whose input is the spec. Using OpenAI? Pass{' '}
+            <code>renderChartToolOpenAI</code> and <code>JSON.parse(toolCall.function.arguments)</code> instead.
+          </p>
+          <CodeBlock code={aiParseCode} />
+          <h3>3. Render it, and listen</h3>
+          <p>
+            Every click comes back as a serialisable <code>ChartIntent</code> that <code>intentToPrompt()</code> turns
+            into the next user message, so the chart becomes part of the conversation. <code>chrome</code> sets how much
+            card to draw: <code>card</code>, <code>plain</code> (no export menu) or <code>bare</code> (no header, no card
+            background, for a chat bubble).
+          </p>
+          <CodeBlock code={aiRenderCode} />
+          <h3>What the model sees</h3>
+          <p>
+            The tool definition and the guidance below are everything that goes to the model. The schema is generated
+            from the same types as <code>ChartSpec</code>, so it stays in step with the renderer. To validate a spec on
+            your server, import <code>chartSpecSchema</code> (the full union) from the same entry point.
+          </p>
+          <div className="callout">
+            <strong>
+              <code>{renderChartTool.name}</code>
+            </strong>{' '}
+            {renderChartTool.description}
+          </div>
+          <details className="ai-details" onToggle={(e) => setSchemaOpen(e.currentTarget.open)}>
+            <summary>
+              input_schema <span>pretty-printed, {kb(schemaJson)}. Click to expand</span>
+            </summary>
+            {schemaOpen && <CodeBlock code={schemaJson} label="renderChartTool.input_schema" maxHeight={440} />}
+          </details>
+          <CodeBlock code={chartGuidance} label={`chartGuidance · ${kb(chartGuidance)}`} plain maxHeight={360} />
+          <p>
+            <a className="text-link" href={href('/examples/ai-chat')}>
+              See it in the AI chat example, with a playground for your own specs →
+            </a>
+          </p>
+        </Section>
+
         <Section id="tables" title="Tables">
           <p>
             The paginated table is controlled: it tells you the page, page size and sort; you fetch that slice and pass
@@ -417,6 +528,62 @@ export const Docs = () => {
           <CodeBlock code={translationsCode} />
           <p>Add a whole new language by supplying the built-in keys alongside your own:</p>
           <CodeBlock code={newLanguageCode} />
+        </Section>
+
+        <Section id="build" title="Build your own chart">
+          <p>
+            When no component fits, build one from the same toolkit the built-in charts use, imported from{' '}
+            <code>{pkg}/build</code>. Your chart then formats values, picks colours, fills time gaps and shows loading,
+            empty and error states exactly like the rest, and follows the theme and language.
+          </p>
+          <table className="doc-table">
+            <thead>
+              <tr>
+                <th>For</th>
+                <th>Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              {buildToolkit.map((row) => (
+                <tr key={row.need}>
+                  <td>{row.need}</td>
+                  <td>
+                    <code>{row.use}</code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <h3>Example: a line with a target</h3>
+          <p>
+            The built-in line chart plus a dashed target line. Everything except the target dataset comes from the
+            toolkit, which is why it matches the gallery. Switch the theme or language in the gallery and come back:
+            it follows.
+          </p>
+          <TargetLineDemo />
+          <CodeBlock code={targetLineChartCode} />
+          <h3>Rules that keep it consistent</h3>
+          <ul className="doc-list">
+            <li>
+              Format every value with <code>getThemeFormatter(theme).data(field, value)</code>, so a field&rsquo;s
+              prefix, suffix, decimals and locale apply.
+            </li>
+            <li>
+              A <code>…Pro…Options</code> builder only formats values. Pass it as <code>options</code> to a primitive,
+              which merges it onto its themed base, or merge it onto <code>get…ChartOptions()</code> yourself; on its
+              own it has no legend or tooltip styling.
+            </li>
+            <li>
+              Colours that stand for data come from <code>getChartColors()</code> and{' '}
+              <code>getDimensionMeasureColor()</code>, so a value keeps its colour across charts. Everything else
+              (text, lines, accents) reads a theme token with <code>getStyle()</code>, called during render so it
+              follows theme changes.
+            </li>
+            <li>
+              Wrap the chart in <code>ChartCard</code> and pass it the filled <code>results</code>: it shows the
+              skeleton, empty and error states and the download menu for you.
+            </li>
+          </ul>
         </Section>
 
         <Section id="components" title="Components">

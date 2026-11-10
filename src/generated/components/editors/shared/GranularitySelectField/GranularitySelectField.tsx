@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useTheme } from '../../../../../runtime/react';
-import { SingleSelectField, SingleSelectFieldProps } from '@embeddable.com/remarkable-ui';
+import { SingleSelectField, SingleSelectFieldProps } from '../../../../../generated-ui/index';
 import { Granularity, TimeRange } from '../../../../../runtime/core';
 import { Theme } from '../../../../theme/theme.types';
 import { i18nSetup } from '../../../../theme/i18n/i18n';

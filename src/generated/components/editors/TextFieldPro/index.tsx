@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { TextField, useDebounce } from '@embeddable.com/remarkable-ui';
+import { TextField, useDebounce } from '../../../../generated-ui/index';
 import { EditorCard, EditorCardHeaderProps } from '../shared/EditorCard/EditorCard';
 import { resolveI18nProps } from '../../component.utils';
 import { Theme } from '../../../theme/theme.types';

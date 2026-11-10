@@ -1,0 +1,73 @@
+.buttonIcon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  justify-content: center;
+  border-radius: var(--em-buttonicon-border-radius, 624.9375rem);
+  border: var(--em-buttonicon-border-width, 0rem) solid;
+}
+
+.buttonIcon.small {
+  height: var(--em-buttonicon-height--small, 2rem);
+  width: var(--em-buttonicon-width--small, 2rem);
+}
+
+.buttonIcon.medium {
+  height: var(--em-buttonicon-height--medium, 2.5rem);
+  width: var(--em-buttonicon-width--medium, 2.5rem);
+}
+
+.buttonIcon.primary {
+  color: var(--em-buttonicon-color--primary, #fff);
+  background: var(--em-buttonicon-background--primary, #5c5c66);
+  border-color: var(--em-buttonicon-border-color--primary, rgb(255 255 255 / 0%));
+}
+
+.buttonIcon.primary:hover {
+  background: var(--em-buttonicon-background--primary--hover, #212129);
+  border-color: var(--em-buttonicon-border-color--primary--hover, rgb(255 255 255 / 0%));
+  color: var(--em-buttonicon-color--primary--hover, #fff);
+}
+
+.buttonIcon.primary:active {
+  background: var(--em-buttonicon-background--primary--active, #000);
+  border-color: var(--em-buttonicon-border-color--primary--active, rgb(255 255 255 / 0%));
+}
+
+.buttonIcon.primary:disabled {
+  background: var(--em-buttonicon-background--primary--disabled, #ededf1);
+  border-color: var(--em-buttonicon-border-color--primary--disabled, rgb(255 255 255 / 0%));
+}
+
+.buttonIcon.secondary {
+  color: var(--em-buttonicon-color--secondary, #212129);
+  background: var(--em-buttonicon-background--secondary, #ededf1);
+  border-color: var(--em-buttonicon-border-color--secondary, rgb(255 255 255 / 0%));
+}
+
+.buttonIcon.secondary:hover {
+  background: var(--em-buttonicon-background--secondary--hover, #e4e4ea);
+  border-color: var(--em-buttonicon-border-color--secondary--hover, rgb(255 255 255 / 0%));
+  color: var(--em-buttonicon-color--secondary--hover, #212129);
+}
+
+.buttonIcon.secondary:active {
+  background: var(--em-buttonicon-background--secondary--active, #d2d2d5);
+  border-color: var(--em-buttonicon-border-color--secondary--active, rgb(255 255 255 / 0%));
+}
+
+.buttonIcon.secondary:disabled {
+  background: var(--em-buttonicon-background--secondary--disabled, #ededf1);
+  border-color: var(--em-buttonicon-border-color--secondary--disabled, rgb(255 255 255 / 0%));
+}
+
+.buttonIcon:disabled {
+  pointer-events: none;
+  color: var(--em-buttonicon-color--disabled, #b8b8bd);
+}
+
+.buttonIcon svg {
+  width: var(--em-buttonicon-icon-size, 1rem);
+  height: var(--em-buttonicon-icon-size, 1rem);
+}

@@ -21,5 +21,5 @@ export const useChart = (entry: ChartEntry, settings: ChartSettings) => {
     [entry, settings, granularity, tableState, onEvent],
   );
 
-  return { built, Component: getComponent(entry), events, clearEvents: () => setEvents([]) };
+  return { built, Component: getComponent(entry), events, clearEvents: () => setEvents([]), granularity, setGranularity };
 };

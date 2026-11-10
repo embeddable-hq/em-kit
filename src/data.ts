@@ -8,11 +8,8 @@ import {
   Measure,
   NativeDataType,
 } from './runtime/core';
+import type { FieldInputs } from './fieldInputs';
 
-// Display options read by the formatter and components, e.g. prefix, suffix,
-// decimalPlaces, displayName, displayNullAs, maxCharacters.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DisplayInputs = Record<string, any>;
 
 type FieldOptions = {
   name: string;
@@ -20,7 +17,7 @@ type FieldOptions = {
   type?: NativeDataType;
   description?: string;
   meta?: object;
-  inputs?: DisplayInputs;
+  inputs?: FieldInputs;
 };
 
 // Row keys: components read `results.data[i][name]`. For a time dimension with

@@ -144,18 +144,6 @@ export type Dataset = {
 export type OrderDirection = 'asc' | 'desc';
 export type OrderBy = { property: DimensionOrMeasure; direction: OrderDirection };
 
-// Payload shape emitted by interactive components (a selection, or "cleared").
-export type ValueOperation = {
-  operation: 'NO_FILTER' | 'VALUE';
-  value?: unknown;
-  __embeddableVariableMeta: true;
-};
-
-export const Value = {
-  noFilter: (): ValueOperation => ({ operation: 'NO_FILTER', __embeddableVariableMeta: true }),
-  of: (value: unknown): ValueOperation => ({ operation: 'VALUE', value, __embeddableVariableMeta: true }),
-};
-
 // Builder type registration has no meaning outside Embeddable.
 export type EmbeddableType = { typeName: string };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

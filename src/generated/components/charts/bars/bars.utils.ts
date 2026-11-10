@@ -10,7 +10,7 @@ import {
 } from '../charts.utils';
 import { getDimensionFieldName } from '../../../utils/data.utils';
 import { getDimensionMeasureColor } from '../../../theme/styles/styles.utils';
-import { getChartColors } from '@embeddable.com/remarkable-ui';
+import { getChartColors } from '../../../../generated-ui/index';
 import { Context } from 'chartjs-plugin-datalabels';
 
 export const getBarStackedChartProData = (

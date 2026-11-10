@@ -12,7 +12,7 @@ import {
   HeatMap,
   HeatMapPropsDimension,
   HeatMapPropsMeasure,
-} from '@embeddable.com/remarkable-ui';
+} from '../../../../../generated-ui/index';
 import { getThemeFormatter } from '../../../../theme/formatter/formatter.utils';
 import { useFillGaps } from '../../charts.fillGaps.hooks';
 import { useGetTableSortedResults } from '../tables.hooks';

@@ -1,6 +1,6 @@
 import { Dimension, Measure } from '../../../../../runtime/core';
 import { Theme } from '../../../../theme/theme.types';
-import { PivotTableProps } from '@embeddable.com/remarkable-ui';
+import { PivotTableProps } from '../../../../../generated-ui/index';
 import { getThemeFormatter } from '../../../../theme/formatter/formatter.utils';
 import { PivotAggregationTypeOptions } from '../../../types/PivotAggregation.type';
 

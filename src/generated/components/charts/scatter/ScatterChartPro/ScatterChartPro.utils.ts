@@ -5,12 +5,12 @@ import { getTimeRangeFromDimensionValue } from '../../../utils/dimension.utils';
 import { dispatchEventUserInteraction } from '../../../../utils/events.utils';
 import { Theme } from '../../../../theme/theme.types';
 import { getThemeFormatter } from '../../../../theme/formatter/formatter.utils';
-import { getChartColors, getStyleNumber } from '@embeddable.com/remarkable-ui';
+import { getChartColors, getStyleNumber } from '../../../../../generated-ui/index';
 import type {
   ChartClickArgs,
   ScatterChartInputPoint,
   ScatterDatasetExtended,
-} from '@embeddable.com/remarkable-ui';
+} from '../../../../../generated-ui/index';
 import { getDimensionMeasureColor } from '../../../../theme/styles/styles.utils';
 import { DimensionValueOrTimeRange } from '../../charts.types';
 import type { ScatterChartProOptionsClickArg } from './ScatterChartPro.types';
@@ -88,14 +88,12 @@ export const getScatterChartProOptions = (
       datalabels: {
         labels: {
           value: {
-            display: 'auto',
             ...buildDatalabelsValue(xMeasure, yMeasure, formatValue),
             anchor: 'center',
             align: 'bottom',
             offset: valueOffset,
           },
           caption: {
-            display: 'auto',
             anchor: 'center',
             align: 'bottom',
             offset: captionOffset,

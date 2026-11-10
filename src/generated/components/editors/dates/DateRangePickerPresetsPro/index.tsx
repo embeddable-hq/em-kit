@@ -10,7 +10,7 @@ import {
   SelectFieldTrigger,
   isSameDateRange,
   shallowEqual,
-} from '@embeddable.com/remarkable-ui';
+} from '../../../../../generated-ui/index';
 import { Theme } from '../../../../theme/theme.types';
 import { useLoadDayjsLocale } from '../../../../utils/date.utils';
 import { getDateRangeSelectFieldProOptions } from './DateRangePickerPresetsPro.utils';

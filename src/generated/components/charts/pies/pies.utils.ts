@@ -9,7 +9,7 @@ import { Theme } from '../../../theme/theme.types';
 import { remarkableTheme } from '../../../theme/theme.constants';
 import { getThemeFormatter } from '../../../theme/formatter/formatter.utils';
 import { getDimensionMeasureColor } from '../../../theme/styles/styles.utils';
-import { getChartColors, ChartClickArgs } from '@embeddable.com/remarkable-ui';
+import { getChartColors, ChartClickArgs } from '../../../../generated-ui/index';
 import { PieChartClickArg } from './pies.types';
 import { getTimeRangeFromDimensionValue } from '../../utils/dimension.utils';
 import { dispatchEventUserInteraction } from '../../../utils/events.utils';

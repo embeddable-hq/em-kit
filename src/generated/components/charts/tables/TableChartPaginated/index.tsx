@@ -26,7 +26,7 @@ import {
   useTableGetRowsPerPage,
   useResizeObserver,
   TableSort,
-} from '@embeddable.com/remarkable-ui';
+} from '../../../../../generated-ui/index';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getTableHeaders, getTableRows } from '../tables.utils';
 import { ChartCardMenuOptionOnClickProps } from '../../../../theme/defaults/defaults.ChartCardMenu.constants';

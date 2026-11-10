@@ -20,7 +20,7 @@ import {
 import { getTimeRangeFromDimensionValue } from '../../../utils/dimension.utils';
 import { dispatchEventUserInteraction } from '../../../../utils/events.utils';
 import { DimensionValueOrTimeRange } from '../../charts.types';
-import { TableScrollable, TableScrollableHandle, TableSort } from '@embeddable.com/remarkable-ui';
+import { TableScrollable, TableScrollableHandle, TableSort } from '../../../../../generated-ui/index';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getTableHeaders, getTableRows } from '../tables.utils';
 import { ChartCardMenuOptionOnClickProps } from '../../../../theme/defaults/defaults.ChartCardMenu.constants';

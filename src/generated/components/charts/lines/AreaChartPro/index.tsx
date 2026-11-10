@@ -11,7 +11,7 @@ import {
 } from './AreaChartPro.utils';
 import { useFillGaps } from '../../charts.fillGaps.hooks';
 import { AreaChartProAreaClickArg, AreaChartProPointClickArg } from '../lines.types';
-import { LineChart } from '@embeddable.com/remarkable-ui';
+import { LineChart } from '../../../../../generated-ui/index';
 import { ChartGranularitySelectField } from '../../shared/ChartGranularitySelectField/ChartGranularitySelectField';
 
 export type AreaChartProProps = Omit<LineChartGroupedProProp, 'onLineClicked'> & {

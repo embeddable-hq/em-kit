@@ -1,5 +1,5 @@
 import { TimeRange } from '../../../../runtime/core';
-import { DateRange } from '@embeddable.com/remarkable-ui';
+import { DateRange } from '../../../../generated-ui/index';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
 import { DateRangeOption } from '../../../theme/defaults/defaults.DateRanges.constants';

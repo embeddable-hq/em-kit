@@ -1,6 +1,15 @@
 import { useEffect, useState } from 'react';
 
-const current = () => window.location.hash.replace(/^#/, '') || '/';
+// Old routes from before the examples merged into one page; links to them keep working.
+const ALIASES: Record<string, string> = {
+  '/sample-app': '/examples',
+  '/ai': '/examples/ai-chat',
+};
+
+const current = () => {
+  const path = window.location.hash.replace(/^#/, '') || '/';
+  return ALIASES[path] ?? path;
+};
 
 export const useRoute = () => {
   const [route, setRoute] = useState(current);

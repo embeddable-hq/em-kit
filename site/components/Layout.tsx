@@ -17,11 +17,14 @@ export const Layout = ({ route, children }: { route: string; children: ReactNode
             {BRAND.name}
           </a>
           <nav className="nav__links" aria-label="Main">
+            <a className={isActive('/charts')} href={href('/charts')}>
+              Charts
+            </a>
             <a className={isActive('/docs')} href={href('/docs')}>
               Docs
             </a>
-            <a className={isActive('/charts')} href={href('/charts')}>
-              Charts
+            <a className={isActive('/examples')} href={href('/examples')}>
+              Examples
             </a>
           </nav>
           <div className="nav__controls">
@@ -38,7 +41,8 @@ export const Layout = ({ route, children }: { route: string; children: ReactNode
             {BRAND.name} · MIT licensed · Built on Chart.js
           </span>
           <span>
-            <a href={href('/docs')}>Docs</a> · <a href={href('/charts')}>Charts</a>
+            <a href={href('/charts')}>Charts</a> · <a href={href('/docs')}>Docs</a> ·{' '}
+            <a href={href('/examples')}>Examples</a>
           </span>
         </div>
       </footer>

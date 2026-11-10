@@ -1,8 +1,8 @@
 import { DataResponse, Dimension, Granularity, Measure } from '../../../../../runtime/core';
 import { ChartData, ChartOptions } from 'chart.js';
 import { mergician } from 'mergician';
-import type { ChartClickArgs } from '@embeddable.com/remarkable-ui';
-import { getChartColors, getStyleNumber } from '@embeddable.com/remarkable-ui';
+import type { ChartClickArgs } from '../../../../../generated-ui/index';
+import { getChartColors, getStyleNumber } from '../../../../../generated-ui/index';
 import { Theme } from '../../../../theme/theme.types';
 import { getThemeFormatter } from '../../../../theme/formatter/formatter.utils';
 import { getDimensionMeasureColor } from '../../../../theme/styles/styles.utils';

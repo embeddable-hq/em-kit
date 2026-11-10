@@ -1,4 +1,4 @@
-import { ChartClickArgs } from '@embeddable.com/remarkable-ui';
+import { ChartClickArgs } from '../../../generated-ui/index';
 import { DataResponse, Dimension, Granularity, Measure } from '../../../runtime/core';
 import { getTimeRangeFromDimensionValue } from '../utils/dimension.utils';
 import { dispatchEventUserInteraction } from '../../utils/events.utils';

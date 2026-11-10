@@ -1,5 +1,5 @@
 import { useTheme } from '../../../../../runtime/react';
-import { BubbleChart } from '@embeddable.com/remarkable-ui';
+import { BubbleChart } from '../../../../../generated-ui/index';
 import { mergician } from 'mergician';
 import { DataResponse, Dimension, Measure } from '../../../../../runtime/core';
 import { Theme } from '../../../../theme/theme.types';

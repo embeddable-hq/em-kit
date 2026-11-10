@@ -1,6 +1,14 @@
 {
-  "source": "remarkable-pro",
-  "ref": "main",
-  "sha": "78a14a7e528d70583b21204c6c1ef55f3dca5920",
-  "syncedAt": "2026-09-24T09:32:01.827Z"
+  "sources": {
+    "remarkable-ui": {
+      "ref": "main",
+      "sha": "677e56de50e23d5b51ed848492003c8102ed3ee9",
+      "syncedAt": "2026-10-02T13:56:50.639Z"
+    },
+    "remarkable-pro": {
+      "ref": "main",
+      "sha": "78a14a7e528d70583b21204c6c1ef55f3dca5920",
+      "syncedAt": "2026-10-02T13:56:50.815Z"
+    }
+  }
 }

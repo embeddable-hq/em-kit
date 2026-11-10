@@ -1,4 +1,4 @@
-import { styles } from '@embeddable.com/remarkable-ui/styles';
+import { styles } from '../../../generated-ui/styles/index';
 
 const stylesRemarkablePro = {
   // Filter Builder

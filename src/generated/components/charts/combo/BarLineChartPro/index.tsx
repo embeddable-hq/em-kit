@@ -1,6 +1,6 @@
 import { Chart as ChartJS, LineController, LineElement, PointElement } from 'chart.js';
 import { useTheme } from '../../../../../runtime/react';
-import { BarChart } from '@embeddable.com/remarkable-ui';
+import { BarChart } from '../../../../../generated-ui/index';
 import { Theme } from '../../../../theme/theme.types';
 import { i18nSetup } from '../../../../theme/i18n/i18n';
 import { ChartCard, asChartCardHeaderProps } from '../../shared/ChartCard/ChartCard';

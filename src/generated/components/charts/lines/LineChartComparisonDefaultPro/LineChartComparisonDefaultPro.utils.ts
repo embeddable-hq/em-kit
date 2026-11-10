@@ -7,7 +7,7 @@ import {
   getChartjsAxisOptionsScalesTicksDefault,
   getChartjsAxisOptionsScalesTitle,
   getStyleNumber,
-} from '@embeddable.com/remarkable-ui';
+} from '../../../../../generated-ui/index';
 import { Theme } from '../../../../theme/theme.types';
 import { getDimensionMeasureColor } from '../../../../theme/styles/styles.utils';
 import { i18n } from '../../../../theme/i18n/i18n';

@@ -1,13 +1,13 @@
 import { DataResponse, Dimension, DimensionOrMeasure } from '../../../../runtime/core';
 import { getThemeFormatter } from '../../../theme/formatter/formatter.utils';
-import { CssSize, Markdown, TableBodyCellWithCopy } from '@embeddable.com/remarkable-ui';
+import { CssSize, Markdown, TableBodyCellWithCopy } from '../../../../generated-ui/index';
 import { Theme } from '../../../theme/theme.types';
 import {
   getStyleNumber,
   TableHeaderAlign,
   TableHeaderItem,
   TableHeaderItemAlign,
-} from '@embeddable.com/remarkable-ui';
+} from '../../../../generated-ui/index';
 import { DisplayFormatTypeOptions } from '../../types/DisplayFormat.type';
 import styles from './tables.module.css';
 

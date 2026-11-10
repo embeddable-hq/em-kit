@@ -11,7 +11,7 @@ import { dispatchEventUserInteraction } from '../../../../utils/events.utils';
 import { setColorAlpha } from '../../../../utils/color.utils';
 import { DimensionValueOrTimeRange } from '../../charts.types';
 import { AreaChartProAreaClickArg, AreaChartProPointClickArg } from '../lines.types';
-import { ChartClickArgs } from '@embeddable.com/remarkable-ui';
+import { ChartClickArgs } from '../../../../../generated-ui/index';
 
 export const getAreaChartProData = (
   props: {

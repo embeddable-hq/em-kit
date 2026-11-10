@@ -5,7 +5,7 @@ import { getThemeFormatter } from '../../../../theme/formatter/formatter.utils';
 import { mergician } from 'mergician';
 import { getDimensionMeasureColor } from '../../../../theme/styles/styles.utils';
 import { setColorAlpha } from '../../../../utils/color.utils';
-import { getChartColors } from '@embeddable.com/remarkable-ui';
+import { getChartColors } from '../../../../../generated-ui/index';
 import { getDimensionWithoutTruncation } from '../../charts.utils';
 
 export const getLineChartGroupedProData = (

@@ -1,4 +1,4 @@
-import { SelectListOptionProps } from '@embeddable.com/remarkable-ui';
+import { SelectListOptionProps } from '../../../../../generated-ui/index';
 import { Granularity, TimeRange } from '../../../../../runtime/core';
 import {
   defaultGranularitySelectFieldOptions,

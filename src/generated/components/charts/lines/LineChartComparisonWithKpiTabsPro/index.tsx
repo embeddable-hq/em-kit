@@ -6,7 +6,7 @@ import { i18nSetup } from '../../../../theme/i18n/i18n';
 import { resolveI18nProps } from '../../../component.utils';
 import { ChartCard, asChartCardHeaderProps } from '../../shared/ChartCard/ChartCard';
 import { useFillGaps } from '../../charts.fillGaps.hooks';
-import { ChartTabs, LineChart } from '@embeddable.com/remarkable-ui';
+import { ChartTabs, LineChart } from '../../../../../generated-ui/index';
 import { ChartGranularitySelectField } from '../../shared/ChartGranularitySelectField/ChartGranularitySelectField';
 import { getComparisonKpiTabsItems } from './LineChartComparisonWithKpiTabsPro.utils';
 import {

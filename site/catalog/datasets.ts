@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek.js';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear.js';
 import { dimension, measure } from '../../src';
-import type { Dimension, Granularity, Measure } from '../../src';
+import type { Dimension, FieldInputs, Granularity, Measure } from '../../src';
 
 dayjs.extend(isoWeek);
 dayjs.extend(quarterOfYear);
@@ -14,8 +14,11 @@ export type FieldSpec = {
   name: string;
   title: string;
   type?: 'string' | 'number' | 'time';
-  inputs?: Record<string, unknown>;
+  inputs?: FieldInputs;
 };
+
+// An inclusive window of whole days, as ISO dates (YYYY-MM-DD).
+export type DateWindow = { from: string; to: string };
 
 export type Dataset = {
   id: DatasetId;
@@ -30,8 +33,15 @@ export type Dataset = {
   time: (granularity: Granularity) => Dimension;
   byCategory: Row[];
   byCategoryGroup: Row[];
+  // One point per category × group, with the secondary and size measures
+  // varying independently of the primary: scatter and bubble charts.
+  byPoint: Row[];
   byTime: (granularity: Granularity) => Row[];
   byTimeGroup: (granularity: Granularity) => Row[];
+  // The same series restricted to a window, for comparison charts. Buckets are
+  // aggregated from the days inside the window, and weeks that straddle either
+  // edge are dropped, as they are at the edges of the full series.
+  byTimeWindow: (granularity: Granularity, window: DateWindow) => Row[];
   total: Row;
   previousTotal: Row;
 };
@@ -50,6 +60,9 @@ const ISO = 'YYYY-MM-DDTHH:mm:ss.SSS';
 const START = dayjs('2025-07-01');
 const TODAY = dayjs('2026-06-30');
 const DAYS = TODAY.diff(START, 'day') + 1;
+
+// The span every sample series covers, for chart subtitles.
+export const PERIOD_LABEL = `${START.format('MMM YYYY')} – ${TODAY.format('MMM YYYY')}`;
 
 const bucketStart = (date: dayjs.Dayjs, granularity: Granularity) =>
   granularity === 'week' ? date.startOf('isoWeek') : date.startOf(granularity as dayjs.OpUnitType);
@@ -188,12 +201,15 @@ const buildDataset = (story: Story): Dataset => {
   });
 
   // The built-in picker offers day to year, so there is no sub-day series.
-  const timeRows = (granularity: Granularity, grouped: boolean): Row[] => {
+  const timeRows = (granularity: Granularity, grouped: boolean, window?: DateWindow): Row[] => {
+    const lo = window ? dayjs(window.from) : START;
+    const hi = window ? dayjs(window.to) : TODAY;
     const buckets = new Map<string, number[]>();
     for (const day of daily) {
+      if (day.date.isBefore(lo) || day.date.isAfter(hi)) continue;
       if (granularity === 'week') {
         const weekStart = day.date.startOf('isoWeek');
-        if (weekStart.isBefore(START) || weekStart.add(6, 'day').isAfter(TODAY)) continue;
+        if (weekStart.isBefore(lo) || weekStart.add(6, 'day').isAfter(hi)) continue;
       }
       const key = bucketStart(day.date, granularity).format(ISO);
       const current = buckets.get(key) ?? story.groups.map(() => 0);
@@ -239,6 +255,19 @@ const buildDataset = (story: Story): Dataset => {
     }),
   );
 
+  // Its own random stream, so adding it leaves every other series unchanged.
+  const pointRandom = mulberry32(story.seed + 7);
+  const byPoint = byCategoryGroup.map((row) => {
+    const value = Number(row[specs.primary.name]);
+    return {
+      [specs.category.name]: row[specs.category.name]!,
+      [specs.group.name]: row[specs.group.name]!,
+      [specs.primary.name]: value,
+      [specs.secondary.name]: round(value * story.secondaryRatio * (0.55 + pointRandom() * 0.9)),
+      [specs.size.name]: round(sizeMin + pointRandom() * (sizeMax - sizeMin)),
+    };
+  });
+
   const last30 = daily.slice(-30).reduce((sum, d) => sum + d.byGroup.reduce((a, b) => a + b, 0), 0);
   const prior30 = daily.slice(-60, -30).reduce((sum, d) => sum + d.byGroup.reduce((a, b) => a + b, 0), 0);
 
@@ -261,8 +290,11 @@ const buildDataset = (story: Story): Dataset => {
     time: (granularity) => toDimension(specs.time, granularity),
     byCategory,
     byCategoryGroup,
+    byPoint,
     byTime: (granularity) => memo(`t:${granularity}`, () => timeRows(granularity, false)),
     byTimeGroup: (granularity) => memo(`tg:${granularity}`, () => timeRows(granularity, true)),
+    byTimeWindow: (granularity, window) =>
+      memo(`tw:${granularity}:${window.from}:${window.to}`, () => timeRows(granularity, false, window)),
     total: { [specs.primary.name]: round(last30) },
     previousTotal: { [specs.primary.name]: round(prior30) },
   };

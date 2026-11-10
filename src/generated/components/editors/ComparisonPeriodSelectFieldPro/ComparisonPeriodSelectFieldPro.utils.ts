@@ -1,4 +1,4 @@
-import { SelectListOptionProps } from '@embeddable.com/remarkable-ui';
+import { SelectListOptionProps } from '../../../../generated-ui/index';
 import { TimeRange } from '../../../../runtime/core';
 import { ComparisonPeriodSelectFieldProOption } from './ComparisonPeriodSelectFieldPro.types';
 import { resolveI18nString } from '../../component.utils';

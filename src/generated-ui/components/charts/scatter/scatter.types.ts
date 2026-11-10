@@ -1,0 +1,47 @@
+import { ChartData, ChartOptions } from 'chart.js';
+import { ChartClickArgs } from '../charts.types';
+
+export type ScatterChartInputPoint = {
+  x: number | null;
+  y: number | null;
+  label?: string;
+  pointLabel?: string;
+  isNull?: boolean;
+};
+
+export type BubbleChartInputPoint = ScatterChartInputPoint & {
+  size?: number | null;
+};
+
+export type ScatterChartConfigurationProps = {
+  showLegend?: boolean;
+  showTooltips?: boolean;
+  showValueLabels?: boolean;
+  showPointLabels?: boolean;
+  showLogarithmicScale?: boolean;
+  xAxisLabel?: string;
+  yAxisLabel?: string;
+  xAxisRangeMin?: number;
+  xAxisRangeMax?: number;
+  yAxisRangeMin?: number;
+  yAxisRangeMax?: number;
+  reverseXAxis?: boolean;
+  nullBandLabel?: string;
+};
+
+export type BaseScatterChartProps = {
+  data: ChartData<'scatter', ScatterChartInputPoint[]>;
+  options?: Partial<ChartOptions<'scatter'>>;
+  onClick?: (args: ChartClickArgs) => void;
+} & ScatterChartConfigurationProps;
+
+export type BubbleChartConfigurationProps = ScatterChartConfigurationProps & {
+  bubbleRadiusMin?: number;
+  bubbleRadiusMax?: number;
+};
+
+export type BaseBubbleChartProps = {
+  data: ChartData<'bubble', BubbleChartInputPoint[]>;
+  options?: Partial<ChartOptions<'bubble'>>;
+  onClick?: (args: ChartClickArgs) => void;
+} & BubbleChartConfigurationProps;

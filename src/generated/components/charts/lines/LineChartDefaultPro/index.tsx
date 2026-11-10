@@ -11,7 +11,7 @@ import {
 import { getLineChartProData, getLineChartProOptions } from './LineChartDefaultPro.utils';
 import { useFillGaps } from '../../charts.fillGaps.hooks';
 import { LineChartProOptionsClick } from '../lines.types';
-import { LineChart } from '@embeddable.com/remarkable-ui';
+import { LineChart } from '../../../../../generated-ui/index';
 import { ChartGranularitySelectField } from '../../shared/ChartGranularitySelectField/ChartGranularitySelectField';
 import { createSimpleClickHandler } from '../../charts.utils';
 

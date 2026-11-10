@@ -1,5 +1,5 @@
 import { useTheme } from '../../../../../runtime/react';
-import { DateRange, DateRangePickerField } from '@embeddable.com/remarkable-ui';
+import { DateRange, DateRangePickerField } from '../../../../../generated-ui/index';
 import { Theme } from '../../../../theme/theme.types';
 import { useLoadDayjsLocale } from '../../../../utils/date.utils';
 import { TimeRange } from '../../../../../runtime/core';

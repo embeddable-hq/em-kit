@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { DataResponse, Measure } from '../../../../../runtime/core';
-import { ChartTabsProps, KpiTrend } from '@embeddable.com/remarkable-ui';
+import { ChartTabsProps, KpiTrend } from '../../../../../generated-ui/index';
 import { GetThemeFormatter } from '../../../../theme/formatter/formatter.utils';
 
 type ComparisonKpiTabsParams = {

@@ -3,7 +3,7 @@ import { useTheme } from '../../../../runtime/react';
 import { i18nSetup } from '../../../theme/i18n/i18n';
 import { Theme } from '../../../theme/theme.types';
 import styles from './MarkdownPro.module.css';
-import { Markdown } from '@embeddable.com/remarkable-ui';
+import { Markdown } from '../../../../generated-ui/index';
 import { resolveI18nInMarkdown, resolveParagraphBreaksInMarkdown } from './MarkdownPro.utils';
 
 type MarkdownProProps = {

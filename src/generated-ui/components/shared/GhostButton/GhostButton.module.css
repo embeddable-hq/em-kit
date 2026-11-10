@@ -1,0 +1,54 @@
+.ghostButton {
+  cursor: pointer;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: transparent;
+  font-style: normal;
+
+  height: var(--em-ghostbutton-height, 1.25rem);
+  padding-right: var(--em-ghostbutton-padding-left-right, 0.125rem);
+  padding-left: var(--em-ghostbutton-padding-left-right, 0.125rem);
+  color: var(--em-ghostbutton-color, #212129);
+  font-family: var(--em-ghostbutton-font-family, sans-serif);
+  font-size: var(--em-ghostbutton-font-size, 0.75rem);
+  font-weight: var(--em-ghostbutton-font-weight, 400);
+  line-height: var(--em-ghostbutton-line-height, 0.875rem);
+  border-radius: var(--em-ghostbutton-border-radius, 0.25rem);
+  border: var(--em-ghostbutton-border-width, 0rem) solid;
+  border-color: var(--em-ghostbutton-border-color, rgb(255 255 255 / 0%));
+}
+
+.ghostButton:hover,
+.ghostButton:focus-visible {
+  background-color: var(--em-ghostbutton-background--hover, #f7f7f8);
+  border-color: var(--em-ghostbutton-border-color--hover, rgb(255 255 255 / 0%));
+  color: var(--em-ghostbutton-color--hover, #212129);
+}
+
+.ghostButton:active {
+  background-color: var(--em-ghostbutton-background--active, #ededf1);
+  border-color: var(--em-ghostbutton-border-color--active, rgb(255 255 255 / 0%));
+}
+
+.ghostButton:disabled {
+  cursor: unset;
+  pointer-events: none;
+  background-color: transparent;
+  color: var(--em-ghostbutton-color--disabled, #b8b8bd);
+  border-color: var(--em-ghostbutton-border-color--disabled, rgb(255 255 255 / 0%));
+}
+
+.ghostButton svg {
+  width: var(--em-ghostbutton-icon-size, 0.75rem);
+  height: var(--em-ghostbutton-icon-size, 0.75rem);
+}
+
+.ghostButton span {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--em-ghostbutton-label-padding-right, 0.25rem) 0
+    var(--em-ghostbutton-label-padding-left, 0.25rem);
+}

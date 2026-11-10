@@ -1,6 +1,6 @@
 import { DimensionOrMeasure } from '../../../../runtime/core';
 import { Theme } from '../../../theme/theme.types';
-import { SelectListOptionProps } from '@embeddable.com/remarkable-ui';
+import { SelectListOptionProps } from '../../../../generated-ui/index';
 import { getThemeFormatter } from '../../../theme/formatter/formatter.utils';
 
 export const getDimensionAndMeasureOptions = ({

@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { ChartsProvider } from '../src';
 import type { DatasetId } from './catalog/datasets';
-import { buildTheme, getThemePreset, LanguageId, ThemeId } from './catalog/themes';
+import { buildTheme, DEFAULT_THEME_ID, getThemePreset, LanguageId, ThemeId } from './catalog/themes';
 
 type SiteSettings = {
   themeId: ThemeId;
@@ -26,7 +26,7 @@ const readStored = (): Partial<Pick<SiteSettings, 'themeId' | 'languageId' | 'da
 
 export const SiteSettingsProvider = ({ children }: { children: ReactNode }) => {
   const stored = useMemo(readStored, []);
-  const [themeId, setThemeId] = useState<ThemeId>(stored.themeId ?? 'midnight');
+  const [themeId, setThemeId] = useState<ThemeId>(stored.themeId ?? DEFAULT_THEME_ID);
   const [languageId, setLanguageId] = useState<LanguageId>(stored.languageId ?? 'en');
   const [datasetId, setDatasetId] = useState<DatasetId>(stored.datasetId ?? 'saas');
 

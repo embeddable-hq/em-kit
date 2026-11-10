@@ -76,10 +76,15 @@ const chartTitles: Dict = {
   bar: { de: 'Nach Kategorie', fr: 'Par catégorie' },
   'bar-horizontal': { de: 'Nach Wert sortiert', fr: 'Classé par valeur' },
   'bar-stacked': { de: 'Zusammensetzung', fr: 'Composition' },
+  'bar-stacked-horizontal': { de: 'Zusammensetzung', fr: 'Composition' },
   'bar-grouped': { de: 'Im Vergleich', fr: 'Côte à côte' },
+  'bar-grouped-horizontal': { de: 'Im Vergleich', fr: 'Côte à côte' },
   'bar-line': { de: 'Im Zeitverlauf', fr: 'Dans le temps' },
   line: { de: 'Trend', fr: 'Tendance' },
   'line-grouped': { de: 'Trend nach Segment', fr: 'Tendance par segment' },
+  'line-comparison': { de: 'Gegenüber dem Vorzeitraum', fr: 'Par rapport à la période précédente' },
+  'line-with-kpi-tabs': { de: 'Trend nach Kennzahl', fr: 'Tendance par mesure' },
+  'line-comparison-with-kpi-tabs': { de: 'Vorzeitraum nach Kennzahl', fr: 'Période précédente par mesure' },
   area: { de: 'Anteil im Zeitverlauf', fr: 'Contribution dans le temps' },
   pie: { de: 'Anteil am Gesamtwert', fr: 'Part du total' },
   donut: { de: 'Anteil am Gesamtwert', fr: 'Part du total' },
@@ -87,7 +92,16 @@ const chartTitles: Dict = {
   scatter: { de: 'Korrelation', fr: 'Corrélation' },
   bubble: { de: 'Drei Kennzahlen auf einmal', fr: 'Trois mesures à la fois' },
   table: { de: 'Aufschlüsselung', fr: 'Répartition' },
+  'table-scrollable': { de: 'Tagesdetails', fr: 'Détail quotidien' },
   pivot: { de: 'Kreuztabelle', fr: 'Tableau croisé' },
+  // Gallery presets, keyed `${entry}--${variant}`.
+  'bar--monthly': { de: 'Monatlich', fr: 'Mensuel' },
+  'bar--growth': { de: 'Monatliches Wachstum', fr: 'Croissance mensuelle' },
+  'line--filled': { de: 'Volumen im Zeitverlauf', fr: 'Volume dans le temps' },
+  'line--dashed-labels': { de: 'Monat für Monat', fr: 'Mois par mois' },
+  'line-grouped--filled': { de: 'Segmente im Zeitverlauf', fr: 'Segments dans le temps' },
+  'pivot--summary-stats': { de: 'Durchschnitt, Min. und Max.', fr: 'Moyenne, min. et max.' },
+  'pivot--share': { de: 'Anteil am Gesamtwert', fr: 'Part du total' },
   heatmap: { de: 'Brennpunkte', fr: 'Points chauds' },
 };
 
@@ -136,6 +150,22 @@ const hero: Record<string, Record<LanguageId, (c: HeroCopy) => string>> = {
 
 export type HeroKey = keyof typeof hero;
 
+// Chart titles and descriptions used by the sample app page.
+const app: Record<string, Record<LanguageId, (c: HeroCopy) => string>> = {
+  last12: {
+    en: (c) => `${c.metric} · Last 12 months`,
+    de: (c) => `${c.metric} · Letzte 12 Monate`,
+    fr: (c) => `${c.metric} · 12 derniers mois`,
+  },
+  filterHint: {
+    en: () => 'Click a segment to filter the whole dashboard',
+    de: () => 'Segment anklicken, um das gesamte Dashboard zu filtern',
+    fr: () => 'Cliquez sur un segment pour filtrer tout le tableau de bord',
+  },
+};
+
+export type AppKey = keyof typeof app;
+
 const fieldTitle = (name: string, fallback: string, lang: LanguageId) =>
   lang === 'en' ? fallback : (fields[name]?.[lang] ?? fallback);
 
@@ -148,6 +178,8 @@ export const chartTitleKey = (ds: Dataset, entryId: string, fallback: string) =>
   `titles.${ds.id}.${entryId}|${ds.specs.primary.title} · ${fallback}`;
 
 export const heroKey = (ds: Dataset, key: HeroKey) => `hero.${ds.id}.${key}|${hero[key]!.en(heroCopy(ds, 'en'))}`;
+
+export const appKey = (ds: Dataset, key: AppKey) => `app.${ds.id}.${key}|${app[key]!.en(heroCopy(ds, 'en'))}`;
 
 export const labelKey = (key: keyof typeof labels) => `labels.${key}|${key.charAt(0).toUpperCase()}${key.slice(1)}`;
 
@@ -177,6 +209,12 @@ export const siteTranslations = (datasets: Dataset[]) => {
         datasets.map((ds) => [
           ds.id,
           Object.fromEntries(Object.entries(hero).map(([k, f]) => [k, f[lang](heroCopy(ds, lang))])),
+        ]),
+      ),
+      app: Object.fromEntries(
+        datasets.map((ds) => [
+          ds.id,
+          Object.fromEntries(Object.entries(app).map(([k, f]) => [k, f[lang](heroCopy(ds, lang))])),
         ]),
       ),
       labels: Object.fromEntries(Object.entries(labels).map(([k, t]) => [k, t[lang]])),

@@ -7,7 +7,7 @@ import {
   asChartCardHeaderProps,
 } from '../../shared/ChartCard/ChartCard';
 import { DataResponse, Dimension, Measure } from '../../../../../runtime/core';
-import { PivotTable } from '@embeddable.com/remarkable-ui';
+import { PivotTable } from '../../../../../generated-ui/index';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFillGaps } from '../../charts.fillGaps.hooks';
 import { getPivotAggregationsFor, getPivotDimension, getPivotMeasures } from './PivotPro.utils';

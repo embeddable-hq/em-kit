@@ -8,7 +8,7 @@ import {
   ChartCardHeaderProps,
   asChartCardHeaderProps,
 } from '../../shared/ChartCard/ChartCard';
-import { KpiChart } from '@embeddable.com/remarkable-ui';
+import { KpiChart } from '../../../../../generated-ui/index';
 import { getThemeFormatter } from '../../../../theme/formatter/formatter.utils';
 import { getKpiResults } from '../kpis.utils';
 

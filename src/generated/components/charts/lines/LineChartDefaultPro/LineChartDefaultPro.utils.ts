@@ -2,7 +2,7 @@ import { DataResponse, Dimension, Measure } from '../../../../../runtime/core';
 import { Theme } from '../../../../theme/theme.types';
 import { ChartData, ChartOptions } from 'chart.js';
 import { getThemeFormatter } from '../../../../theme/formatter/formatter.utils';
-import { getChartColors, getStyleNumber } from '@embeddable.com/remarkable-ui';
+import { getChartColors, getStyleNumber } from '../../../../../generated-ui/index';
 import { getDimensionMeasureColor } from '../../../../theme/styles/styles.utils';
 import { mergician } from 'mergician';
 import { isColorValid, setColorAlpha } from '../../../../utils/color.utils';

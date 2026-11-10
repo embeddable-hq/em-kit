@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { datasetList, DatasetId } from '../catalog/datasets';
 import { languages, LanguageId, themePresets } from '../catalog/themes';
 import { useSiteSettings } from '../state';
@@ -15,6 +16,7 @@ export const ThemeSwitcher = ({ showLabels }: { showLabels?: boolean }) => {
           className={`theme-chip${preset.id === themeId ? ' is-active' : ''}`}
           onClick={() => setThemeId(preset.id)}
           title={preset.label}
+          aria-label={showLabels ? undefined : preset.label}
         >
           <span className="theme-chip__swatches" style={{ background: preset.dark ? '#18181b' : '#fff' }}>
             {preset.swatches.map((c) => (
@@ -49,20 +51,31 @@ export const LanguageSwitcher = () => {
 };
 
 // Settings that change how the charts are previewed, not the site itself.
-export const ChartContextBar = ({ hint }: { hint?: string }) => (
-  <div className="context-bar" role="group" aria-label="Chart preview settings">
+// `compact` is a single row: no labels or theme names, with `leading` (e.g.
+// page navigation) on the left.
+export const ChartContextBar = ({
+  hint,
+  compact,
+  leading,
+}: {
+  hint?: string;
+  compact?: boolean;
+  leading?: ReactNode;
+}) => (
+  <div className={`context-bar${compact ? ' context-bar--compact' : ''}`} role="group" aria-label="Chart preview settings">
     {hint && <span className="context-bar__hint">{hint}</span>}
+    {leading && <div className="context-bar__leading">{leading}</div>}
     <div className="context-bar__controls">
       <div className="context-bar__item">
-        <span className="context-bar__label">Chart theme</span>
-        <ThemeSwitcher showLabels />
+        {!compact && <span className="context-bar__label">Chart theme</span>}
+        <ThemeSwitcher showLabels={!compact} />
       </div>
       <div className="context-bar__item">
-        <span className="context-bar__label">Chart language</span>
+        {!compact && <span className="context-bar__label">Chart language</span>}
         <LanguageSwitcher />
       </div>
       <div className="context-bar__item">
-        <span className="context-bar__label">Sample data</span>
+        {!compact && <span className="context-bar__label">Sample data</span>}
         <DatasetSelect />
       </div>
     </div>

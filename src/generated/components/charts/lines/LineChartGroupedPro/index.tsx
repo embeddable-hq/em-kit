@@ -14,7 +14,7 @@ import {
 } from './LineChartGroupedPro.utils';
 import { useFillGaps } from '../../charts.fillGaps.hooks';
 import { LineChartGroupedProOptionsClickArg } from '../lines.types';
-import { LineChart } from '@embeddable.com/remarkable-ui';
+import { LineChart } from '../../../../../generated-ui/index';
 import { ChartGranularitySelectField } from '../../shared/ChartGranularitySelectField/ChartGranularitySelectField';
 import { createGroupedClickHandler } from '../../charts.utils';
 

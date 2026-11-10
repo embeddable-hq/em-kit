@@ -1,0 +1,4352 @@
+{
+  "BarChartDefaultHorizontalPro": {
+    "label": "Bar Chart - Default Horizontal",
+    "fields": {
+      "measures": {
+        "kind": "measure",
+        "label": "Measures",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "color",
+            "label": "Color",
+            "type": "color",
+            "options": []
+          },
+          {
+            "name": "showValueAsPercentage",
+            "label": "Show values as percentage",
+            "type": "boolean",
+            "defaultValue": false
+          }
+        ]
+      },
+      "dimension": {
+        "kind": "dimension",
+        "label": "Y-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      }
+    }
+  },
+  "BarChartDefaultPro": {
+    "label": "Bar Chart - Default",
+    "fields": {
+      "measures": {
+        "kind": "measure",
+        "label": "Measures",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "color",
+            "label": "Color",
+            "type": "color",
+            "options": []
+          },
+          {
+            "name": "showValueAsPercentage",
+            "label": "Show values as percentage",
+            "type": "boolean",
+            "defaultValue": false
+          }
+        ]
+      },
+      "dimension": {
+        "kind": "dimension",
+        "label": "X-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      }
+    }
+  },
+  "BarChartGroupedHorizontalPro": {
+    "label": "Bar Chart - Grouped Horizontal",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "yAxis": {
+        "kind": "dimension",
+        "label": "Y-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      },
+      "groupBy": {
+        "kind": "dimension",
+        "label": "Group by",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "BarChartGroupedPro": {
+    "label": "Bar Chart - Grouped",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "xAxis": {
+        "kind": "dimension",
+        "label": "X-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      },
+      "groupBy": {
+        "kind": "dimension",
+        "label": "Group by",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "BarChartStackedHorizontalPro": {
+    "label": "Bar Chart - Stacked Horizontal",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "yAxis": {
+        "kind": "dimension",
+        "label": "Y-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      },
+      "groupBy": {
+        "kind": "dimension",
+        "label": "Group by",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "BarChartStackedPro": {
+    "label": "Bar Chart - Stacked",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "xAxis": {
+        "kind": "dimension",
+        "label": "X-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      },
+      "groupBy": {
+        "kind": "dimension",
+        "label": "Group by",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "BarLineChartPro": {
+    "label": "Bar + Line Chart",
+    "fields": {
+      "measures": {
+        "kind": "measure",
+        "label": "Bar measures",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "color",
+            "label": "Color",
+            "type": "color",
+            "options": []
+          },
+          {
+            "name": "showValueAsPercentage",
+            "label": "Show values as percentage",
+            "type": "boolean",
+            "defaultValue": false
+          }
+        ]
+      },
+      "lineMeasures": {
+        "kind": "measure",
+        "label": "Line measures",
+        "array": true,
+        "required": false,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "lineColor",
+            "label": "Line color",
+            "type": "color",
+            "options": []
+          },
+          {
+            "name": "dashedLine",
+            "label": "Dashed line",
+            "type": "boolean",
+            "defaultValue": false
+          },
+          {
+            "name": "connectGaps",
+            "label": "Connect gaps",
+            "type": "boolean",
+            "defaultValue": true
+          },
+          {
+            "name": "fillUnderLine",
+            "label": "Fill under line",
+            "type": "boolean"
+          },
+          {
+            "name": "useSecondaryAxis",
+            "label": "Assign to secondary axis",
+            "type": "boolean"
+          }
+        ]
+      },
+      "dimension": {
+        "kind": "dimension",
+        "label": "X-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      }
+    }
+  },
+  "KpiChartNumberComparisonPro": {
+    "label": "Kpi Chart - Number Comparison",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "timeProperty": {
+        "kind": "dimension",
+        "label": "Time property",
+        "inputs": []
+      }
+    }
+  },
+  "KpiChartNumberPro": {
+    "label": "Kpi Chart - Number",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "AreaChartPro": {
+    "label": "Area Chart",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "fillUnderLine",
+            "label": "Fill under line",
+            "type": "boolean"
+          },
+          {
+            "name": "connectGaps",
+            "label": "Connect gaps",
+            "type": "boolean",
+            "defaultValue": true
+          }
+        ]
+      },
+      "xAxis": {
+        "kind": "dimension",
+        "label": "X-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      },
+      "groupBy": {
+        "kind": "dimension",
+        "label": "Group by",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "LineChartComparisonDefaultPro": {
+    "label": "Line Chart Comparison - Default",
+    "fields": {
+      "measures": {
+        "kind": "measure",
+        "label": "Measures",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "fillUnderLine",
+            "label": "Fill under line",
+            "type": "boolean"
+          },
+          {
+            "name": "lineColor",
+            "label": "Line color",
+            "type": "color",
+            "options": []
+          },
+          {
+            "name": "previousLineColor",
+            "label": "Previous line color",
+            "type": "color",
+            "options": []
+          },
+          {
+            "name": "lineDashed",
+            "label": "Primary line dashed",
+            "type": "boolean",
+            "defaultValue": false
+          },
+          {
+            "name": "previousLineDashed",
+            "label": "Compared line dashed",
+            "type": "boolean",
+            "defaultValue": true
+          },
+          {
+            "name": "connectGaps",
+            "label": "Connect gaps",
+            "type": "boolean",
+            "defaultValue": true
+          }
+        ]
+      },
+      "xAxis": {
+        "kind": "dimension",
+        "label": "X-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      },
+      "timePropertyForNonTimeDimensions": {
+        "kind": "dimension",
+        "label": "Time property for non time dimensions",
+        "required": false,
+        "inputs": []
+      }
+    }
+  },
+  "LineChartComparisonWithKpiTabsPro": {
+    "label": "Line Chart Comparison - With KPI Tabs",
+    "fields": {
+      "measures": {
+        "kind": "measure",
+        "label": "Measures",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "fillUnderLine",
+            "label": "Fill under line",
+            "type": "boolean"
+          },
+          {
+            "name": "lineColor",
+            "label": "Line color",
+            "type": "color",
+            "options": []
+          },
+          {
+            "name": "previousLineColor",
+            "label": "Previous line color",
+            "type": "color",
+            "options": []
+          },
+          {
+            "name": "lineDashed",
+            "label": "Primary line dashed",
+            "type": "boolean",
+            "defaultValue": false
+          },
+          {
+            "name": "previousLineDashed",
+            "label": "Compared line dashed",
+            "type": "boolean",
+            "defaultValue": true
+          },
+          {
+            "name": "connectGaps",
+            "label": "Connect gaps",
+            "type": "boolean",
+            "defaultValue": true
+          },
+          {
+            "name": "invertChangeColors",
+            "label": "Reverse positive/negative colors",
+            "type": "boolean",
+            "defaultValue": false
+          },
+          {
+            "name": "displayChangeAsPercentage",
+            "label": "Display change as %",
+            "type": "boolean",
+            "defaultValue": false
+          },
+          {
+            "name": "percentageDecimalPlaces",
+            "label": "Percentage decimal places",
+            "type": "number",
+            "defaultValue": 1
+          }
+        ]
+      },
+      "xAxis": {
+        "kind": "dimension",
+        "label": "X-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      },
+      "timePropertyForNonTimeDimensions": {
+        "kind": "dimension",
+        "label": "Time property for non time dimensions",
+        "required": false,
+        "inputs": []
+      }
+    }
+  },
+  "LineChartDefaultPro": {
+    "label": "Line Chart - Default",
+    "fields": {
+      "measures": {
+        "kind": "measure",
+        "label": "Measures",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "fillUnderLine",
+            "label": "Fill under line",
+            "type": "boolean"
+          },
+          {
+            "name": "lineColor",
+            "label": "Line color",
+            "type": "color",
+            "options": []
+          },
+          {
+            "name": "connectGaps",
+            "label": "Connect gaps",
+            "type": "boolean",
+            "defaultValue": true
+          },
+          {
+            "name": "dashedLine",
+            "label": "Dashed line",
+            "type": "boolean",
+            "defaultValue": false
+          }
+        ]
+      },
+      "xAxis": {
+        "kind": "dimension",
+        "label": "X-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      }
+    }
+  },
+  "LineChartGroupedPro": {
+    "label": "Line Chart - Grouped",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "fillUnderLine",
+            "label": "Fill under line",
+            "type": "boolean"
+          },
+          {
+            "name": "connectGaps",
+            "label": "Connect gaps",
+            "type": "boolean",
+            "defaultValue": true
+          }
+        ]
+      },
+      "xAxis": {
+        "kind": "dimension",
+        "label": "X-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      },
+      "groupBy": {
+        "kind": "dimension",
+        "label": "Group by",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "LineChartWithKpiTabsPro": {
+    "label": "Line Chart - With Kpi Tabs",
+    "fields": {
+      "measures": {
+        "kind": "measure",
+        "label": "Measures",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "fillUnderLine",
+            "label": "Fill under line",
+            "type": "boolean"
+          },
+          {
+            "name": "lineColor",
+            "label": "Line color",
+            "type": "color",
+            "options": []
+          },
+          {
+            "name": "connectGaps",
+            "label": "Connect gaps",
+            "type": "boolean",
+            "defaultValue": true
+          },
+          {
+            "name": "dashedLine",
+            "label": "Dashed line",
+            "type": "boolean",
+            "defaultValue": false
+          }
+        ]
+      },
+      "xAxis": {
+        "kind": "dimension",
+        "label": "X-axis",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "showGranularityDropdown",
+            "label": "Show granularity dropdown",
+            "type": "boolean",
+            "description": "Display a granularity selector inside the chart. The Granularity input above is used only as the default when this option is enabled.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set a date range or connect your primary date-range variable to define the x-axis min and max. If \"Show granularity dropdown\" is enabled, this also enables auto-selection of the most appropriate granularity",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      }
+    }
+  },
+  "DonutChartPro": {
+    "label": "Donut Chart",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "showValueAsPercentage",
+            "label": "Show values as percentage",
+            "type": "boolean",
+            "defaultValue": false
+          }
+        ]
+      },
+      "dimension": {
+        "kind": "dimension",
+        "label": "Dimension",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "DonutLabelChartPro": {
+    "label": "Donut Label Chart",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "showValueAsPercentage",
+            "label": "Show values as percentage",
+            "type": "boolean",
+            "defaultValue": false
+          }
+        ]
+      },
+      "dimension": {
+        "kind": "dimension",
+        "label": "Dimension",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "innerLabelMeasure": {
+        "kind": "measure",
+        "label": "Inner label measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "PieChartPro": {
+    "label": "Pie Chart",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "showValueAsPercentage",
+            "label": "Show values as percentage",
+            "type": "boolean",
+            "defaultValue": false
+          }
+        ]
+      },
+      "dimension": {
+        "kind": "dimension",
+        "label": "Dimension",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "BubbleChartPro": {
+    "label": "Bubble Chart",
+    "fields": {
+      "xMeasure": {
+        "kind": "measure",
+        "label": "X-axis measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "yMeasure": {
+        "kind": "measure",
+        "label": "Y-axis measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "bubbleSizeMeasure": {
+        "kind": "measure",
+        "label": "Bubble size measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "pointDimension": {
+        "kind": "dimension",
+        "label": "Point dimension",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "groupByDimension": {
+        "kind": "dimension",
+        "label": "Group by (optional)",
+        "required": false,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "ScatterChartPro": {
+    "label": "Scatter Chart",
+    "fields": {
+      "xMeasure": {
+        "kind": "measure",
+        "label": "X-axis measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "yMeasure": {
+        "kind": "measure",
+        "label": "Y-axis measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "pointDimension": {
+        "kind": "dimension",
+        "label": "Point dimension",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "groupByDimension": {
+        "kind": "dimension",
+        "label": "Group by (optional)",
+        "required": false,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "HeatMapPro": {
+    "label": "Heat Map",
+    "fields": {
+      "measure": {
+        "kind": "measure",
+        "label": "Measure",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "rowDimension": {
+        "kind": "dimension",
+        "label": "Row dimension",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set the date range for the axis",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      },
+      "columnDimension": {
+        "kind": "dimension",
+        "label": "Column dimension",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set the date range for the axis",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      }
+    }
+  },
+  "PivotTablePro": {
+    "label": "Pivot Table",
+    "fields": {
+      "measures": {
+        "kind": "measure",
+        "label": "Measures to display",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "columnAggregation",
+            "label": "Show column calculation",
+            "type": "pivotAggregation",
+            "options": [
+              "sum",
+              "min",
+              "max",
+              "average"
+            ],
+            "array": true
+          },
+          {
+            "name": "rowAggregation",
+            "label": "Show row calculation",
+            "type": "pivotAggregation",
+            "options": [
+              "sum",
+              "min",
+              "max",
+              "average"
+            ],
+            "array": true
+          },
+          {
+            "name": "showAsPercentage",
+            "label": "Show as percentage",
+            "type": "boolean",
+            "description": "If turned on, other measures may be ignored",
+            "defaultValue": false
+          }
+        ]
+      },
+      "columnDimension": {
+        "kind": "dimension",
+        "label": "Column dimension",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set the date range for the axis",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      },
+      "rowDimension": {
+        "kind": "dimension",
+        "label": "Primary row dimension",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "granularity",
+            "label": "Granularity",
+            "type": "granularity",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": "day"
+          },
+          {
+            "name": "dateBounds",
+            "label": "Date bounds",
+            "type": "timeRange",
+            "description": "Set the date range for the axis",
+            "supportedTypes": [
+              "time"
+            ]
+          },
+          {
+            "name": "ignoreEmptyDate",
+            "label": "Ignore empty dates",
+            "type": "boolean",
+            "description": "When enabled, dates with no data will be omitted instead of shown as empty.",
+            "supportedTypes": [
+              "time"
+            ],
+            "defaultValue": false
+          }
+        ]
+      },
+      "subRowDimension": {
+        "kind": "dimension",
+        "label": "Secondary row dimension (optional)",
+        "required": false,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "TableChartPaginated": {
+    "label": "Table Chart - Paginated",
+    "fields": {
+      "dimensionsAndMeasures": {
+        "kind": "dimensionOrMeasure",
+        "label": "Columns",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "width",
+            "label": "Width",
+            "type": "number",
+            "description": "You can input a number in pixels e.g. 400"
+          },
+          {
+            "name": "align",
+            "label": "Align",
+            "type": "align",
+            "options": [
+              "left",
+              "center",
+              "right"
+            ]
+          },
+          {
+            "name": "tableCellStyle",
+            "label": "Table cell style",
+            "type": "tableCellStyle",
+            "options": [
+              "Bold",
+              "Italic",
+              "Positive vs Negative"
+            ]
+          }
+        ]
+      },
+      "clickDimension": {
+        "kind": "dimension",
+        "label": "Dimension to set on click",
+        "required": false,
+        "inputs": []
+      },
+      "sortColumn": {
+        "kind": "dimensionOrMeasure",
+        "label": "Default sort column",
+        "inputs": []
+      }
+    }
+  },
+  "TableScrollable": {
+    "label": "Table Chart - Scrollable",
+    "fields": {
+      "dimensionsAndMeasures": {
+        "kind": "dimensionOrMeasure",
+        "label": "Columns",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "width",
+            "label": "Width",
+            "type": "number",
+            "description": "You can input a number in pixels e.g. 400"
+          },
+          {
+            "name": "align",
+            "label": "Align",
+            "type": "align",
+            "options": [
+              "left",
+              "center",
+              "right"
+            ]
+          },
+          {
+            "name": "displayFormat",
+            "label": "Display format",
+            "type": "DisplayFormat",
+            "options": [
+              "Markdown",
+              "Json"
+            ]
+          },
+          {
+            "name": "tableCellStyle",
+            "label": "Table cell style",
+            "type": "tableCellStyle",
+            "options": [
+              "Bold",
+              "Italic",
+              "Positive vs Negative"
+            ]
+          }
+        ]
+      },
+      "clickDimension": {
+        "kind": "dimension",
+        "label": "Dimension to set on click",
+        "required": false,
+        "inputs": []
+      },
+      "sortColumn": {
+        "kind": "dimensionOrMeasure",
+        "label": "Default sort column",
+        "inputs": []
+      }
+    }
+  }
+}
