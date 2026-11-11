@@ -1,4 +1,6 @@
-# charts-ui (working name)
+# RKit
+
+RKit (Remarkable Kit), docs at rkit.embeddable.com. This repo and the npm package are still called `charts-ui` until the package name is chosen (ROADMAP.md, Phase 5).
 
 Standalone build of the Remarkable Pro components for teams that bring their own data layer. No Embeddable runtime, builder metadata, or data loading.
 
@@ -21,7 +23,7 @@ Docs pages are data, not JSX, so one source renders the page, its "On this page"
 
 | Path | What |
 |---|---|
-| `site/docs/guides.ts` | Every guide page as blocks (headings, Markdown prose, code, live demos), including "Why charts-ui" and its comparison with a raw chart library. |
+| `site/docs/guides.ts` | Every guide page as blocks (headings, Markdown prose, code, live demos), including "Why RKit" and its comparison with a raw chart library. |
 | `site/docs/components.ts` | Per component, derived from the registry and generated props: its examples (presets, an "Other" bucket where supported, loading/empty/error), what it does for you, its Markdown and its "Copy prompt" text for AI coding assistants. |
 | `site/docs/nav.ts` | The sidebar and the ⌘K search index. |
 | `site/pages/DocPage.tsx`, `ComponentDocPage.tsx`, `ComponentsIndex.tsx` | The guide, component and components-index pages. |

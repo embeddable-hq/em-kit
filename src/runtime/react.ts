@@ -14,6 +14,6 @@ export const useEmbeddableLayout = (): EmbeddableLayout => useContext(LayoutCont
 
 export const useTheme = (): object => {
   const theme = useContext(ThemeContext);
-  if (!theme) throw new Error('charts-ui components must be rendered inside <ChartsProvider>.');
+  if (!theme) throw new Error('RKit components must be rendered inside <ChartsProvider>.');
   return theme;
 };
