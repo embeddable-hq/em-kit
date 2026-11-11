@@ -78,6 +78,9 @@ export type ChartVariant = {
   notes?: string[];
   // Spans the full gallery row.
   wide?: boolean;
+  // Shown on the component's docs page only, not as a gallery card, so the
+  // gallery stays one screen per group.
+  docsOnly?: boolean;
   props: (ctx: BuildContext) => Record<string, unknown>;
 };
 
@@ -868,6 +871,481 @@ export const chartEntries: ChartEntry[] = [
     }),
   },
 ];
+
+// More presets per component, shown as examples on its docs page. Each one
+// shows an option a chart library would leave to you; layered over the
+// entry's props like the gallery presets above.
+const docsPresets: Record<string, ChartVariant[]> = {
+  kpi: [
+    {
+      id: 'compact',
+      title: 'Compact',
+      name: 'KPI number · compact',
+      description: 'A large figure shortened to “1.2M”, still in the reader’s locale.',
+      notes: ['`abbreviateLargeNumber` is a field option on the measure; the prefix stays.'],
+      props: (ctx) => ({ measure: withInputs(ctx.field('primary'), { abbreviateLargeNumber: true }) }),
+    },
+    {
+      id: 'fixed-size',
+      title: 'Fixed size',
+      name: 'KPI number · fixed font size',
+      description: 'A set font size instead of auto-fitting the card, for a row of KPIs that should match.',
+      notes: ['Without `fontSize` the number grows and shrinks to fill the card.'],
+      props: () => ({ fontSize: 40 }),
+    },
+  ],
+  'kpi-comparison': [
+    {
+      id: 'absolute-change',
+      title: 'Absolute change',
+      name: 'KPI with comparison · absolute change',
+      description: 'The change as an amount in the measure’s own format, instead of a percentage.',
+      notes: ['`displayChangeAsPercentage: false` formats the change like the value, prefix included.'],
+      props: () => ({ displayChangeAsPercentage: false }),
+    },
+    {
+      id: 'lower-is-better',
+      title: 'Lower is better',
+      name: 'KPI with comparison · lower is better',
+      description: 'For costs, churn or response times: a rise shows red and a fall shows green.',
+      notes: [
+        '`reversePositiveNegativeColors` swaps the colours; `reverseTrendDirection` flips the arrow too, if you want it to point the other way.',
+      ],
+      props: () => ({ reversePositiveNegativeColors: true }),
+    },
+    {
+      id: 'precise',
+      title: 'Two decimals',
+      name: 'KPI with comparison · two decimals',
+      description: 'A more precise change, for metrics that move by fractions of a percent.',
+      props: () => ({ percentageDecimalPlaces: 2 }),
+    },
+  ],
+  bar: [
+    {
+      id: 'axis-titles',
+      title: 'With axis titles',
+      name: 'Bar chart · axis titles',
+      description: 'Captions on both axes, and compact numbers on the value axis.',
+      docsOnly: true,
+      props: (ctx) => ({
+        measures: [withInputs(ctx.field('primary'), { abbreviateLargeNumber: true })],
+        xAxisLabel: ctx.ds.specs.category.title,
+        yAxisLabel: ctx.ds.specs.primary.title,
+        showLegend: false,
+      }),
+    },
+    {
+      id: 'fixed-range',
+      title: 'Fixed scale',
+      name: 'Bar chart · fixed value range',
+      description: 'A pinned value axis, so charts side by side share one scale.',
+      notes: ['`yAxisRangeMin` and `yAxisRangeMax` pin the axis; values above the maximum are clipped.'],
+      docsOnly: true,
+      props: (ctx) => {
+        const top = Math.max(...ctx.ds.byCategory.map((r) => Number(r[ctx.ds.specs.primary.name] ?? 0)));
+        return { yAxisRangeMin: 0, yAxisRangeMax: Math.ceil((top * 1.5) / 100000) * 100000, showLegend: false };
+      },
+    },
+  ],
+  'bar-horizontal': [
+    {
+      id: 'labelled',
+      title: 'Labelled',
+      name: 'Horizontal bar chart · value labels',
+      description: 'Each bar labelled with its compact value, legend off: a ranked list that reads without the axis.',
+      props: (ctx) => ({
+        measures: [withInputs(ctx.field('primary'), { abbreviateLargeNumber: true })],
+        showValueLabels: true,
+        showLegend: false,
+      }),
+    },
+    {
+      id: 'truncated',
+      title: 'Short labels',
+      name: 'Horizontal bar chart · truncated labels',
+      description: 'Long category names cut to eight characters on the axis; the tooltip shows them in full.',
+      notes: ['`maxCharacters` is a field option on the dimension.'],
+      props: (ctx) => ({ dimension: withInputs(ctx.field('category'), { maxCharacters: 8 }) }),
+    },
+  ],
+  'bar-grouped': [
+    {
+      id: 'labelled',
+      title: 'Labelled',
+      name: 'Grouped bar chart · value labels',
+      description: 'Every bar labelled with its compact value.',
+      props: (ctx) => ({
+        measure: withInputs(ctx.field('primary'), { abbreviateLargeNumber: true }),
+        showValueLabels: true,
+      }),
+    },
+    {
+      id: 'axis-titles',
+      title: 'With axis titles',
+      name: 'Grouped bar chart · axis titles',
+      description: 'Captions on both axes.',
+      props: (ctx) => ({ xAxisLabel: ctx.ds.specs.category.title, yAxisLabel: ctx.ds.specs.primary.title }),
+    },
+  ],
+  'bar-grouped-horizontal': [
+    {
+      id: 'labelled',
+      title: 'Labelled',
+      name: 'Grouped horizontal bar chart · value labels',
+      description: 'Every bar labelled with its compact value.',
+      props: (ctx) => ({
+        measure: withInputs(ctx.field('primary'), { abbreviateLargeNumber: true }),
+        showValueLabels: true,
+      }),
+    },
+  ],
+  'bar-stacked': [
+    {
+      id: 'totals',
+      title: 'With totals',
+      name: 'Stacked bar chart · totals',
+      description: 'Each stack’s total printed above it, in compact numbers.',
+      notes: ['`showTotalLabels` adds the totals; the segments keep their own tooltips.'],
+      props: (ctx) => ({
+        measure: withInputs(ctx.field('primary'), { abbreviateLargeNumber: true }),
+        showTotalLabels: true,
+      }),
+    },
+    {
+      id: 'segment-labels',
+      title: 'Segment values',
+      name: 'Stacked bar chart · segment values',
+      description: 'Every segment labelled, for reading the mix as well as the total.',
+      props: (ctx) => ({
+        measure: withInputs(ctx.field('primary'), { abbreviateLargeNumber: true }),
+        showValueLabels: true,
+        showTotalLabels: true,
+      }),
+    },
+  ],
+  'bar-stacked-horizontal': [
+    {
+      id: 'totals',
+      title: 'With totals',
+      name: 'Stacked horizontal bar chart · totals',
+      description: 'Each stack’s total printed at its end, in compact numbers.',
+      props: (ctx) => ({
+        measure: withInputs(ctx.field('primary'), { abbreviateLargeNumber: true }),
+        showTotalLabels: true,
+      }),
+    },
+  ],
+  'bar-line': [
+    {
+      id: 'labelled',
+      title: 'Labelled',
+      name: 'Bar and line combo · labelled',
+      description: 'Values on the bars and on the line, each formatted by its own measure.',
+      notes: ['`showValueLabels` labels the bars and `showValueLabelsLine` the line, so you can label one without the other.'],
+      props: (ctx) => ({
+        measures: [withInputs(ctx.field('primary'), { abbreviateLargeNumber: true })],
+        showValueLabels: true,
+        showValueLabelsLine: true,
+      }),
+    },
+    {
+      id: 'axis-titles',
+      title: 'Two axes',
+      name: 'Bar and line combo · axis titles',
+      description: 'A caption on each value axis, so it’s clear which scale belongs to which series.',
+      props: (ctx) => ({
+        yAxisLabel: ctx.ds.specs.primary.title,
+        yAxisSecondaryLabel: ctx.ds.specs.secondary.title,
+        yAxisSecondaryMin: 0,
+      }),
+    },
+  ],
+  line: [
+    {
+      id: 'zero-based',
+      title: 'From zero',
+      name: 'Line chart · axis from zero',
+      description: 'The value axis starts at zero, so the size of a change isn’t exaggerated.',
+      notes: ['By default the axis fits the data; `yAxisRangeMin: 0` anchors it.'],
+      docsOnly: true,
+      props: (ctx) => ({ yAxisRangeMin: 0, yAxisLabel: ctx.ds.specs.primary.title, showLegend: false }),
+    },
+    {
+      id: 'reversed',
+      title: 'Newest first',
+      name: 'Line chart · newest first',
+      description: 'Time running right to left, for reports that read from the latest period.',
+      docsOnly: true,
+      props: () => ({ reverseXAxis: true, showLegend: false }),
+    },
+  ],
+  'line-grouped': [
+    {
+      id: 'labelled',
+      title: 'Labelled',
+      name: 'Multi-series line chart · value labels',
+      description: 'Every point labelled with its compact value; best at coarser granularities.',
+      docsOnly: true,
+      props: (ctx) => ({
+        measure: withInputs(ctx.field('primary'), { abbreviateLargeNumber: true }),
+        showValueLabels: true,
+      }),
+    },
+    {
+      id: 'zero-based',
+      title: 'From zero',
+      name: 'Multi-series line chart · axis from zero',
+      description: 'A zero-based value axis, so the gap between segments reads true to scale.',
+      docsOnly: true,
+      props: () => ({ yAxisRangeMin: 0 }),
+    },
+  ],
+  'line-comparison': [
+    {
+      id: 'comparison-axis',
+      title: 'With both date axes',
+      name: 'Line chart with comparison · second date axis',
+      description: 'A second x-axis with the comparison period’s own dates, so both lines can be read exactly.',
+      notes: ['`showComparisonAxis` adds the axis; without it, the earlier line is aligned to the current dates.'],
+      props: () => ({ showComparisonAxis: true }),
+    },
+    {
+      id: 'styled',
+      title: 'Styled lines',
+      name: 'Line chart with comparison · styled lines',
+      description: 'The current period filled and the earlier period dashed, set on the measure.',
+      notes: ['`fillUnderLine` and `previousLineDashed` are field options on the measure.'],
+      props: (ctx) => ({
+        measures: [withInputs(ctx.field('primary'), { fillUnderLine: true, previousLineDashed: true })],
+      }),
+    },
+  ],
+  'line-with-kpi-tabs': [
+    {
+      id: 'filled',
+      title: 'Filled',
+      name: 'Line chart with KPI tabs · filled',
+      description: 'Each measure shaded under its line when its tab is selected.',
+      props: (ctx) => ({
+        measures: [
+          withInputs(ctx.field('primary'), { fillUnderLine: true }),
+          withInputs(ctx.field('secondary'), { fillUnderLine: true }),
+        ],
+      }),
+    },
+  ],
+  'line-comparison-with-kpi-tabs': [
+    {
+      id: 'comparison-axis',
+      title: 'With both date axes',
+      name: 'Line chart with comparison and KPI tabs · second date axis',
+      description: 'The comparison period’s own dates on a second x-axis.',
+      props: () => ({ showComparisonAxis: true }),
+    },
+  ],
+  area: [
+    {
+      id: 'axis-titles',
+      title: 'With axis titles',
+      name: 'Stacked area chart · axis titles',
+      description: 'Captions on both axes and compact numbers on the value axis.',
+      props: (ctx) => ({
+        measure: withInputs(ctx.field('primary'), { abbreviateLargeNumber: true }),
+        xAxisLabel: ctx.ds.specs.time.title,
+        yAxisLabel: ctx.ds.specs.primary.title,
+      }),
+    },
+  ],
+  pie: [
+    {
+      id: 'percentages',
+      title: 'As percentages',
+      name: 'Pie chart · percentages',
+      description: 'Each slice labelled with its share of the total instead of its value.',
+      notes: ['`showValueLabelsAsPercentage` works out the shares from your rows; no extra query.'],
+      props: () => ({ showValueLabels: true, showValueLabelsAsPercentage: true }),
+    },
+    {
+      id: 'other',
+      title: 'Top slices',
+      name: 'Pie chart · long tail as “Other”',
+      description: 'At most three slices: the first two rows, and the rest added up into one “Other” slice.',
+      notes: ['`maxLegendItems` keeps your rows’ order, so sort the query largest first.'],
+      props: () => ({ maxLegendItems: 3 }),
+    },
+  ],
+  donut: [
+    {
+      id: 'percentages',
+      title: 'As percentages',
+      name: 'Donut chart · percentages',
+      description: 'Each segment labelled with its share of the total.',
+      props: () => ({ showValueLabels: true, showValueLabelsAsPercentage: true }),
+    },
+    {
+      id: 'minimal',
+      title: 'Minimal',
+      name: 'Donut chart · minimal',
+      description: 'No legend and no labels: shape only, with the detail in the tooltips.',
+      props: () => ({ showLegend: false, showValueLabels: false }),
+    },
+  ],
+  'donut-label': [
+    {
+      id: 'percentages',
+      title: 'As percentages',
+      name: 'Donut with total · percentages',
+      description: 'The total in the centre and each segment’s share around it.',
+      props: () => ({ showValueLabels: true, showValueLabelsAsPercentage: true }),
+    },
+    {
+      id: 'compact',
+      title: 'Compact total',
+      name: 'Donut with total · compact total',
+      description: 'The centre figure shortened to “1.2M”, set on the inner label’s measure.',
+      props: (ctx) => ({ innerLabelMeasure: withInputs(ctx.field('primary'), { abbreviateLargeNumber: true }) }),
+    },
+  ],
+  funnel: [
+    {
+      id: 'percentages',
+      title: 'Share of total',
+      name: 'Funnel chart · percentages',
+      description: 'Each step as a percentage of the total instead of its raw value.',
+      notes: ['`displayPercentages` works the shares out from your rows.'],
+      props: () => ({ displayPercentages: true }),
+    },
+    {
+      id: 'step-names',
+      title: 'Named steps',
+      name: 'Funnel chart · step names',
+      description: 'Each step’s name printed on it, so the funnel reads without a legend.',
+      props: () => ({ showSectionLabels: true, showLegend: false }),
+    },
+    {
+      id: 'proportional',
+      title: 'Proportional',
+      name: 'Funnel chart · proportional bars',
+      description: 'No taper: plain bars whose widths are exactly proportional, at the cost of the funnel look.',
+      notes: ['`shrinkAnchor: \'none\'` turns the taper off; `shrinkFraction` (0 to 1) softens it instead.'],
+      props: () => ({ shrinkAnchor: 'none' }),
+    },
+    {
+      id: 'colours',
+      title: 'Custom colours',
+      name: 'Funnel chart · custom colour ramp',
+      description: 'A ramp between two colours of your choice, from the first step to the last.',
+      notes: ['Set `startColor` and `endColor`; with one of them, the other is generated.'],
+      props: () => ({ startColor: '#0ea5e9', endColor: '#1e3a8a' }),
+    },
+  ],
+  scatter: [
+    {
+      id: 'point-labels',
+      title: 'Labelled points',
+      name: 'Scatter chart · point labels',
+      description: 'Each point labelled with its dimension value, so outliers name themselves.',
+      props: () => ({ showPointLabels: true }),
+    },
+    {
+      id: 'single-colour',
+      title: 'One colour',
+      name: 'Scatter chart · one colour',
+      description: 'Every point in one colour with no grouping, for a plain correlation plot.',
+      props: () => ({ groupByDimension: undefined, pointColor: '#0ea5e9', showLegend: false }),
+    },
+  ],
+  bubble: [
+    {
+      id: 'point-labels',
+      title: 'Labelled bubbles',
+      name: 'Bubble chart · labels',
+      description: 'Each bubble labelled with its dimension value.',
+      props: () => ({ showPointLabels: true }),
+    },
+    {
+      id: 'size-range',
+      title: 'Wider size range',
+      name: 'Bubble chart · wider size range',
+      description: 'A wider spread between the smallest and largest bubble, to make the third measure stand out.',
+      notes: ['`bubbleRadiusMin` and `bubbleRadiusMax` are in pixels.'],
+      props: () => ({ bubbleRadiusMin: 3, bubbleRadiusMax: 28 }),
+    },
+  ],
+  table: [
+    {
+      id: 'formatted',
+      title: 'Formatted columns',
+      name: 'Paginated table · formatted columns',
+      description: 'Column formatting set per field: compact numbers, bold names and right-aligned values.',
+      notes: ['`tableCellStyle`, `align` and `width` are field options on each column’s dimension or measure.'],
+      props: (ctx) => ({
+        dimensionsAndMeasures: [
+          withInputs(ctx.field('category'), { tableCellStyle: 'Bold' }),
+          withInputs(ctx.field('primary'), { abbreviateLargeNumber: true, align: 'right' }),
+          withInputs(ctx.field('secondary'), { align: 'right' }),
+        ],
+        showIndex: false,
+      }),
+    },
+  ],
+  'table-scrollable': [
+    {
+      id: 'auto-height',
+      title: 'Auto height',
+      name: 'Scrollable table · auto height',
+      description: 'The card grows to fit every row instead of scrolling: for printable reports and embedded summaries.',
+      notes: [
+        '`heightMode="auto"`: pass all the rows at once (up to your own cap) with `results.total`, and the table says when rows were left out.',
+      ],
+      props: () => ({ heightMode: 'auto' }),
+    },
+  ],
+  pivot: [
+    {
+      id: 'compact',
+      title: 'Compact numbers',
+      name: 'Pivot table · compact numbers',
+      description: 'Every cell and total shortened to “1.2M”, with wider columns.',
+      props: (ctx) => ({
+        measures: [withInputs(ctx.field('primary'), { abbreviateLargeNumber: true, columnAggregation: ['sum'], rowAggregation: ['sum'] })],
+        columnWidth: 140,
+      }),
+    },
+  ],
+  heatmap: [
+    {
+      id: 'colours',
+      title: 'Custom scale',
+      name: 'Heat map · custom colour scale',
+      description: 'Your own cold, middle and hot colours.',
+      notes: ['`minColor`, `midColor` and `maxColor`; the cell text switches between dark and light for contrast.'],
+      props: () => ({ minColor: '#ecfeff', midColor: '#22d3ee', maxColor: '#155e75' }),
+    },
+    {
+      id: 'thresholds',
+      title: 'Thresholds',
+      name: 'Heat map · thresholds',
+      description: 'Everything in the bottom fifth of the range fully cold and the top fifth fully hot, so outliers don’t wash out the rest.',
+      notes: ['Thresholds take a raw value or a percentage of the range: `minThreshold: \'20%\'`, `maxThreshold: \'80%\'`.'],
+      props: () => ({ minThreshold: '20%', maxThreshold: '80%' }),
+    },
+    {
+      id: 'colours-only',
+      title: 'Colours only',
+      name: 'Heat map · colours only',
+      description: 'No numbers in the cells, for a compact pattern view; values stay in the tooltips and exports.',
+      props: () => ({ showValues: false }),
+    },
+  ],
+};
+
+// Docs presets are examples, not gallery cards.
+for (const entry of chartEntries) {
+  const extra = (docsPresets[entry.id] ?? []).map((v) => ({ ...v, docsOnly: v.docsOnly ?? true }));
+  if (extra.length) entry.variants = [...(entry.variants ?? []), ...extra];
+}
 
 export const chartGroups = ['KPIs', 'Bars', 'Stacked', 'Lines', 'Pies', 'Funnels', 'Scatter', 'Tables'] as const;
 

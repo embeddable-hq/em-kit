@@ -56,7 +56,7 @@ const capabilityExamples = (entry: ChartEntry): ComponentExample[] => {
       id: 'other-bucket',
       name: 'Long tail grouped into “Other”',
       description:
-        '`xAxisMaxItems: 3` shows at most three bars: the largest values, with the rest added up into one “Other” bar. A long tail stays readable without pre-aggregating your rows.',
+        '`xAxisMaxItems: 3` shows at most three bars: the first two rows, and the rest added up into one “Other” bar. It keeps your rows’ order, so sort the query largest first. A long tail stays readable without a second query.',
       dataState: 'ready',
       overrides: { xAxisMaxItems: 3 },
     },
@@ -98,7 +98,7 @@ export const builtIns = (entry: ChartEntry): string[] => {
   if (has(props, 'resultsComparison') || has(props, 'comparisonPeriod')) {
     items.push('Comparison period worked out from the primary range and overlaid on the same axis');
   }
-  if (has(props, 'resultsGroupOther') || has(props, 'xAxisMaxItems')) {
+  if (has(props, 'resultsGroupOther') || has(props, 'xAxisMaxItems') || (has(props, 'maxLegendItems') && has(props, 'onSegmentClick'))) {
     items.push('Long tails grouped into “Other” so the chart stays readable');
   }
   if (has(props, 'showLegend') || has(props, 'showTooltips')) {

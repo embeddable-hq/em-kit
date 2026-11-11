@@ -130,7 +130,7 @@ const GroupNav = () => {
       {chartGroups.map((group) => {
         const count = chartEntries
           .filter((e) => e.group === group)
-          .reduce((n, e) => n + 1 + (e.variants?.length ?? 0), 0);
+          .reduce((n, e) => n + 1 + (e.variants?.filter((v) => !v.docsOnly).length ?? 0), 0);
         return (
           <button
             key={group}
@@ -177,7 +177,7 @@ export const Gallery = () => {
               <div className={`gallery-grid${canvas.dark ? ' is-dark' : ''}`}>
                 {entries.flatMap((entry) => [
                   <GalleryCard key={entry.id} entry={entry} />,
-                  ...(entry.variants ?? []).map((variant) => (
+                  ...(entry.variants ?? []).filter((v) => !v.docsOnly).map((variant) => (
                     <GalleryCard key={`${entry.id}/${variant.id}`} entry={entry} variant={variant} />
                   )),
                 ])}

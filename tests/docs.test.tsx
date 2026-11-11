@@ -91,3 +91,15 @@ describe('search', () => {
     }
   });
 });
+
+describe('presets', () => {
+  it('every preset title is translated', async () => {
+    const { titleId } = await import('../site/catalog/registry');
+    const source = (await import('../site/catalog/translations.ts?raw')).default as string;
+    for (const entry of chartEntries) {
+      for (const variant of entry.variants ?? []) {
+        expect(source, `${entry.id}/${variant.id}`).toContain(`'${titleId(entry, variant)}':`);
+      }
+    }
+  });
+});

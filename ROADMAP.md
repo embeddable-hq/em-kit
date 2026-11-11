@@ -43,7 +43,7 @@ Before this phase, `sync.mjs` copied every upstream component, but `src/index.ts
 The takeaways from the Bklit review:
 
 - [x] **One page per component** (`/docs/components/<id>`): live preview, install, what it does for you (derived from its props), examples, a props table with builder defaults, field options. The shadcn install tab waits for Phase 3.
-- [x] **Named examples on every component page**, each with Preview/Code tabs and an "On this page" entry: the registry presets, an automatic "Other" bucket example where `xAxisMaxItems` exists, and loading/empty/error. More hand-made presets per chart would bring it closer to Bklit's ~20 per chart.
+- [x] **Named examples on every component page**, each with Preview/Code tabs and an "On this page" entry: 53 presets across the 25 components (1–5 each, beyond the default), each showing a real option (compact numbers, axis ranges, totals, percentages, “Other” buckets, colour scales, thresholds, auto height…), translated de/fr; plus an automatic "Other" example where `xAxisMaxItems` exists, and loading/empty/error. Docs-only presets (`docsOnly`) stay out of the gallery so it remains one screen per group.
 - [x] **"Copy prompt"** on every example and component (code, data contract, and what not to rebuild), and **"Copy Markdown"** on every docs page.
 - [x] **Docs split into pages** (Getting started / Guides / Components) with ⌘K search, path routing and per-page titles.
 - [x] **Sell the benefits:** a "Why charts-ui" page (the same card on react-chartjs-2 vs here, and a 12-row comparison of what a chart library leaves to you), the same side-by-side on the landing page, and a "What it does for you" list on every component page.
