@@ -42,11 +42,12 @@ Before this phase, `sync.mjs` copied every upstream component, but `src/index.ts
 
 The takeaways from the Bklit review:
 
-- [ ] **One page per component:** preview, install (npm and shadcn tabs), usage, then a props table generated from `site/generated/props.ts`.
-- [ ] **Named variants on every chart page** (Stacked, Comparison, Loading, Empty, …), each with its own code, plus an "On this page" sidebar.
-- [ ] **"Copy prompt" beside "Copy code"** on every example, and **"Copy Markdown"** on every docs page.
-- [ ] **Docs split into pages** (Getting started / Guides / Components) with ⌘K search.
-- [ ] **Hosting:** deploy on the new domain with OG images and per-page titles, so search engines index each chart.
+- [x] **One page per component** (`/docs/components/<id>`): live preview, install, what it does for you (derived from its props), examples, a props table with builder defaults, field options. The shadcn install tab waits for Phase 3.
+- [x] **Named examples on every component page**, each with Preview/Code tabs and an "On this page" entry: the registry presets, an automatic "Other" bucket example where `xAxisMaxItems` exists, and loading/empty/error. More hand-made presets per chart would bring it closer to Bklit's ~20 per chart.
+- [x] **"Copy prompt"** on every example and component (code, data contract, and what not to rebuild), and **"Copy Markdown"** on every docs page.
+- [x] **Docs split into pages** (Getting started / Guides / Components) with ⌘K search, path routing and per-page titles.
+- [x] **Sell the benefits:** a "Why charts-ui" page (the same card on react-chartjs-2 vs here, and a 12-row comparison of what a chart library leaves to you), the same side-by-side on the landing page, and a "What it does for you" list on every component page.
+- [ ] **Hosting (Phase 5):** deploy on rkit.embeddable.com with an SPA fallback. For search engines, prerender each route to static HTML and add per-page meta descriptions and OG images; per-page titles are done.
 
 ## Phase 3: shadcn compatibility (~3 days; hosting the registry waits for Phase 5)
 

@@ -7,7 +7,8 @@ import { ChartSettings } from '../catalog/build';
 import { propNote } from '../catalog/propNotes';
 import { chartEntries, ChartEntry, DataState, getVariant } from '../catalog/registry';
 import { componentFieldOptions, componentProps, FieldDoc, FieldOptionDoc, PropDoc } from '../generated/props';
-import { href } from '../router';
+import { BRAND } from '../config';
+import { href, navigate, useDocumentTitle } from '../router';
 import { useCanvas, useSiteSettings } from '../state';
 
 const dataStates: { id: DataState; label: string }[] = [
@@ -464,7 +465,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
               className="select"
               value={variantId ?? ''}
               onChange={(e) => {
-                window.location.hash = href(`/charts/${entry.id}${e.target.value ? `/${e.target.value}` : ''}`);
+                navigate(`/charts/${entry.id}${e.target.value ? `/${e.target.value}` : ''}`);
               }}
             >
               <option value="">{entry.name}</option>
@@ -615,7 +616,7 @@ const optionDescription = (option: FieldOptionDoc) => {
 
 // One row per option, listing the field props that read it: most options
 // repeat across a chart's fields, so a table per field would mostly repeat.
-const FieldOptions = ({ entry }: { entry: ChartEntry }) => {
+export const FieldOptions = ({ entry }: { entry: ChartEntry }) => {
   const fields = componentFieldOptions[String(entry.exportName)] ?? {};
   const rows = useMemo(() => {
     const byName = new Map<string, { option: FieldOptionDoc; fields: string[] }>();
@@ -679,6 +680,7 @@ const FieldOptions = ({ entry }: { entry: ChartEntry }) => {
 
 export const ChartPage = ({ entry, variantId }: { entry: ChartEntry; variantId?: string }) => {
   const variant = getVariant(entry, variantId);
+  useDocumentTitle(`${variant?.name ?? entry.name} playground`, BRAND.name);
   const index = chartEntries.indexOf(entry);
   const prev = chartEntries[index - 1];
   const next = chartEntries[index + 1];
@@ -686,14 +688,21 @@ export const ChartPage = ({ entry, variantId }: { entry: ChartEntry; variantId?:
   return (
     <div className="container page">
       <nav className="breadcrumb" aria-label="Breadcrumb">
-        <a href={href('/charts')}>Charts</a>
+        <a href={href('/charts')}>Gallery</a>
         <span aria-hidden>/</span>
         <span>{entry.group}</span>
+        <span aria-hidden>/</span>
+        <span>Playground</span>
       </nav>
       <div className="page__head">
         <h1>{entry.name}</h1>
         <p className="lede">{variant?.description ?? entry.description}</p>
-        <code className="badge">{`<${String(entry.exportName)} />`}</code>
+        <div className="docs-head__actions">
+          <code className="badge">{`<${String(entry.exportName)} />`}</code>
+          <a className="button button--small" href={`/docs/components/${entry.id}`}>
+            Docs and examples
+          </a>
+        </div>
       </div>
       <Playground key={`${entry.id}/${variant?.id ?? ''}`} entry={entry} variantId={variant?.id} />
       <FieldOptions entry={entry} />

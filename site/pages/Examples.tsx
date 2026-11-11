@@ -5,7 +5,7 @@ import { SpecPlayground } from '../components/SpecPlayground';
 import { ChartContextBar } from '../components/Switchers';
 import { datasets } from '../catalog/datasets';
 import { BRAND } from '../config';
-import { href } from '../router';
+import { href, useDocumentTitle } from '../router';
 import { useCanvas, useSiteSettings } from '../state';
 
 const examples = [
@@ -225,6 +225,7 @@ const ChatExample = () => (
 );
 
 export const Examples = ({ example }: { example: ExampleId }) => {
+  useDocumentTitle(example === 'dashboard' ? 'Dashboard example' : 'AI chat example', BRAND.name);
   return (
     <div className="page">
       <div className="container page__head">

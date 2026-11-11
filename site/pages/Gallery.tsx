@@ -5,7 +5,8 @@ import { useChart } from '../components/useChart';
 import { buildChart, ChartSettings } from '../catalog/build';
 import { PERIOD_LABEL } from '../catalog/datasets';
 import { chartEntries, chartGroups, ChartEntry, ChartVariant } from '../catalog/registry';
-import { href } from '../router';
+import { BRAND } from '../config';
+import { href, useDocumentTitle } from '../router';
 import { useCanvas, useSiteSettings } from '../state';
 
 const noop = () => {};
@@ -69,7 +70,7 @@ const GalleryCard = ({ entry, variant }: { entry: ChartEntry; variant?: ChartVar
         </div>
       </div>
       <div className="gallery-card__meta">
-        <a className="gallery-card__name" href={href(path)}>
+        <a className="gallery-card__name" href={`/docs/components/${entry.id}${variant ? `#${variant.id}` : ''}`}>
           {name}
         </a>
         <div className="gallery-card__actions">
@@ -152,6 +153,7 @@ const GroupNav = () => {
 
 export const Gallery = () => {
   const canvas = useCanvas();
+  useDocumentTitle('Gallery', BRAND.name);
   return (
     <div className="page">
       <div className="container container--wide page__head">

@@ -15,7 +15,16 @@ npm run dev          # docs site on http://localhost:5310
 
 ## Docs site (`site/`)
 
-A landing page, then the chart gallery, the docs and the examples. Hash-routed: `#/`, `#/charts`, `#/charts/<id>`, `#/docs`, `#/examples` (analytics dashboard), `#/examples/ai-chat`. The old `#/sample-app` and `#/ai` routes alias to the two examples (`site/router.ts`).
+A landing page, the docs (shadcn-style: sidebar, page, "On this page", ⌘K search), the chart gallery with a playground per chart, and the examples. Path-routed (`site/router.ts`), so every page has a real URL: `/`, `/docs/<guide>`, `/docs/components`, `/docs/components/<id>`, `/charts`, `/charts/<id>[/<preset>]` (playground), `/examples`, `/examples/ai-chat`. Old `#/…` links and aliases rewrite to their canonical path on load. The host must serve `index.html` for unknown paths (Vite does in dev).
+
+Docs pages are data, not JSX, so one source renders the page, its "On this page" list, "Copy Markdown" and the search index (and later `llms.txt`):
+
+| Path | What |
+|---|---|
+| `site/docs/guides.ts` | Every guide page as blocks (headings, Markdown prose, code, live demos), including "Why charts-ui" and its comparison with a raw chart library. |
+| `site/docs/components.ts` | Per component, derived from the registry and generated props: its examples (presets, an "Other" bucket where supported, loading/empty/error), what it does for you, its Markdown and its "Copy prompt" text for AI coding assistants. |
+| `site/docs/nav.ts` | The sidebar and the ⌘K search index. |
+| `site/pages/DocPage.tsx`, `ComponentDocPage.tsx`, `ComponentsIndex.tsx` | The guide, component and components-index pages. |
 
 | Path | What |
 |---|---|
@@ -25,7 +34,7 @@ A landing page, then the chart gallery, the docs and the examples. Hash-routed: 
 | `site/catalog/datasets.ts` | Three seeded sample datasets (SaaS, web, retail), re-aggregated per granularity like a real query. |
 | `site/catalog/themes.ts` | Theme presets (Default, Ocean, Forest, Midnight) and languages. |
 | `site/generated/props.ts` | Every public component's props, extracted from the types by `scripts/props.mjs` (runs with `npm run sync`). Chart pages turn it into live controls: scalar props get inputs that update the preview and the generated code together, data-bound props and handlers show as chips. `site/catalog/propNotes.ts` holds the hand-written one-liner per prop name, shown on hover. |
-| `site/pages/` | Landing, Gallery, ChartPage (preview, code, data, props and event log), Docs (including the AI setup reference: tool, guidance, schema), Examples (one tab per complete app). |
+| `site/pages/` | Landing, Gallery, ChartPage (the playground: preview, code, data, props and event log), the docs pages above, Examples (one tab per complete app). |
 | `site/components/HeroShowcase.tsx` | The landing page's one visual: the same components on a live dashboard and in an AI chat, fed by one `useLiveSeries` stream. A nested `ChartsProvider` scopes a single-hue colour ramp to both, so a value is the same colour on either surface. |
 | `site/components/DemoDashboard.tsx` | The dashboard example: five components cross-filtered by one donut click, with a granularity switcher and a controlled table. `site/pages/Examples.tsx` shows the standalone version of this source; keep the two in step. |
 | `site/components/ChatDemo.tsx`, `SpecPlayground.tsx` | The AI chat example: the mock chat (click → intent → next chart) and the paste-a-spec playground. |
