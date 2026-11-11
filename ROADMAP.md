@@ -6,10 +6,10 @@ Work top to bottom. Each phase can ship on its own. Estimates assume one person.
 
 ---
 
-## Decisions needed first (blocking)
+## Decisions
 
 1. ~~**Licence.**~~ Decided 2026-11-10: **MIT.** The upstream remarkable-pro and remarkable-ui repos are already public under MIT, so a no-resale licence on this package couldn't stop anyone reselling the same components taken from upstream. It would only add friction for users.
-2. ~~**Public name.**~~ Decided 2026-11-11: **R Kit** (Remarkable Kit), docs at **rkit.embeddable.com**. Still open: the npm package name, which gates Phase 2, the GitHub repo and the shadcn namespace.
+2. ~~**Public name.**~~ Decided 2026-11-11: **R Kit** (Remarkable Kit), docs at **rkit.embeddable.com**. Still open, deliberately until Phase 5: the npm package name, which sets the GitHub repo and the shadcn namespace.
 3. ~~**Embeddable's place in the brand.**~~ Settled by the domain: R Kit lives under embeddable.com.
 4. **Scope v1.** Charts and tables only, or also the standalone-safe editors (date range pickers, granularity and comparison-period selects)? Bklit has no editors, so these pair well with the charts.
 
@@ -38,16 +38,17 @@ Before this phase, `sync.mjs` copied every upstream component, but `src/index.ts
 - [x] **Builder defaults:** the sync found upstream's export menu is now opt-in, with its default set only in Embeddable's builder input, so standalone users silently lost CSV/PNG export. Fixed generally: the sync records every input's `defaultValue` from the definitions, and each exported component applies the ones that are props (`withDefaults`, type-checked with `satisfies`). Standalone charts now match Embeddable's out-of-the-box look, including value labels on bar, line, pie and scatter charts.
 - [ ] **Editors (if in scope):** extend the shim so the standalone-safe editors sync. The Embeddable-bound pickers (dimension/measure selects, filter builder) stay excluded.
 
-## Phase 2: A real npm package (~3 days)
+## Phase 2: Docs site on Bklit's level (~4 days)
 
-- [ ] **Library build** (tsup or Vite library mode): ESM plus `.d.ts`, CSS modules compiled into one `styles.css`, SVG assets inlined, `sideEffects` limited to CSS.
-- [ ] **Subpath exports:** `.`, `./ai`, `./build`, `./styles.css`. This unblocks the `charts-ui/ai` and `charts-ui/build` imports the docs already show.
-- [ ] **Works in Next.js App Router:** `'use client'` banners and no `window`/DOM access at import time. Prove it with a Next.js fixture app in CI.
-- [ ] **Widen React support:** test React 18. The peer dependency is `>=19.1.1` today, which cuts out a large share of apps.
-- [ ] **Bundle size:** register Chart.js controllers and plugins per chart, and add a `size-limit` budget per component.
-- [ ] **Release hygiene:** Changesets, npm provenance, `publint` and `are-the-types-wrong` in CI, plus a changelog page.
+The takeaways from the Bklit review:
 
-## Phase 3: shadcn compatibility (~3 days)
+- [ ] **One page per component:** preview, install (npm and shadcn tabs), usage, then a props table generated from `site/generated/props.ts`.
+- [ ] **Named variants on every chart page** (Stacked, Comparison, Loading, Empty, …), each with its own code, plus an "On this page" sidebar.
+- [ ] **"Copy prompt" beside "Copy code"** on every example, and **"Copy Markdown"** on every docs page.
+- [ ] **Docs split into pages** (Getting started / Guides / Components) with ⌘K search.
+- [ ] **Hosting:** deploy on the new domain with OG images and per-page titles, so search engines index each chart.
+
+## Phase 3: shadcn compatibility (~3 days; hosting the registry waits for Phase 5)
 
 **How Bklit "extends" shadcn.** shadcn/ui isn't an npm package. It's a CLI and a **registry format**: `npx shadcn add <item>` fetches a JSON registry item, copies its source files into your project, installs the npm dependencies it lists, and adds its CSS variables. Anyone can host a registry. Bklit hosts one under the `@bklit` namespace (`npx shadcn add @bklit/area-chart`), and its charts use shadcn's theme tokens (`--chart-1`…`--chart-5`, `--background`, `--border`, `--radius`). So they match any shadcn app out of the box. Bklit also ships an npm package (`@bklitui/ui/charts`) that the copied files import. It's a hybrid.
 
@@ -58,29 +59,27 @@ Our version of the same hybrid:
 - [ ] **Register the namespace** in shadcn's public registry directory, so `npx shadcn add @<name>/bar-chart` works and the shadcn MCP server can browse us.
 - [ ] **"Open in v0" buttons** on docs examples. These come free once the registry items exist.
 
-## Phase 4: Docs site on Bklit's level (~4 days)
-
-The takeaways from the Bklit review:
-
-- [ ] **One page per component:** preview, install (npm and shadcn tabs), usage, then a props table generated from `site/generated/props.ts`.
-- [ ] **Named variants on every chart page** (Stacked, Comparison, Loading, Empty, …), each with its own code, plus an "On this page" sidebar.
-- [ ] **"Copy prompt" beside "Copy code"** on every example, and **"Copy Markdown"** on every docs page.
-- [ ] **Docs split into pages** (Getting started / Guides / Components) with ⌘K search.
-- [ ] **Hosting:** deploy on the new domain with OG images and per-page titles, so search engines index each chart.
-
-## Phase 5: Available through Claude and other agents (~4 days, plus a spike)
+## Phase 4: Available through Claude and other agents (~4 days, plus a spike; publishing waits for Phase 5)
 
 - [ ] **`llms.txt` and `llms-full.txt`** generated from the docs. Also submit to Context7, which many coding agents query for library docs.
 - [ ] **Agent Skill:** "use <name>", covering the data contract, choosing a chart, theming and the AI spec. Port remarkable-pro's build-component skill alongside it. Ship both in the package and as a **Claude Code plugin** in a GitHub-hosted marketplace. Then apply to Anthropic's plugin directory, if submissions are open (check).
 - [ ] **MCP server** (`@<name>/mcp` on npm): tools to list components, get a component's docs and props, get an example, and validate a `ChartSpec`. It works in Claude Code, Claude Desktop, Cursor and others.
 - [ ] **Spike, ~2 days: interactive charts inside Claude chat.** The MCP Apps extension lets an MCP server return UI that the host renders. `ChartFromSpec` and the intent loop are already built for this. Check which Claude surfaces support it before committing.
 
-## Phase 6: Beyond React (later, ~1 week each)
+## Phase 5: Name, package and publish (~3 days, last)
 
-- [ ] Web-component build (`<x-bar-chart>`) for Vue, Svelte, Angular and plain HTML. It also enables a no-build CDN script via jsDelivr/unpkg.
-- [ ] Starter templates: a Next.js dashboard and an AI chat app (Vercel AI SDK and Anthropic SDK).
+Deliberately last (decided 2026-11-11): build and refine everything first, then name and package it once we're happy. Until then the working name `charts-ui` stays, and the docs site runs locally.
 
-## Phase 7: Launch
+- [ ] **Pick the npm name.** `rkit` is taken: "A UI component kit for React" by jaredreich, dormant since 2022 (19 downloads a month). Free as of 2026-11-11: `@embeddable.com/rkit`, `r-kit`, `rkit-ui`. No `@rkit/*` packages exist, but the `@rkit` scope can only be confirmed by trying to create the org. To decouple from Embeddable completely later, the unscoped options are `r-kit` or `rkit-ui`, or a request to npm for the dormant `rkit` (their name-dispute process, no guarantee).
+- [ ] **Rename** in `site/config.ts` and `package.json`, create the GitHub repo (confirm first), push, and point rkit.embeddable.com at the docs site.
+- [ ] **Library build** (tsup or Vite library mode): ESM plus `.d.ts`, CSS modules compiled into one `styles.css`, SVG assets inlined, `sideEffects` limited to CSS.
+- [ ] **Subpath exports:** `.`, `./ai`, `./build`, `./styles.css`. This unblocks the `charts-ui/ai` and `charts-ui/build` imports the docs already show.
+- [ ] **Works in Next.js App Router:** `'use client'` banners and no `window`/DOM access at import time. Prove it with a Next.js fixture app in CI.
+- [ ] **Widen React support:** test React 18. The peer dependency is `>=19.1.1` today, which cuts out a large share of apps.
+- [ ] **Bundle size:** register Chart.js controllers and plugins per chart, and add a `size-limit` budget per component.
+- [ ] **Release hygiene:** Changesets, npm provenance, `publint` and `are-the-types-wrong` in CI, plus a changelog page.
+
+## Phase 6: Launch
 
 - [ ] **Comparison page:** us vs shadcn charts vs Bklit vs Tremor, feature by feature (colour stability, gap filling, i18n, states, export, tables, AI spec).
 - [ ] **Launch channels:** X, Hacker News (Show HN), Product Hunt, r/reactjs, the shadcn community, and newsletters such as React Status and Bytes.
@@ -88,17 +87,22 @@ The takeaways from the Bklit review:
 
 ---
 
+## Later: Beyond React (~1 week each)
+
+- [ ] Web-component build (`<x-bar-chart>`) for Vue, Svelte, Angular and plain HTML. It also enables a no-build CDN script via jsDelivr/unpkg.
+- [ ] Starter templates: a Next.js dashboard and an AI chat app (Vercel AI SDK and Anthropic SDK).
+
 ## Running order
 
 | # | Phase | Estimate | Blocked by |
 |---|---|---|---|
 | 0 | Secure the work | 1 h | — |
-| 1 | Component intake | 2 d | — |
-| 2 | npm package | 3 d | Name, licence |
-| 3 | shadcn registry | 3 d | Phase 2 |
-| 4 | Docs site | 4 d | Phase 2 for install commands |
-| 5 | Claude and agents | 4 d + spike | Phases 2 and 4 |
-| 6 | Beyond React | 1 wk each | Phase 2 |
-| 7 | Launch | 2 d | Phases 2–5 |
+| 1 | Component intake | 2 d | — (done, upstream PRs in review) |
+| 2 | Docs site | 4 d | — |
+| 3 | shadcn compatibility | 3 d | — (registry hosting: Phase 5) |
+| 4 | Claude and agents | 4 d + spike | Phase 2 for `llms.txt` (publishing: Phase 5) |
+| 5 | Name, package, publish | 3 d | Being happy with 2–4; npm name |
+| 6 | Launch | 2 d | Phase 5 |
+| Later | Beyond React | 1 wk each | Phase 5 |
 
-That's about 3–4 weeks to launch. Phase 1 can start now, while the name and licence are decided.
+That's about 3–4 weeks to launch. Phases 2–4 need no name; the working name stays until Phase 5.

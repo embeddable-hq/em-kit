@@ -86,7 +86,7 @@ MIT, like the upstream remarkable-pro and remarkable-ui repositories it is built
 
 ## Todo
 
-- [ ] **Publish as R Kit.** Name and home decided 2026-11-11: **R Kit** (Remarkable Kit), docs at **rkit.embeddable.com**. Still open: the npm package name. Then rename in `site/config.ts` and `package.json`, create the GitHub repo (confirm first), and push.
+- [ ] **Publish as R Kit, last.** Name and home decided 2026-11-11: **R Kit** (Remarkable Kit), docs at **rkit.embeddable.com**. Build everything first; naming the npm package, renaming and publishing come at the end (ROADMAP.md, Phase 5). `rkit` itself is taken on npm.
 - [ ] **Localise percentages everywhere** (low impact, later). Six places format percentages by hand (`toFixed` + `%`), so German shows `12.5%` instead of `12,5 %`: remarkable-ui `KpiChartChange.tsx` (PR [remarkable-ui#445](https://github.com/embeddable-hq/remarkable-ui/pull/445) adds `percentageFormatter`), `PivotTable.utils.ts`, `funnel.utils.ts`; remarkable-pro `charts.utils.ts` (pie/donut labels as %), `LineChartComparisonWithKpiTabsPro.utils.tsx`, `FunnelChartPro.utils.ts`. Fix: one `themeFormatter.percent(value, decimals)` in remarkable-pro (Intl, theme locale), used directly in the three Pro spots and passed as `percentageFormatter` to the three ui ones. ~half a day.
 
 ## Open findings
