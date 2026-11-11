@@ -9,8 +9,8 @@ Work top to bottom. Each phase can ship on its own. Estimates assume one person.
 ## Decisions needed first (blocking)
 
 1. ~~**Licence.**~~ Decided 2026-11-10: **MIT.** The upstream remarkable-pro and remarkable-ui repos are already public under MIT, so a no-resale licence on this package couldn't stop anyone reselling the same components taken from upstream. It would only add friction for users.
-2. **Public name.** Gates npm, the GitHub repo, the shadcn namespace and the domain. Mason UI is a candidate. Avoid "remarkable" because of the reMarkable trademark.
-3. **Embeddable's place in the brand.** Options: none, a "by Embeddable" footer, or an "upgrade to Embeddable for hosted data" path.
+2. ~~**Public name.**~~ Decided 2026-11-11: **R Kit** (Remarkable Kit), docs at **rkit.embeddable.com**. Still open: the npm package name, which gates Phase 2, the GitHub repo and the shadcn namespace.
+3. ~~**Embeddable's place in the brand.**~~ Settled by the domain: R Kit lives under embeddable.com.
 4. **Scope v1.** Charts and tables only, or also the standalone-safe editors (date range pickers, granularity and comparison-period selects)? Bklit has no editors, so these pair well with the charts.
 
 ## Phase 0: Secure the work (~1 hour)
@@ -29,7 +29,7 @@ Before this phase, `sync.mjs` copied every upstream component, but `src/index.ts
 - [x] **`FunnelChart` exported**, with a gallery entry and funnel-stage data in all three sample datasets (translated de/fr).
 - [x] **CI:** `ci.yml` (types, tests, generated exports) and `sync-upstream.yml` (weekly sync PR). Both are untested until the repo is on GitHub.
 - [ ] **Upstream fix loop:** PRs on embeddable-hq/remarkable-pro and remarkable-ui for the issues still present after the 2026-11-10 sync. Each merged fix removes a workaround here: once released, delete the matching `contentRewrites` entry in `scripts/sync.mjs` and resync (the sync fails if a rewrite stops matching, so a merged fix announces itself).
-  - KPI change percentages use `toFixed`, so German shows `+7.4%` instead of `+7,4%`. PR [remarkable-ui#445](https://github.com/embeddable-hq/remarkable-ui/pull/445) adds `percentageFormatter`. Follow-up once released: remarkable-pro's `KpiChartNumberComparisonPro` passes the theme locale's percent formatter.
+  - KPI change percentages use `toFixed`, so German shows `+7.4%` instead of `+7,4%`. PR [remarkable-ui#445](https://github.com/embeddable-hq/remarkable-ui/pull/445) adds `percentageFormatter`. Low impact: the wider fix (all six hand-formatted percentages) is a README todo for later.
   - A host page's global `h2` font-size pins the KPI number and defeats auto-sizing (content rewrite here). PR [remarkable-ui#446](https://github.com/embeddable-hq/remarkable-ui/pull/446).
   - Scatter value and point labels are forced on, ignoring `showValueLabels`/`showPointLabels` (content rewrites here). PR [remarkable-pro#314](https://github.com/embeddable-hq/remarkable-pro/pull/314).
   - `TableScrollable` shows its first page twice under React StrictMode in dev (112 rows, 62 unique). PR [remarkable-pro#315](https://github.com/embeddable-hq/remarkable-pro/pull/315).
