@@ -93,7 +93,7 @@ const global: Record<string, string> = {
   // Controlled tables
   state: 'Paging and sorting, controlled: keep it in `useState` and build your query from it. Without `state` and `setState` the table cannot page or sort; downloads need only `allResults`.',
   setState:
-    'The setter from `useState`. Called when the reader pages, sorts or downloads, and when the table measures how many rows fit.',
+    'A function that stores the new state, such as the setter from `useState`. Called when the reader pages, sorts or downloads, and when the page size is first known or changes.',
   showIndex: 'Number the rows.',
   resetKey:
     'Any value that identifies the current query, such as your filters. When it changes (compared by value), the table goes back to the top and starts again from page 0.',
@@ -230,6 +230,10 @@ const byComponentNotes: Record<string, Record<string, string>> = {
 
   HeatMap: { measure: 'The number behind each cell’s colour and label.' },
   PivotTable: { measures: 'The numbers shown in the cells. Their `inputs` set the formatting and the row and column totals.' },
+  TablePaginated: {
+    pageSize:
+      'Rows on a page. Left out, the table shows as many rows as fit its height. Either way it reports the number in `state.pageSize`. Give the card room for the rows, about 40 pixels each, or they scroll inside it.',
+  },
 };
 
 const byComponent: Record<string, Record<string, string>> = { ...byComponentNotes };

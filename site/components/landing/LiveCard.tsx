@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useCanvas } from '../../state';
-import { codeLines, kitComparisonCode, rawComparisonCode, RevenueByRegion } from './comparisonCode';
+import { RevenueByRegion } from './comparisonCode';
 import { LazyMount } from './LazyMount';
 import { regionRows } from './regions';
 
@@ -73,6 +73,3 @@ export const LiveCard = () => {
     </div>
   );
 };
-
-/** How long the card's file is, and the same card on a chart library: said on the landing page, printed on the Why page. */
-export const cardLines = { kit: codeLines(kitComparisonCode), raw: codeLines(rawComparisonCode) };

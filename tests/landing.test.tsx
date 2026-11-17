@@ -10,11 +10,11 @@ import { buildChart } from '../site/catalog/build';
 import { chartEntries } from '../site/catalog/registry';
 import { GAP_CARD_ID, periodLabel, rangeCode, rangeEntries, rowsAt, rowsProps, withoutPeriod } from '../site/components/landing/ChartRange';
 import { regionRows, regionSpec, regionSpecJson } from '../site/components/landing/regions';
-import { cardLines, ClickLine, payloadText } from '../site/components/landing/LiveCard';
+import { ClickLine, payloadText } from '../site/components/landing/LiveCard';
 import { RevenueByRegion as KitFile } from '../site/examples/RevenueByRegion';
 import { codeLines, kitComparisonCode, rawComparisonCode, RevenueByRegion } from '../site/components/landing/comparisonCode';
 import { BRAND } from '../site/config';
-import { getGuide, guideMarkdown } from '../site/content/guides';
+import { getGuide, guideMarkdown, headingId } from '../site/content/guides';
 import { isKnownPath, pageForMarkdownPath } from '../site/content/pages';
 import { canonicalPath, componentPath } from '../site/content/routes';
 import { Landing } from '../site/pages/Landing';
@@ -272,8 +272,15 @@ describe('landing page: concision', () => {
     for (const anchor of anchors) expect(ids.has(anchor.slice(1)), anchor).toBe(true);
     for (const href of hrefs.filter((h) => !files.includes(h) && !anchors.includes(h))) {
       expect(href.startsWith('/'), href).toBe(true);
-      expect(canonicalPath(href), href).toBe(href);
-      expect(isKnownPath(href), href).toBe(true);
+      // A link to a section of a guide: the page is checked as any other, and the section must be one of its headings.
+      const [path, section] = href.split('#') as [string, string | undefined];
+      expect(canonicalPath(path), href).toBe(path);
+      expect(isKnownPath(path), href).toBe(true);
+      if (section) {
+        const guide = getGuide(path.replace('/docs/', ''));
+        const headings = (guide?.blocks ?? []).flatMap((block) => ('h2' in block ? [headingId(block)] : []));
+        expect(headings, href).toContain(section);
+      }
     }
   });
 
@@ -343,16 +350,20 @@ describe('landing page: the comparison', () => {
     expect(rawComparisonCode).toContain("from 'react-chartjs-2'");
   });
 
-  it('gives the two line counts, taken from the files, and prints the files on the Why page', () => {
-    expect(cardLines).toEqual({ kit: codeLines(kitComparisonCode), raw: codeLines(rawComparisonCode) });
-    has(`This card is ${cardLines.kit} lines of code`);
-    has(`On a chart library it is ${cardLines.raw}`);
-    expect(cardLines.raw).toBeGreaterThan(cardLines.kit * 3);
+  // The pitch is that every card is finished alike, not that there is less
+  // code: the line counts and the two files are on the Why page, which also
+  // says the difference in lines is smaller across a whole app.
+  it('says every card is finished alike, and leaves the line counts to the Why page', () => {
+    has('the tenth is as finished as the first');
+    lacks('lines of code');
+    expect(hrefs).toContain('/docs/why#when-it-pays-off');
     const why = guideMarkdown(getGuide('why')!);
     expect(why).toContain(rawComparisonCode);
     expect(why).toContain(kitComparisonCode);
-    expect(why).toContain(`it is ${cardLines.raw} lines`);
-    expect(hrefs).toContain('/docs/why');
+    expect(why).toContain(`it is ${codeLines(rawComparisonCode)} lines`);
+    expect(codeLines(rawComparisonCode)).toBeGreaterThan(codeLines(kitComparisonCode) * 3);
+    expect(why).toContain('Across a whole app the difference in lines is smaller');
+    expect(why).toContain('## When it pays off');
   });
 
   it('fits its columns without sideways scrolling', () => {
@@ -377,8 +388,8 @@ describe('landing page: the comparison', () => {
     expect(kitComparisonCode).toContain("prefix: '$'");
   });
 
-  it('says only what the longer file lacks that can be read in it', () => {
-    has('one export format, one language and no click handler');
+  it('says, on the Why page, only what the longer file lacks that can be read in it', () => {
+    expect(guideMarkdown(getGuide('why')!)).toContain('one export format, one language and no click handler');
     expect(rawComparisonCode).toContain('downloadCsv');
     expect(rawComparisonCode).not.toMatch(/xlsx|png/i);
     expect(rawComparisonCode).toContain('>No results<');

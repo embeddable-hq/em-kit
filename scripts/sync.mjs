@@ -251,6 +251,24 @@ const SOURCES = [
         why: 'the option labels are translated inside this memo; without the language they stay in the first one',
       },
       {
+        file: "components/charts/tables/TableChartPaginated/index.tsx",
+        from: "  results: DataResponse;\n  showIndex?: boolean;\n  state?: TableChartPaginatedProState;\n",
+        to: "  results: DataResponse;\n  /** Rows on a page. Left out, the table shows as many rows as fit its height. */\n  pageSize?: number;\n  showIndex?: boolean;\n  state?: TableChartPaginatedProState;\n",
+        why: "a page size the app can choose; upstream only measures it from the card height",
+      },
+      {
+        file: "components/charts/tables/TableChartPaginated/index.tsx",
+        from: "  const pageSize = useTableGetRowsPerPage({\n    availableHeight: height,\n    headerHeight,\n    rowHeight,\n    footerHeight,\n  });\n",
+        to: "  const measuredPageSize = useTableGetRowsPerPage({\n    availableHeight: height,\n    headerHeight,\n    rowHeight,\n    footerHeight,\n  });\n  const pageSize = props.pageSize ?? measuredPageSize;\n",
+        why: "the pageSize prop wins over the measured one",
+      },
+      {
+        file: "components/charts/tables/TableChartPaginated/index.tsx",
+        from: "  useEffect(() => {\n    if (pageSize) {\n      handleUpdateEmbeddableState({ pageSize });\n    }\n  }, [pageSize, handleUpdateEmbeddableState]);",
+        to: "  const reportedPageSize = useRef<number | undefined>(undefined);\n  useEffect(() => {\n    if (pageSize && reportedPageSize.current !== pageSize) {\n      reportedPageSize.current = pageSize;\n      handleUpdateEmbeddableState({ pageSize });\n    }\n  }, [pageSize, handleUpdateEmbeddableState]);",
+        why: "report each page size once: with a setState that is a new function every render (an inline arrow), the effect ran on every render and never stopped",
+      },
+      {
         file: 'theme/styles/styles.utils.ts',
         from: "const STORAGE_KEY = 'embeddable';",
         to: "const STORAGE_KEY = 'emkit';",

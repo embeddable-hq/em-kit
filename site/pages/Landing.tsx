@@ -6,7 +6,7 @@ import { InstallCommand } from '../components/InstallCommand';
 import { ChartContextBar } from '../components/Switchers';
 import { AgentDocs } from '../components/landing/AgentDocs';
 import { ChartRange, rangeEntries } from '../components/landing/ChartRange';
-import { cardLines, LiveCard } from '../components/landing/LiveCard';
+import { LiveCard } from '../components/landing/LiveCard';
 import { benefits } from '../catalog/benefits';
 import { chartEntries } from '../catalog/registry';
 import { BRAND } from '../config';
@@ -77,7 +77,10 @@ export const Landing = () => {
       <section className="container lp-section" aria-labelledby="lp-done-title">
         <div className="lp-head">
           <h2 id="lp-done-title">Done for you in every component</h2>
-          <p>What you would otherwise build around a chart library, already in each card.</p>
+          <p>
+            Every card handles loading, errors, formatting, export and theming the same way, so nothing has to be
+            built or reviewed around it.
+          </p>
         </div>
         <ul className="lp-benefits">
           {benefits.map(({ title, text, proof, icon: Icon }) => {
@@ -105,10 +108,9 @@ export const Landing = () => {
         </h3>
         <LiveCard />
         <p className="lp-more">
-          This card is {cardLines.kit} lines of code. On a chart library it is {cardLines.raw}, with one export format,
-          one language and no click handler.{' '}
-          <a className="text-link" href="/docs/why">
-            Compare the two, need by need <IconArrowRight size={15} aria-hidden />
+          Add another card and it has all of this too, so the tenth is as finished as the first.{' '}
+          <a className="text-link" href="/docs/why#when-it-pays-off">
+            When that pays off <IconArrowRight size={15} aria-hidden />
           </a>
         </p>
       </section>

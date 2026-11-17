@@ -1,13 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { act } from 'react';
+import { act, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { describe, expect, it } from 'vitest';
 import { ChartsProvider } from '../src';
 import { defaultChartOptions, defaultStyles } from '../src/theme';
 import { createPieClickHandler, getPieChartProData } from '../src/generated/components/charts/pies/pies.utils';
 import { propNote } from '../site/catalog/propNotes';
-import { dimension, measure } from '../src';
+import { dimension, measure, results, TablePaginated, type TablePaginatedState } from '../src';
 import { GranularitySelectField } from '../src/generated/components/editors/shared/GranularitySelectField/GranularitySelectField';
 
 // The package's own defaults for how a chart looks (src/theme.ts) and the
@@ -112,5 +112,80 @@ describe('pie and donut clicks', () => {
     click({ elementAtEvent: [{ index: 2, datasetIndex: 0 }] } as unknown as Parameters<typeof click>[0]);
     expect(payload?.dimensionValue).toBe('C');
     expect(propNote('onSegmentClick')).toContain('“Other” segment reports the first of the rows it adds up');
+  });
+});
+
+describe('paginated table page size', () => {
+  const customer = dimension({ name: 'customer', title: 'Customer' });
+  const mrr = measure({ name: 'mrr', title: 'MRR' });
+  const rows = Array.from({ length: 14 }, (_, i) => ({ customer: `Customer ${i + 1}`, mrr: 100 * (i + 1) }));
+
+  // jsdom has no layout: the table measures a height of zero, so on its own it reports no page size.
+  const mount = (Harness: () => React.JSX.Element) => {
+    (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    globalThis.ResizeObserver ??= class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    } as unknown as typeof ResizeObserver;
+    const container = document.createElement('div');
+    document.body.append(container);
+    const root = createRoot(container);
+    act(() =>
+      root.render(
+        <ChartsProvider>
+          <Harness />
+        </ChartsProvider>,
+      ),
+    );
+    return { container, unmount: () => act(() => root.unmount()) };
+  };
+
+  it('uses the pageSize it is given, and reports it in the state', () => {
+    let seen: TablePaginatedState | undefined;
+    const Harness = () => {
+      const [state, setState] = useState<TablePaginatedState>({ page: 0, isLoadingDownloadData: false });
+      seen = state;
+      const size = state.pageSize ?? 5;
+      return (
+        <TablePaginated
+          title="Customers"
+          pageSize={5}
+          dimensionsAndMeasures={[customer, mrr]}
+          results={results(rows.slice(state.page * size, (state.page + 1) * size))}
+          totalResults={results(rows, { total: rows.length })}
+          state={state}
+          setState={setState}
+        />
+      );
+    };
+    const { container, unmount } = mount(Harness);
+    expect(seen?.pageSize).toBe(5);
+    expect(container.querySelectorAll('tbody tr')).toHaveLength(5);
+    expect(container.textContent).toContain('Page 1 of 3');
+    unmount();
+  });
+
+  it('settles when setState is a new function on every render', () => {
+    let renders = 0;
+    const Harness = () => {
+      renders++;
+      const [state, setState] = useState<TablePaginatedState>({ page: 0, isLoadingDownloadData: false });
+      return (
+        <TablePaginated
+          title="Customers"
+          pageSize={5}
+          dimensionsAndMeasures={[customer, mrr]}
+          results={results(rows.slice(0, 5))}
+          totalResults={results(rows, { total: rows.length })}
+          state={state}
+          // An inline arrow: the commonest way to pass it, and a new function each render.
+          setState={(next) => setState(next)}
+        />
+      );
+    };
+    const { unmount } = mount(Harness);
+    expect(renders).toBeLessThan(6);
+    unmount();
   });
 });

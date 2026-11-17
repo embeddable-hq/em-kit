@@ -8,6 +8,7 @@ import answerChartSource from '../examples/AnswerChart.tsx?raw';
 import appSource from '../examples/App.tsx?raw';
 import brandThemeSource from '../examples/BrandTheme.tsx?raw';
 import chartStatesSource from '../examples/ChartStates.tsx?raw';
+import revenueFromApiSource from '../examples/RevenueFromApi.tsx?raw';
 import clientProviderSource from '../examples/app/ClientProvider.tsx?raw';
 import revenueByRegionSource from '../examples/RevenueByRegion.tsx?raw';
 import revenueByRegionChartJsSource from '../examples/RevenueByRegionChartJs.tsx?raw';
@@ -363,6 +364,9 @@ export const guides: Guide[] = [
       },
       { code: revenueByRegionChartJsCode, file: 'RevenueByRegionChartJs.tsx' },
       { code: revenueByRegionCode, file: 'RevenueByRegion.tsx' },
+      {
+        md: 'Across a whole app the difference in lines is smaller, because fetching, filters and layout are yours either way. What stays different is that every card is finished, and finished the same way.',
+      },
       { h2: 'What stays yours' },
       {
         md: [
@@ -376,9 +380,27 @@ export const guides: Guide[] = [
       {
         md: 'About 256 KB of JavaScript, minified and gzipped, with React left out: Chart.js and its plugins are about 86 KB of that. Importing every component costs about 4 KB more than importing one. Spreadsheet and image export (about 167 KB) load only when a reader chooses them from a chart’s menu.',
       },
+      { h2: 'When it pays off', id: 'when-it-pays-off' },
+      {
+        md: `The saving grows with the number of cards. One chart on one page is quick to build on a chart library, by hand or with a coding assistant. ${BRAND.name} earns its place when:`,
+      },
+      {
+        md: [
+          '- **You have many cards.** Ten charts and tables that must load, fail, format and export alike. Each new card is a few lines, and none of them needs states or formatting of its own.',
+          '- **Customers see them.** Empty and error states, keyboard access to every control, readable axes and phone layouts are done and tested. A hand-built card gets them one bug report at a time.',
+          '- **You theme or translate.** One theme restyles every card, dark mode included. One locale changes every number and date, and the built-in text comes in English, German and French.',
+          '- **You need tables and export too.** Paginated and pivot tables, heat maps and KPIs take the same fields as the charts, and every card exports CSV, Excel and PNG.',
+          '- **A coding assistant writes the code.** It writes less, and you review less: the states, formatting and export are the library’s, already tested, not new code in every pull request.',
+        ].join('\n'),
+      },
       { h2: 'When to use something else' },
       {
-        md: 'For a visualisation that no dashboard chart covers, such as a custom D3 graphic or a map, use a lower-level library. The [build toolkit](/docs/build-your-own-chart) can still give it the same card, formatting and colours.',
+        md: [
+          `- **One or two simple charts.** A chart library is lighter: ${BRAND.name} adds about 256 KB however few components you use.`,
+          '- **A visualisation no dashboard chart covers**, such as a custom D3 graphic or a map. Use a lower-level library; the [build toolkit](/docs/build-your-own-chart) can still give it the same card, formatting and colours.',
+          '- **Control of every pixel.** The components take options, tokens and Chart.js settings, not replacement parts.',
+          '- **An app that is not React.** The components need React 19.',
+        ].join('\n'),
       },
     ],
   },
@@ -588,6 +610,14 @@ export const guides: Guide[] = [
       {
         md: 'The empty and error headings are translated with the rest of the built-in text: see [Localisation](/docs/localisation).',
       },
+      { h2: 'From a request to results', id: 'from-a-request' },
+      {
+        md: 'The components never fetch, so something has to turn your request into that shape. This hook does it for any function that returns a promise of rows: a skeleton first, the rows when they arrive, and the message of the error if the request fails.',
+      },
+      { code: sample(revenueFromApiSource), file: 'RevenueFromApi.tsx' },
+      {
+        md: 'With a data library you already have the three values. For TanStack Query: `results={{ isLoading: query.isPending, data: query.data, error: query.error?.message }}`.',
+      },
     ],
   },
   {
@@ -641,7 +671,7 @@ export const guides: Guide[] = [
     description: 'A paginated table you control: it asks for a page and you fetch it.',
     blocks: [
       {
-        md: '`TablePaginated` holds no data of its own. It reports the page, the page size that fits its height and the sort. You fetch that slice and pass it back, so one page is in memory at a time.',
+        md: '`TablePaginated` holds no data of its own. It reports the page, the [page size](/docs/tables#page-size) and the sort. You fetch that slice and pass it back, so one page is in memory at a time.',
       },
       { h2: 'A paginated table', id: 'example' },
       { md: 'Here a local array stands in for the server. Sort a column or change page, and the table asks for the new slice.' },
@@ -658,6 +688,16 @@ export const guides: Guide[] = [
           '| `allResults` | Every row, for the CSV and Excel export. `state.isLoadingDownloadData` turns `true` when a reader asks for one, so you can fetch them only then. |',
         ].join('\n'),
       },
+      { h2: 'Page size', id: 'page-size' },
+      {
+        md: 'Left alone, the table shows as many rows as fit its height, so it fills a card of any size and follows it when the card is resized. For a fixed number, pass `pageSize`, for example `pageSize={5}`. Either way the table reports it in `state.pageSize`, so slice your rows by that.',
+      },
+      {
+        md: 'Give a card with a `pageSize` room for its rows: about 40 pixels each, on top of the header row, the pager and the card’s title. Rows that do not fit scroll inside the card.',
+      },
+      {
+        md: '`setState` can be any function that stores the new state, not only the setter from `useState`.',
+      },
       { h2: 'Other tables', id: 'other-tables' },
       {
         md: 'The [scrollable table](/docs/components/table-scrollable) loads more rows as the reader scrolls. The [pivot table](/docs/components/pivot-table) and the [heat map](/docs/components/heat-map) take the same fields and the same `results`.',
@@ -671,7 +711,7 @@ export const guides: Guide[] = [
     description: 'Design tokens, dark mode, pinned colours and Chart.js options.',
     blocks: [
       {
-        md: 'Styling runs on CSS variables that start with `--em-`, and you can override any of them in the provider’s `theme.styles`. The default look is a violet palette on a white card with a hairline border. Semantic tokens, such as the background, the text and the ten chart colours, restyle every component, and component tokens adjust one.',
+        md: 'Styling runs on CSS variables that start with `--em-`, and you can override any of them in the provider’s `theme.styles`. The default look is an orange and blue palette on a white card with a hairline border. Semantic tokens, such as the background, the text and the ten chart colours, restyle every component, and component tokens adjust one.',
       },
       { code: sample(brandThemeSource), file: 'BrandCharts.tsx' },
       {

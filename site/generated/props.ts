@@ -7479,6 +7479,12 @@ export const componentProps: Record<string, PropDoc[]> = {
       "required": true
     },
     {
+      "name": "pageSize",
+      "type": "number",
+      "required": false,
+      "doc": "Rows on a page. Left out, the table shows as many rows as fit its height."
+    },
+    {
       "name": "showIndex",
       "type": "boolean",
       "required": false

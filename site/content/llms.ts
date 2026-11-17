@@ -40,6 +40,7 @@ export const llmsTxt = (origin: string = BRAND.url, fullKb: number = llmsFullKb(
   return [
     `# ${BRAND.name}`,
     `> ${BRAND.name} is ${chartEntries.length} finished React chart components (bars, lines, pies, funnels, scatter, KPIs, tables) with formatting, colours, time series, loading, empty and error states, export and translations built in. Install with \`${installCommand('npm')}\`; ${peers}. Each component's URL is the kebab-case of its export name: \`BarChartStacked\` is \`/docs/components/bar-chart-stacked\`.`,
+    `Use it when an app needs several charts, KPIs or tables that must share loading, empty and error states, formatting, theming, translations and export: each card is then a few lines. For one or two simple charts a chart library is lighter (${BRAND.name} adds about 256 KB gzipped however few components are used), and it needs React 19. More: ${absolute(origin, markdownPath('/docs/why'))}.`,
     `Every page of the documentation has a Markdown twin at the same URL plus \`.md\`, and the links below point to those. Start with the quick start, which installs the package and renders a first chart. Each component has one page with its install command, a complete example with imports and data, and its full props table; read only the page for the component you need. \`${absolute(origin, '/llms-full.txt')}\` holds every page in one file.`,
     ...llmsSections().flatMap((s) =>
       section(

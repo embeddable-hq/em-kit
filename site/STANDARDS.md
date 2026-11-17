@@ -46,9 +46,12 @@ fail. 10 means every check passes and nothing on the page gets in the way;
 - The main differentiator (finished components against a raw chart library) is
   told as what each component handles for you, each item in a sentence or two
   that says exactly what is done, with a live card whose states the visitor
-  can switch. The side-by-side with real code is on the "why" page, one click
-  away. [Owner's review, 18 Nov 2026: robustness sells it, not line counts.
-  Bklit benchmarks as proof]
+  can switch. The pitch is that every card is finished, and finished the same
+  way; the landing page gives no line counts. The side-by-side with real code,
+  and its line counts, are on the "why" page, one click away. [Owner's review,
+  18 Nov 2026: robustness sells it, not line counts. Test app, 17 Nov 2026:
+  built both ways, a four-card dashboard came to about as many lines; what
+  differed was the finish. Bklit benchmarks as proof]
 - No more than seven sections. Each has one job and one call to action at most.
   [Avoid: Highcharts' and Tremor's long pages, Chart.js' changelog as landing]
 - Two calls to action in the hero: get started, and see the components.

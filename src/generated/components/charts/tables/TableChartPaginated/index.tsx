@@ -57,6 +57,8 @@ export type TableChartPaginatedProProps = {
   dimensionsAndMeasures: DimensionOrMeasure[];
   displayNullAs?: string;
   results: DataResponse;
+  /** Rows on a page. Left out, the table shows as many rows as fit its height. */
+  pageSize?: number;
   showIndex?: boolean;
   state?: TableChartPaginatedProState;
 
@@ -95,12 +97,13 @@ const TableChartPaginatedPro = (props: TableChartPaginatedProProps) => {
   const tableRows = getTableRows({ rows, clickDimension });
   const cardContentRef = useRef<HTMLDivElement>(null);
   const { height } = useResizeObserver(cardContentRef);
-  const pageSize = useTableGetRowsPerPage({
+  const measuredPageSize = useTableGetRowsPerPage({
     availableHeight: height,
     headerHeight,
     rowHeight,
     footerHeight,
   });
+  const pageSize = props.pageSize ?? measuredPageSize;
 
   // Stable updater for embeddable state
   const handleUpdateEmbeddableState = useCallback(
@@ -173,8 +176,10 @@ const TableChartPaginatedPro = (props: TableChartPaginatedProProps) => {
   };
 
   // Sync page size changes to embeddable state
+  const reportedPageSize = useRef<number | undefined>(undefined);
   useEffect(() => {
-    if (pageSize) {
+    if (pageSize && reportedPageSize.current !== pageSize) {
+      reportedPageSize.current = pageSize;
       handleUpdateEmbeddableState({ pageSize });
     }
   }, [pageSize, handleUpdateEmbeddableState]);

@@ -25,9 +25,29 @@
   padding-bottom: 2px;
 }
 
+/* The brand and who makes it: "EmKit  by Embeddable". */
+.nav__id {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.nav__by {
+  padding: 4px 0;
+  font-size: 0.85rem;
+  color: var(--s-text-muted);
+  text-decoration: none;
+}
+
+.nav__by:hover {
+  color: var(--s-text);
+}
+
 .nav__links a:focus-visible,
 .mobile-menu a:focus-visible,
 .nav__brand:focus-visible,
+.nav__by:focus-visible,
 .nav__icon-button:focus-visible,
 .footer a:focus-visible {
   outline: 2px solid var(--s-accent);
@@ -198,6 +218,12 @@ body.is-menu-open {
 
 .footer__inner p {
   margin: 0;
+}
+
+.footer__about {
+  display: grid;
+  gap: 6px;
+  max-width: 62ch;
 }
 
 .footer__inner nav {
