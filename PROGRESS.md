@@ -32,6 +32,7 @@ yet.
 | Henry's review (18 Nov) | Done: a new visit always opens in English (the language choice now lasts for the browser session only); `charts-ui` replaced by `rkit` everywhere; "Copy Markdown" is now "Copy page as Markdown" and says what it is for once clicked; the theme switcher is Default, Cool, Mono and Uluru from embeddable.com; the landing's "Done for you" section is eight detailed items with the live state-switch card, and the two-file code comparison moved to the Why page. |
 | Henry's second review (17 Nov, later) | Done: Uluru is a dark theme, with the values embeddable.com's panel sets (all ten colours, backgrounds, text); every site button shows the pointer cursor; `npm run audit -- --themes` also visits chart pages in Uluru. Open: the npm name. `rkit` is taken (checked again 17 Nov); `@embeddable.com/rkit` is free. |
 | Henry's third review (17 Nov) | Done: a hovered KPI tab keeps a dark background on a dark theme (the hover colour was a fixed light grey; it now follows the theme, in `src/theme.ts`); a stray "window is not defined" error between hydration tests is gone; `vercel.json` added (build command, output folder, content types). Vercel does not read `_redirects`: old URLs are still covered by the redirect pages the build writes, as page redirects rather than 301s. Open: the npm name (`remarkable-kit` and `@embeddable.com/rkit` are both free), then rename, push to `embeddable-hq`, connect Vercel. |
+| Name and repo (17 Nov) | Done: renamed to EmKit (`em-kit`, emkit.embeddable.com) across the site, package, storage keys, share image and notes. Rows above that say RKit or `rkit` record the name at the time. |
 
 ## Decisions made on the way
 
@@ -53,9 +54,10 @@ yet.
   hand so no sync was needed. The KPI number and empty/error titles keep their
   tag but lose heading semantics. Worth proposing a `headingLevel` option upstream.
 - The site URL for canonical links, llms.txt and the sitemap is `BRAND.url` in
-  `site/config.ts` (`https://rkit.embeddable.com`).
-- The npm package name in code samples is `rkit` (Henry, 18 Nov). It is one
-  value, `BRAND.packageName` in `site/config.ts`; `rkit` itself is taken on npm; `@embeddable.com/rkit` is free (17 Nov). Henry to pick.
+  `site/config.ts` (`https://emkit.embeddable.com`).
+- **The name is EmKit** (Henry, 17 Nov): npm package `em-kit`, site emkit.embeddable.com, repo
+  `embeddable-hq/em-kit`. It replaces RKit, dropped because `rkit` on npm is someone else's
+  React UI kit. Name, package name and URL are `BRAND` in `site/config.ts`.
 - **Component pages carry the install command once, inline** in the usage line
   (no Installation section). The Markdown twin has the full install block.
 - **Docs examples leave out event handlers** (`omitHandlers` in
@@ -113,13 +115,10 @@ yet.
 
 ## For Henry to decide or tidy
 
-- **RKit's place in Tom's Claude Code plan** (17 Nov): RKit, not Remarkable Pro,
-  is the installable library the plan needs. Before the site goes public: set
-  the final npm name (samples say `rkit`; if it must be scoped, it is one value,
-  `BRAND.packageName`), add "by Embeddable" and a bridge page to the platform,
-  and ask Tom to have the probe count RKit. Package build, README and the
-  Claude Code plugin come after.
-
+- **EmKit's place in Tom's Claude Code plan** (17 Nov): EmKit, not Remarkable Pro,
+  is the installable library the plan needs. Before the site goes public: add
+  "by Embeddable" and a bridge page to the platform, and ask Tom to have the
+  probe count EmKit. Package build, README and the Claude Code plugin come later.
 - `site/catalog/aiSnippets.ts`: `aiLandingSpec` is no longer used by the landing
   (only by its test); an edit to it was also blocked by the permission check.
 

@@ -157,7 +157,7 @@ describe('pages and head tags', () => {
       expect(head.markdown).toBe(`${BRAND.url}${markdownPath(page.path)}`);
       expect(head.ogUrl).toBe(head.canonical);
     }
-    expect(headFor('/docs/quick-start').title).toBe('Quick start · RKit');
+    expect(headFor('/docs/quick-start').title).toBe('Quick start · EmKit');
   });
 
   it('every page has the social card and a twitter:card, and no title names the site twice', () => {

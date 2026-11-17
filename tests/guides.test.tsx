@@ -335,7 +335,7 @@ describe('documented behaviour', () => {
   };
 
   it('throws the documented error outside the provider', () => {
-    const message = 'RKit components must be rendered inside <ChartsProvider>.';
+    const message = 'EmKit components must be rendered inside <ChartsProvider>.';
     expect(guideMarkdown(guideOf('troubleshooting'))).toContain(message);
     expect(() => renderToString(<BarChartStacked xAxis={month} groupBy={month} measure={revenue} results={results([])} />)).toThrow(message);
   });

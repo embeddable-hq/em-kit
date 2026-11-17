@@ -485,7 +485,7 @@ const keyboardMarkdown = (entry: ChartEntry) => {
 // ---------------------------------------------------------------------------
 
 /** What a chart throws when it renders outside the provider (`useTheme` in src/runtime/react.ts). */
-export const PROVIDER_ERROR = 'RKit components must be rendered inside <ChartsProvider>.';
+export const PROVIDER_ERROR = 'EmKit components must be rendered inside <ChartsProvider>.';
 
 /** The provider, and what is on screen without it. */
 export const PROVIDER_NOTE = `Wrap your app, or the part with charts, in \`<ChartsProvider>\` once: without it every chart throws \`${PROVIDER_ERROR}\``;

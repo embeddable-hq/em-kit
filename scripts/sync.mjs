@@ -253,7 +253,7 @@ const SOURCES = [
       {
         file: 'theme/styles/styles.utils.ts',
         from: "const STORAGE_KEY = 'embeddable';",
-        to: "const STORAGE_KEY = 'rkit';",
+        to: "const STORAGE_KEY = 'emkit';",
         why: 'colour assignments persist under a neutral key',
       },
       {
@@ -497,7 +497,7 @@ const syncSource = async (source, errors) => {
     execSync(`git -C "${source.dir}" fetch --quiet origin`);
   }
   const sha = execSync(`git -C "${source.dir}" rev-parse ${source.ref}`).toString().trim();
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'rkit-sync-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'emkit-sync-'));
   execSync(`git -C "${source.dir}" archive ${sha} src | tar -x -C "${tmp}"`);
   const srcRoot = path.join(tmp, 'src');
 

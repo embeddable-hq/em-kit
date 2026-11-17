@@ -11,9 +11,9 @@ when the language changes; the pivot table's `expandedRowKeys` and
 payload types; table cell copy buttons show on focus; clickable heat-map cells
 have an accessible name.
 
-# Upstream changes from RKit (server rendering, funnel labels)
+# Upstream changes from EmKit (server rendering, funnel labels)
 
-RKit carries these as `contentRewrites` in `scripts/sync.mjs`. Each one can be dropped once the matching change lands upstream.
+EmKit carries these as `contentRewrites` in `scripts/sync.mjs`. Each one can be dropped once the matching change lands upstream.
 
 ## remarkable-ui: let `getStyleNumber` run without a DOM
 
@@ -73,7 +73,7 @@ The tooltip formats the count with `themeFormatter.data(countMeasure, value)`, s
 +        formatter: getFunnelOptionsDatalabelsFormatter(options, formatValue),
 ```
 
-remarkable-ui's own `getFunnelDatalabelFormatter` (`funnel.utils.ts`) still uses `toLocaleString()`. Standalone users of the UI `FunnelChart` would need a `valueFormatter` prop. RKit does not need one: it only exports the Pro component.
+remarkable-ui's own `getFunnelDatalabelFormatter` (`funnel.utils.ts`) still uses `toLocaleString()`. Standalone users of the UI `FunnelChart` would need a `valueFormatter` prop. EmKit does not need one: it only exports the Pro component.
 
 ## Proposed, not carried as rewrites
 
@@ -98,7 +98,7 @@ remarkable-ui:
 - **Funnel width**: `scales.x.bounds: 'data'`, so the widest step spans the drawing area instead of ending at the next round tick.
 
 remarkable-pro:
-- **Card menu button** named `charts.menuLabel` ("Chart menu: {{title}}"); keys live in RKit's `src/i18n/additions.ts` and `fr.ts`. Upstream: add the keys to en/de.
+- **Card menu button** named `charts.menuLabel` ("Chart menu: {{title}}"); keys live in EmKit's `src/i18n/additions.ts` and `fr.ts`. Upstream: add the keys to en/de.
 - **Canvas names**: ChartCard names every canvas in the card after title and description, with a MutationObserver (a donut mounts its canvas after the card). Upstream fix is cleaner: pass `aria-label` through the remarkable-ui chart components to `<Chart>` (react-chartjs-2 spreads it onto the canvas).
 - **i18next**: `showSupportNotice: false`. Separately, the package calls `init` on i18next's default instance, which a host app using i18next shares; `i18n.createInstance()` would isolate it.
 - **Comparison series label**: `charts.previousPeriodSeries` ("{{label}} (previous period)") instead of `common.compared` + label ("Compared Customers", "Verglichen Kunden").
@@ -112,4 +112,4 @@ remarkable-pro:
 2. **Empty heat map cells** still take `getStyle('--em-tablechart-cell-background', '#fff')` from the DOM: `#fff` on a server, the theme value in a browser, so a heat map with gaps can still mismatch on hydration.
 3. **Other percentages ignore the locale**: funnel percentages (`funnel.utils.ts` and `FunnelChartPro.utils.ts`, `toFixed(1)%`), KPI change, pivot table and KPI-tab percentages. remarkable-ui has no locale; it needs a formatter prop.
 4. **Other English-only or unnamed controls**: the card header tooltip button is `aria-label="Info"`; the ChartTabs scroll chevrons have no name; table sort and pagination labels are English.
-5. **KPI tab hover background is a fixed colour.** `--em-charttabs-item-background--hover` is `#f7f7f8` (remarkable-pro), so on a dark theme a hovered tab is near-white under white text. RKit sets it to `var(--em-sem-background--light)` in `src/theme.ts`; upstream could default it to that token.
+5. **KPI tab hover background is a fixed colour.** `--em-charttabs-item-background--hover` is `#f7f7f8` (remarkable-pro), so on a dark theme a hovered tab is near-white under white text. EmKit sets it to `var(--em-sem-background--light)` in `src/theme.ts`; upstream could default it to that token.

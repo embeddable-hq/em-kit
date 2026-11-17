@@ -37,7 +37,7 @@ const colorsInUse = new Map<string, Set<string>>();
 We save the colors to session storage so that they are persistent across refreshes. 
 This is important, for example, if the user is looking at multiple tabs, or if the user refreshes the page.
 */
-const STORAGE_KEY = 'rkit';
+const STORAGE_KEY = 'emkit';
 
 const saveColorsMap = () => {
   const obj: Record<string, Record<string, string>> = {};

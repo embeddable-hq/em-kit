@@ -26,8 +26,8 @@ const withThemes = args.includes('--themes');
 const only = args.filter((a) => a.startsWith('/'));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // As site/settings.tsx stores them: theme and data set between visits, the language for the session.
-const SETTINGS_KEY = 'rkit-site-settings';
-const LANGUAGE_KEY = 'rkit-site-language';
+const SETTINGS_KEY = 'emkit-site-settings';
+const LANGUAGE_KEY = 'emkit-site-language';
 
 // ---- Pages: every page in the sitemap, plus one playground per family.
 const sitemap = readFileSync(join(root, 'dist-site/sitemap.xml'), 'utf-8');
@@ -43,7 +43,7 @@ const pages = only.length
 const sitePort = 5400 + Math.floor(Math.random() * 300);
 const site = spawn(process.execPath, [join(root, 'scripts/site-preview.mjs')], { env: { ...process.env, PORT: String(sitePort) }, stdio: 'ignore' });
 const chromePort = 9700 + Math.floor(Math.random() * 300);
-const profile = mkdtempSync(join(tmpdir(), 'rkit-audit-'));
+const profile = mkdtempSync(join(tmpdir(), 'emkit-audit-'));
 const chrome = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', ['--headless=new', '--disable-gpu', '--hide-scrollbars', `--remote-debugging-port=${chromePort}`, `--user-data-dir=${profile}`, '--no-first-run', 'about:blank'], { stdio: 'ignore' });
 
 const waitFor = async (url) => {

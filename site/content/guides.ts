@@ -391,7 +391,7 @@ export const guides: Guide[] = [
       { md: 'Each heading is what you see on screen.' },
       { h2: 'An error says components must be rendered inside ChartsProvider' },
       {
-        md: 'The full message is `RKit components must be rendered inside <ChartsProvider>.` A chart is being rendered outside the provider. Wrap the app in it, as in [step 2 of the quick start](/docs/quick-start#provider).',
+        md: 'The full message is `EmKit components must be rendered inside <ChartsProvider>.` A chart is being rendered outside the provider. Wrap the app in it, as in [step 2 of the quick start](/docs/quick-start#provider).',
       },
       { h2: 'An error says createContext only works in Client Components', id: 'nextjs' },
       {

@@ -9,8 +9,8 @@ Work top to bottom. Each phase can ship on its own. Estimates assume one person.
 ## Decisions
 
 1. ~~**Licence.**~~ Decided 2026-11-10: **MIT.** The upstream remarkable-pro and remarkable-ui repos are already public under MIT, so a no-resale licence on this package couldn't stop anyone reselling the same components taken from upstream. It would only add friction for users.
-2. ~~**Public name.**~~ Decided 2026-11-11: **R Kit** (Remarkable Kit), docs at **rkit.embeddable.com**. Still open, deliberately until Phase 5: the npm package name, which sets the GitHub repo and the shadcn namespace.
-3. ~~**Embeddable's place in the brand.**~~ Settled by the domain: R Kit lives under embeddable.com.
+2. ~~**Public name.**~~ Decided 2026-11-17: **EmKit**, npm package `em-kit`, docs at **emkit.embeddable.com**, repo `embeddable-hq/em-kit`. ("em" is the prefix of every theme variable, `--em-*`, and short for Embeddable.) It was R Kit from 2026-11-11 until then; dropped because `rkit` on npm is someone else's React UI kit.
+3. ~~**Embeddable's place in the brand.**~~ Settled by the domain: EmKit lives under embeddable.com.
 4. **Scope v1.** Charts and tables only, or also the standalone-safe editors (date range pickers, granularity and comparison-period selects)? Bklit has no editors, so these pair well with the charts.
 
 ## Phase 0: Secure the work (~1 hour)
@@ -46,8 +46,8 @@ The takeaways from the Bklit review:
 - [x] **Named examples on every component page**, each with Preview/Code tabs and an "On this page" entry: 53 presets across the 25 components (1–5 each, beyond the default), each showing a real option (compact numbers, axis ranges, totals, percentages, “Other” buckets, colour scales, thresholds, auto height…), translated de/fr; plus an automatic "Other" example where `xAxisMaxItems` exists, and loading/empty/error. Docs-only presets (`docsOnly`) stay out of the gallery so it remains one screen per group.
 - [x] **"Copy prompt"** on every example and component (code, data contract, and what not to rebuild), and **"Copy Markdown"** on every docs page.
 - [x] **Docs split into pages** (Getting started / Guides / Components) with ⌘K search, path routing and per-page titles.
-- [x] **Sell the benefits:** a "Why RKit" page (the same card on react-chartjs-2 vs here, and a 12-row comparison of what a chart library leaves to you), the same side-by-side on the landing page, and a "What it does for you" list on every component page.
-- [ ] **Hosting (Phase 5):** deploy on rkit.embeddable.com with an SPA fallback. For search engines, prerender each route to static HTML and add per-page meta descriptions and OG images; per-page titles are done.
+- [x] **Sell the benefits:** a "Why EmKit" page (the same card on react-chartjs-2 vs here, and a 12-row comparison of what a chart library leaves to you), the same side-by-side on the landing page, and a "What it does for you" list on every component page.
+- [ ] **Hosting (Phase 5):** deploy on emkit.embeddable.com with an SPA fallback. For search engines, prerender each route to static HTML and add per-page meta descriptions and OG images; per-page titles are done.
 
 ## Phase 3: shadcn compatibility (~3 days; hosting the registry waits for Phase 5)
 
@@ -69,12 +69,12 @@ Our version of the same hybrid:
 
 ## Phase 5: Name, package and publish (~3 days, last)
 
-Deliberately last (decided 2026-11-11): build and refine everything first, then name and package it once we're happy. The name is RKit, and code samples import from `rkit` (since 18 Nov 2026); whether the published package is `rkit` or scoped is still open, and the docs site runs locally.
+Deliberately last (decided 2026-11-11): build and refine everything first, then name and package it once we're happy. The name is EmKit and code samples import from `em-kit` (since 17 Nov 2026); the package is not published, and the docs site runs locally.
 
-- [ ] **Pick the npm name.** `rkit` is taken: "A UI component kit for React" by jaredreich, dormant since 2022 (19 downloads a month). Free as of 2026-11-11: `@embeddable.com/rkit`, `r-kit`, `rkit-ui`. No `@rkit/*` packages exist, but the `@rkit` scope can only be confirmed by trying to create the org. To decouple from Embeddable completely later, the unscoped options are `r-kit` or `rkit-ui`, or a request to npm for the dormant `rkit` (their name-dispute process, no guarantee).
-- [ ] **Rename** in `site/config.ts` and `package.json`, create the GitHub repo (confirm first), push, and point rkit.embeddable.com at the docs site.
+- [x] **Pick the npm name.** `em-kit` (free on npm on 2026-11-17, as was `emkit`). `rkit` was dropped: it is "A UI component kit for React" by someone else, dormant since 2022. Only npm was checked, not trademarks.
+- [ ] **Rename and host.** Done: `site/config.ts` and `package.json`, and the GitHub repo `embeddable-hq/em-kit` (private). Left: connect the repo in Vercel (`vercel.json` is in the repo) and point emkit.embeddable.com at it.
 - [ ] **Library build** (tsup or Vite library mode): ESM plus `.d.ts`, CSS modules compiled into one `styles.css`, SVG assets inlined, `sideEffects` limited to CSS.
-- [ ] **Subpath exports:** `.`, `./ai`, `./build`, `./styles.css`. This unblocks the `rkit/ai` and `rkit/build` imports the docs already show.
+- [ ] **Subpath exports:** `.`, `./ai`, `./build`, `./styles.css`. This unblocks the `em-kit/ai` and `em-kit/build` imports the docs already show.
 - [ ] **Works in Next.js App Router:** `'use client'` banners and no `window`/DOM access at import time. Prove it with a Next.js fixture app in CI.
 - [ ] **Widen React support:** test React 18. The peer dependency is `>=19.1.1` today, which cuts out a large share of apps.
 - [ ] **Bundle size:** register Chart.js controllers and plugins per chart, and add a `size-limit` budget per component.

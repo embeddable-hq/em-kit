@@ -87,7 +87,7 @@ export const withDom = async <T>(run: () => Promise<T> | T): Promise<T> => {
 const agentExtension = /\.(md|txt|xml)$/;
 
 export const agentPlugin = (options: { origin?: string } = {}): Plugin => ({
-  name: 'rkit-agent-endpoints',
+  name: 'emkit-agent-endpoints',
   configureServer(server: ViteDevServer) {
     // No return: registered before Vite's own middlewares, so it sees every request first.
     server.middlewares.use((req: IncomingMessage, res: ServerResponse, next: (err?: unknown) => void) => {

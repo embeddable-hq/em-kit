@@ -1,13 +1,13 @@
 # Site standards
 
-What the RKit site has to do, and how it is scored. The standards come from a
+What the EmKit site has to do, and how it is scored. The standards come from a
 review of 20 chart and component library sites (16 November 2026); the source
 of each rule is in brackets. The site passes when the weighted score is 9.0 or
 more and no category is below 8.
 
 Readers, in priority order:
 
-1. A developer deciding whether to use RKit (2 minutes on the landing page).
+1. A developer deciding whether to use EmKit (2 minutes on the landing page).
 2. A developer building with it (looking things up, copying code).
 3. An LLM or coding agent doing either job over plain HTTP, with no JavaScript.
 
@@ -31,7 +31,7 @@ fail. 10 means every check passes and nothing on the page gets in the way;
 
 ## A. Landing page: the pitch
 
-- **Must:** the headline and one sentence under it say what RKit is, who it is
+- **Must:** the headline and one sentence under it say what EmKit is, who it is
   for and why it differs from a chart library. No jargon. [Tremor, Recharts]
 - **Must:** a live, interactive chart is visible without scrolling on a
   1440×900 screen. [Recharts, Tremor]
@@ -210,8 +210,7 @@ Tested with `curl`, no JavaScript.
 
 ## Known and out of scope
 
-- The npm package name in code samples is `rkit`, not yet published. The display name
-  is RKit; the package name is decided last (ROADMAP.md, Phase 5). Do not mark
-  this down.
+- The npm package name in code samples is `em-kit`, not yet published. The display
+  name is EmKit. Do not mark this down.
 - There are no customer logos, stars or download counts to show before launch.
   Do not invent them. Proof comes from live demos and code.

@@ -11,7 +11,7 @@ import { renderRoute } from '../site/prerender';
 // The static build's page HTML: the real content is in the server render and
 // the head is the page's own. (npm run site:check runs the same over every page.)
 const template =
-  '<!doctype html><html><head><title>RKit · default</title><meta name="description" content="x" /><meta property="og:title" content="x" /></head><body><div id="root"></div></body></html>';
+  '<!doctype html><html><head><title>EmKit · default</title><meta name="description" content="x" /><meta property="og:title" content="x" /></head><body><div id="root"></div></body></html>';
 const render = (path: string) => applyHead(template, headFor(path)).replace('<div id="root"></div>', `<div id="root">${renderRoute(path)}</div>`);
 const text = (html: string) => html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ');
 

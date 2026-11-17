@@ -1,4 +1,4 @@
-# Plan: make RKit amazing for AI chat
+# Plan: make EmKit amazing for AI chat
 
 Goal: an LLM returns JSON, the app renders a live, interactive, chat-bubble-sized chart — and clicks flow back to the model. Work top to bottom; each step is independently shippable. Mark `[x]` as we go, note decisions under the step.
 
@@ -36,7 +36,7 @@ So any app integrates with `tools: [chartSpecTool]` and `<ChartFromSpec spec={to
 
 - [x] **2.1 Generate JSON Schema** — done in `scripts/props.mjs` via `ts-json-schema-generator` (devDependency), output to `src/ai/spec.schema.generated.ts` (not `src/generated/`, which stays sync-owned). Two schemas: `chartSpecSchema` (full anyOf union, for validation) and `chartSpecToolSchema` (flattened root object — the Anthropic/OpenAI tool APIs reject a top-level anyOf; per-kind required fields are stated in the root description instead). Drift check fails the script if `CHART_KINDS` and the schema branches disagree. Validated with ajv (15 valid / 10 invalid specs).
 - [x] **2.2 `src/ai/index.ts`** — exports `chartSpecSchema`, `chartSpecToolSchema`, `renderChartTool` (Anthropic), `renderChartToolOpenAI`, `chartGuidance` (~40-line system-prompt snippet), each with usage JSDoc. Proper package-exports wiring is blocked on the "no build step" finding, same as the rest of the public API.
-- [x] **2.3 Docs-site page** — `#/ai` ("Use with AI"): 3-step quickstart, live JSON playground (`site/components/SpecPlayground.tsx`) with example/broken specs, chrome switcher and an intent log, plus the tool definition and `chartGuidance`. Note: code samples show `rkit/ai`, but package `exports` wiring stays blocked on the no-build-step finding. The nav gained a 4th link; at ≤720px links scroll horizontally and "Get started" hides (revisit if unwanted).
+- [x] **2.3 Docs-site page** — `#/ai` ("Use with AI"): 3-step quickstart, live JSON playground (`site/components/SpecPlayground.tsx`) with example/broken specs, chrome switcher and an intent log, plus the tool definition and `chartGuidance`. Note: code samples show `em-kit/ai`, but package `exports` wiring stays blocked on the no-build-step finding. The nav gained a 4th link; at ≤720px links scroll horizontally and "Get started" hides (revisit if unwanted).
 
 Acceptance: copy the tool definition into a Claude API call, feed the returned JSON straight to `ChartFromSpec`, chart renders.
 
@@ -88,7 +88,7 @@ User feedback: the nav (Docs, Charts, Sample app, Use with AI) split AI off from
 
 ## Build toolkit (2026-10-05)
 
-- [x] **`rkit/build`** — `src/build/index.ts`: the curated toolkit from remarkable-pro's build-component skill (`pro-builtins.md`), under upstream names. Package `exports` wiring is blocked on the no-build-step finding, like `rkit/ai`.
+- [x] **`em-kit/build`** — `src/build/index.ts`: the curated toolkit from remarkable-pro's build-component skill (`pro-builtins.md`), under upstream names. Package `exports` wiring is blocked on the no-build-step finding, like `em-kit/ai`.
 - [x] **Docs** — "Build your own chart" section: toolkit table, live `TargetLineChart` example (`site/examples/`, source shown via `?raw`), consistency rules.
 - [ ] Optional: port the build-component skill as a Claude skill shipped with the package.
 

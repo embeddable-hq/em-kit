@@ -59,8 +59,8 @@ requestChartFonts();
 // The theme and the data set a visitor chose are remembered between visits.
 // The language is kept only for the browser session: the docs are written in
 // English, so a new visit opens in English, whatever was tried last time.
-export const SETTINGS_STORAGE_KEY = 'rkit-site-settings';
-export const LANGUAGE_STORAGE_KEY = 'rkit-site-language';
+export const SETTINGS_STORAGE_KEY = 'emkit-site-settings';
+export const LANGUAGE_STORAGE_KEY = 'emkit-site-language';
 
 const read = (storage: () => Storage, key: string): Record<string, unknown> => {
   try {

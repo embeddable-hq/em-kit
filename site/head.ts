@@ -22,7 +22,7 @@ export type Head = {
   noindex?: boolean;
 };
 
-// "Why RKit" already names the site; every other title gets it once, at the end.
+// "Why EmKit" already names the site; every other title gets it once, at the end.
 const withSite = (title: string) => (title.includes(BRAND.name) ? title : `${title} · ${BRAND.name}`);
 
 /** The social card's size and its text, as og:image:* says them. */

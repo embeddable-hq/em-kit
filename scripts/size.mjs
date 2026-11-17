@@ -102,7 +102,7 @@ globalThis.chartsUi = everything;
 };
 
 const measureApp = async (name) => {
-  const dir = mkdtempSync(join(tmpdir(), 'rkit-size-'));
+  const dir = mkdtempSync(join(tmpdir(), 'emkit-size-'));
   try {
     const entry = join(dir, `${name}.ts`);
     writeFileSync(entry, apps[name].code);

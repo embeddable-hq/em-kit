@@ -40,7 +40,7 @@ const landingMarkdown = () =>
 const examplesMarkdown = () =>
   [
     '# Dashboard example',
-    'A complete sales dashboard built only from RKit components: KPIs, a time series, a breakdown by region and a table, sharing one set of filters. This is the whole file; the dashboard runs in the browser at [/examples](/examples).',
+    'A complete sales dashboard built only from EmKit components: KPIs, a time series, a breakdown by region and a table, sharing one set of filters. This is the whole file; the dashboard runs in the browser at [/examples](/examples).',
     '```tsx title="Dashboard.tsx"\n' + dashboardSource + '\n```',
     'There is a second example, [an AI chat that answers with charts](/examples/ai-chat.md), and a guide to [charts from a model](/docs/charts-from-a-model.md).',
   ].join('\n\n');
@@ -85,7 +85,7 @@ export const sitePages = (): SitePage[] => [
   {
     path: '/examples',
     title: 'Dashboard example',
-    description: 'A complete sales dashboard built from RKit components, with the full source.',
+    description: 'A complete sales dashboard built from EmKit components, with the full source.',
     section: 'Examples',
     markdown: examplesMarkdown,
   },

@@ -15,7 +15,7 @@ import { checkServed } from '../scripts/served-check.mjs';
 
 const built = join(__dirname, '../dist-site');
 const hasBuild = existsSync(join(built, 'llms.txt'));
-const copy = hasBuild ? mkdtempSync(join(tmpdir(), 'rkit-site-')) : '';
+const copy = hasBuild ? mkdtempSync(join(tmpdir(), 'emkit-site-')) : '';
 if (hasBuild) cpSync(built, copy, { recursive: true });
 afterAll(() => {
   if (copy) rmSync(copy, { recursive: true, force: true });

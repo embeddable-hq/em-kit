@@ -95,7 +95,7 @@ export const extractDefinitionMetas = async (proSrcRoot) => {
     .map((file, i) => `export * as d${i} from ${JSON.stringify(file)};`)
     .join('\n');
 
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'rkit-field-inputs-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'emkit-field-inputs-'));
   const outfile = path.join(tmp, 'definitions.mjs');
   try {
     await build({

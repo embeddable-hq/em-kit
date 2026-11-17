@@ -1,6 +1,6 @@
 import { ThemeStyles } from './generated/theme/styles/styles.types';
 
-// RKit's own look, layered over the upstream theme: a white card with a
+// EmKit's own look, layered over the upstream theme: a white card with a
 // hairline border, a faint grid and rounder bars. The colours are upstream's
 // (the "Default" palette on embeddable.com), so nothing here sets them. It
 // lives here, outside the generated sources, so a sync from upstream cannot
