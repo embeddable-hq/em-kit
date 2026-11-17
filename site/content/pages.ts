@@ -1,6 +1,6 @@
 import { chartEntries, getVariant } from '../catalog/registry';
 import { installMarkdown } from '../components/InstallCommand';
-import { BRAND } from '../config';
+import { BRAND, platformMarkdown } from '../config';
 import { chatSource, dashboardSource } from './exampleSources';
 import { componentPageMarkdown, componentsIndexMarkdown, PEER_NOTE } from './components';
 import { guideAliases, guideMarkdown, guides } from './guides';
@@ -35,6 +35,8 @@ const landingMarkdown = () =>
       `- [All documentation in one file](/llms-full.txt)`,
     ].join('\n'),
     `Each page of this site has a Markdown twin at the same URL plus \`.md\`. A component's page is the export name in kebab-case, for example \`BarChartStacked\` is \`/docs/components/bar-chart-stacked\`.`,
+    `## By ${BRAND.maker.name}`,
+    `${BRAND.relation} ${platformMarkdown}`,
   ].join('\n\n');
 
 const examplesMarkdown = () =>

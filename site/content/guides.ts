@@ -1,7 +1,7 @@
 import { chartGuidance, renderChartTool } from '../../src/ai';
 import { CHART_KINDS } from '../../src/spec';
 import { installMarkdown } from '../components/InstallCommand';
-import { BRAND } from '../config';
+import { BRAND, platformMarkdown } from '../config';
 import { componentProps, typeDefinitions } from '../generated/props';
 import { CLICK_TIME_RANGE_ROW, CLICK_VALUE_ROW, MEASURE_VALUES_HANDLERS, TIME_RANGE_NOTE } from './clickPayloads';
 import answerChartSource from '../examples/AnswerChart.tsx?raw';
@@ -402,6 +402,9 @@ export const guides: Guide[] = [
           '- **An app that is not React.** The components need React 19.',
         ].join('\n'),
       },
+      { h2: 'If you need the data layer too', id: 'embeddable' },
+      { md: BRAND.relation },
+      { md: platformMarkdown },
     ],
   },
   {

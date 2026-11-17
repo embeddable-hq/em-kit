@@ -1,8 +1,10 @@
 # EmKit
 
-EmKit, docs at emkit.embeddable.com. Code samples import from `em-kit`; the package is not published yet (ROADMAP.md, Phase 5).
+Finished React chart, KPI and table components by [Embeddable](https://embeddable.com), for teams that already have a data layer. MIT licensed. Docs: [emkit.embeddable.com](https://emkit.embeddable.com).
 
-Standalone build of the Remarkable Pro components for teams that bring their own data layer. No Embeddable runtime, builder metadata, or data loading.
+EmKit is Embeddable’s chart components as a standalone React library: you bring the data. Inside Embeddable the same components are called Remarkable Pro. [Embeddable](https://embeddable.com) adds the data layer, multi-tenant security and self-serve dashboards for your customers.
+
+Code samples import from `em-kit`; the package is not published yet (ROADMAP.md, Phase 5). This repository is the standalone build of the Remarkable Pro components: no Embeddable runtime, builder metadata, or data loading.
 
 ## Commands
 
