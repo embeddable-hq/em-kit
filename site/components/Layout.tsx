@@ -114,19 +114,14 @@ export const Layout = ({ route, children }: { route: string; children: ReactNode
     </a>
     <header className="nav">
       <div className="nav__inner container container--wide">
-        <div className="nav__id">
-          <a className="nav__brand" href="/">
-            <span className="nav__logo" aria-hidden>
-              <span />
-              <span />
-              <span />
-            </span>
-            {BRAND.name}
-          </a>
-          <a className="nav__by" href={BRAND.maker.url}>
-            by {BRAND.maker.name}
-          </a>
-        </div>
+        <a className="nav__brand" href="/">
+          <span className="nav__logo" aria-hidden>
+            <span />
+            <span />
+            <span />
+          </span>
+          {BRAND.name}
+        </a>
         <div className="nav__links">
           <NavLinks route={route} label="Main" />
         </div>
@@ -139,15 +134,9 @@ export const Layout = ({ route, children }: { route: string; children: ReactNode
     <main id="main">{children}</main>
     <footer className="footer">
       <div className="container container--wide footer__inner">
-        <div className="footer__about">
-          <p>
-            {BRAND.name} is by <a href={BRAND.maker.url}>{BRAND.maker.name}</a>, MIT licensed and built on{' '}
-            <a href="https://www.chartjs.org">Chart.js</a>.
-          </p>
-          <p>
-            Need the data layer too? {BRAND.platform} <a href={BRAND.maker.url}>See {BRAND.maker.name}</a>
-          </p>
-        </div>
+        <p>
+          {BRAND.name} is MIT licensed and built on <a href="https://www.chartjs.org">Chart.js</a>.
+        </p>
         <nav aria-label="Footer">
           <a href={docsHome}>Docs</a>
           <a href="/docs/components">Components</a>
