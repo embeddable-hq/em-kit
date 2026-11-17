@@ -46,7 +46,7 @@ The takeaways from the Bklit review:
 - [x] **Named examples on every component page**, each with Preview/Code tabs and an "On this page" entry: 53 presets across the 25 components (1–5 each, beyond the default), each showing a real option (compact numbers, axis ranges, totals, percentages, “Other” buckets, colour scales, thresholds, auto height…), translated de/fr; plus an automatic "Other" example where `xAxisMaxItems` exists, and loading/empty/error. Docs-only presets (`docsOnly`) stay out of the gallery so it remains one screen per group.
 - [x] **"Copy prompt"** on every example and component (code, data contract, and what not to rebuild), and **"Copy Markdown"** on every docs page.
 - [x] **Docs split into pages** (Getting started / Guides / Components) with ⌘K search, path routing and per-page titles.
-- [x] **Sell the benefits:** a "Why charts-ui" page (the same card on react-chartjs-2 vs here, and a 12-row comparison of what a chart library leaves to you), the same side-by-side on the landing page, and a "What it does for you" list on every component page.
+- [x] **Sell the benefits:** a "Why RKit" page (the same card on react-chartjs-2 vs here, and a 12-row comparison of what a chart library leaves to you), the same side-by-side on the landing page, and a "What it does for you" list on every component page.
 - [ ] **Hosting (Phase 5):** deploy on rkit.embeddable.com with an SPA fallback. For search engines, prerender each route to static HTML and add per-page meta descriptions and OG images; per-page titles are done.
 
 ## Phase 3: shadcn compatibility (~3 days; hosting the registry waits for Phase 5)
@@ -69,12 +69,12 @@ Our version of the same hybrid:
 
 ## Phase 5: Name, package and publish (~3 days, last)
 
-Deliberately last (decided 2026-11-11): build and refine everything first, then name and package it once we're happy. Until then the working name `charts-ui` stays, and the docs site runs locally.
+Deliberately last (decided 2026-11-11): build and refine everything first, then name and package it once we're happy. The name is RKit, and code samples import from `rkit` (since 18 Nov 2026); whether the published package is `rkit` or scoped is still open, and the docs site runs locally.
 
 - [ ] **Pick the npm name.** `rkit` is taken: "A UI component kit for React" by jaredreich, dormant since 2022 (19 downloads a month). Free as of 2026-11-11: `@embeddable.com/rkit`, `r-kit`, `rkit-ui`. No `@rkit/*` packages exist, but the `@rkit` scope can only be confirmed by trying to create the org. To decouple from Embeddable completely later, the unscoped options are `r-kit` or `rkit-ui`, or a request to npm for the dormant `rkit` (their name-dispute process, no guarantee).
 - [ ] **Rename** in `site/config.ts` and `package.json`, create the GitHub repo (confirm first), push, and point rkit.embeddable.com at the docs site.
 - [ ] **Library build** (tsup or Vite library mode): ESM plus `.d.ts`, CSS modules compiled into one `styles.css`, SVG assets inlined, `sideEffects` limited to CSS.
-- [ ] **Subpath exports:** `.`, `./ai`, `./build`, `./styles.css`. This unblocks the `charts-ui/ai` and `charts-ui/build` imports the docs already show.
+- [ ] **Subpath exports:** `.`, `./ai`, `./build`, `./styles.css`. This unblocks the `rkit/ai` and `rkit/build` imports the docs already show.
 - [ ] **Works in Next.js App Router:** `'use client'` banners and no `window`/DOM access at import time. Prove it with a Next.js fixture app in CI.
 - [ ] **Widen React support:** test React 18. The peer dependency is `>=19.1.1` today, which cuts out a large share of apps.
 - [ ] **Bundle size:** register Chart.js controllers and plugins per chart, and add a `size-limit` budget per component.

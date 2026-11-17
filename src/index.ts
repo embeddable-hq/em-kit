@@ -43,6 +43,29 @@ export type {
   TimeRange,
 } from './runtime/core';
 
+// Event payloads and controlled state, under the names the props reference
+// uses for them (the upstream `Pro` infix dropped, as for the components).
+export type {
+  BarChartProOptionsClickArg as BarChartOptionsClickArg,
+  BarChartStackedProOptionsClickArg as BarChartStackedOptionsClickArg,
+} from './generated/components/charts/bars/bars.types';
+export type { BarLineChartProClickArg as BarLineChartClickArg } from './generated/components/charts/combo/combo.types';
+export type {
+  LineChartProOptionsClickArg as LineChartOptionsClickArg,
+  LineChartGroupedProOptionsClickArg as LineChartGroupedOptionsClickArg,
+  AreaChartProPointClickArg as AreaChartPointClickArg,
+  AreaChartProAreaClickArg as AreaChartAreaClickArg,
+} from './generated/components/charts/lines/lines.types';
+export type { PieChartClickArg } from './generated/components/charts/pies/pies.types';
+export type { ScatterChartProOptionsClickArg as ScatterChartOptionsClickArg } from './generated/components/charts/scatter/ScatterChartPro/ScatterChartPro.types';
+export type { BubbleChartProOptionsClickArg as BubbleChartOptionsClickArg } from './generated/components/charts/scatter/BubbleChartPro/BubbleChartPro.types';
+export type { HeatMapProOptionsClickArg as HeatMapOptionsClickArg } from './generated/components/charts/tables/HeatMapPro/HeatMapPro.types';
+export type {
+  TableChartPaginatedProState as TablePaginatedState,
+  TableChartPaginatedProOnRowClickArg as TablePaginatedOnRowClickArg,
+} from './generated/components/charts/tables/TableChartPaginated';
+export type { TableScrollableProOnRowClickArg as TableScrollableOnRowClickArg } from './generated/components/charts/tables/TableScrollable';
+
 // Components: generated from scripts/components.manifest.mjs
 export * from './components.generated';
 

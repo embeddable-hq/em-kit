@@ -2,8 +2,11 @@ import { renderToString } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { ChartsProvider, TableScrollable, dimension, measure, results } from '../src';
 import { buildChart, ChartSettings } from '../site/catalog/build';
-import { chartEntries, DataState, getComponent } from '../site/catalog/registry';
+import { datasets } from '../site/catalog/datasets';
+import { getComponent } from '../site/catalog/chartComponents';
+import { chartEntries, DataState } from '../site/catalog/registry';
 import { buildTheme } from '../site/catalog/themes';
+import { chartTitle } from '../site/catalog/translations';
 
 // Smoke tests over the public surface: every exported chart renders, with
 // realistic props from the site registry, in every data state, in English and
@@ -45,13 +48,13 @@ describe.each(chartEntries.map((entry) => [entry.exportName, entry] as const))('
     const html = render(<Component {...props} />);
     // Titles are "key|fallback"; the key must never leak into the output.
     expect(html).not.toContain('titles.saas');
-    expect(html).toContain('Revenue');
+    expect(html).toContain(chartTitle(datasets.saas, entry.id));
   });
 
   it('renders translated', () => {
     const { props } = buildChart(entry, settings('ready', 'de'), runtime);
     const html = render(<Component {...props} />, 'de');
-    expect(html).toContain('Umsatz');
+    expect(html).toContain(chartTitle(datasets.saas, entry.id, 'de'));
   });
 });
 

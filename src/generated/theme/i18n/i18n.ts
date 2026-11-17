@@ -16,6 +16,7 @@ const i18nSetup = (theme: Theme) => {
     interpolation: {
       escapeValue: false,
     },
+    showSupportNotice: false,
   });
 };
 

@@ -2,6 +2,8 @@
 // The npm package name is still open (ROADMAP.md, Phase 5); code samples use packageName.
 export const BRAND = {
   name: 'RKit',
-  packageName: 'charts-ui',
-  tagline: 'Production-grade React charts for the data layer you already have.',
+  packageName: 'rkit',
+  // Where the site will be published: used for canonical links, llms.txt and the sitemap.
+  url: 'https://rkit.embeddable.com',
+  tagline: 'Finished React chart components for teams that already have a data layer. A chart library draws the chart; RKit ships the whole card.',
 };

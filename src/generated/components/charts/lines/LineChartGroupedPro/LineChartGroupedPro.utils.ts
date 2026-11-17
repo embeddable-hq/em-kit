@@ -52,7 +52,7 @@ export const getLineChartGroupedProData = (
     });
 
     const dataset = {
-      clip: hasMinMaxYAxisRange,
+      clip: hasMinMaxYAxisRange ? { left: false, right: false, top: 0, bottom: 0 } : false,
       label: themeFormatter.data(groupDimension, groupByItem),
       rawLabel: groupByItem,
       backgroundColor: setColorAlpha(backgroundColor, 0.5),

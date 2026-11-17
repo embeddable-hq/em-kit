@@ -226,12 +226,23 @@ export const mergeGroupOtherResults = (
 export const getDatalabelPercentage = (
   value: number,
   data: unknown[],
-  decimalPlaces = 2,
+  decimalPlaces?: number,
+  locale?: string,
 ): string => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const total = data.reduce((sum: number, v: any) => sum + Number.parseFloat(v), 0);
-  if (total === 0) return '0%';
-  return `${Number.parseFloat(((value / total) * 100).toFixed(decimalPlaces))}%`;
+  const options: Intl.NumberFormatOptions = {
+    style: 'percent',
+    minimumFractionDigits: decimalPlaces ?? 0,
+    maximumFractionDigits: decimalPlaces ?? 2,
+  };
+  let format: Intl.NumberFormat;
+  try {
+    format = new Intl.NumberFormat(locale, options);
+  } catch {
+    format = new Intl.NumberFormat('en-US', options);
+  }
+  return format.format(total === 0 ? 0 : value / total);
 };
 
 export const createSimpleClickHandler = ({

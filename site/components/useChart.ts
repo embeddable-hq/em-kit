@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import type { Granularity } from '../../src';
 import { buildChart, ChartSettings } from '../catalog/build';
-import { ChartEntry, getComponent, TableState } from '../catalog/registry';
+import { getComponent } from '../catalog/chartComponents';
+import { ChartEntry, TableState } from '../catalog/registry';
 
 export type ChartEvent = { id: number; name: string; payload: unknown; at: string };
 

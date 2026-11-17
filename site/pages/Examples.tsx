@@ -2,9 +2,11 @@ import { ChatDemo } from '../components/ChatDemo';
 import { CodeBlock } from '../components/CodeBlock';
 import { DemoDashboard } from '../components/DemoDashboard';
 import { SpecPlayground } from '../components/SpecPlayground';
+import { Breadcrumb, contentTarget } from '../components/DocsLayout';
 import { ChartContextBar } from '../components/Switchers';
 import { datasets } from '../catalog/datasets';
 import { BRAND } from '../config';
+import { dashboardSource } from '../content/exampleSources';
 import { href, useDocumentTitle } from '../router';
 import { useCanvas, useSiteSettings } from '../state';
 
@@ -28,108 +30,19 @@ export type ExampleId = (typeof examples)[number]['id'];
 export const isExampleId = (id: string | undefined): id is ExampleId => examples.some((e) => e.id === id);
 
 // The standalone version of DemoDashboard.tsx: same components, same state,
-// same wiring, with the site's sample datasets replaced by "your data layer".
-// Keep the two in step.
-const dashboardSource = `import { useState } from 'react';
-import {
-  BarChart, ChartsProvider, DonutChart,
-  KpiNumberComparison, KpiNumber,
-  LineChart, TablePaginated,
-  dimension, measure, results,
-} from '${BRAND.packageName}';
-import type { Granularity } from '${BRAND.packageName}';
-
-const region = dimension({ name: 'region', title: 'Region' });
-const plan = dimension({ name: 'plan', title: 'Plan' });
-const revenue = measure({ name: 'revenue', title: 'Revenue', inputs: { prefix: '$' } });
-const customers = measure({ name: 'customers', title: 'Customers' });
-
-// The windows behind the KPI's current and comparison rows.
-const currentRange = { from: new Date('2026-06-01'), to: new Date('2026-06-30'), relativeTimeString: undefined };
-const previousRange = { from: new Date('2026-05-02'), to: new Date('2026-05-31'), relativeTimeString: undefined };
-
-export function Dashboard() {
-  // Three pieces of state drive the whole page.
-  const [granularity, setGranularity] = useState<Granularity>('month');
-  const [planFilter, setPlanFilter] = useState<string | null>(null);
-  const [state, setState] = useState({ page: 0, isLoadingDownloadData: false });
-
-  const startedAt = dimension({
-    name: 'subscriptions.started_at', title: 'Start date', type: 'time',
-    granularity, inputs: { showGranularityDropdown: true },
-  });
-
-  // Your data layer: re-query whenever the filter, granularity or page changes.
-  // kpis: { current: Row, previous: Row, year: Row }  e.g. { revenue: 118200 }
-  // trendRows: [{ 'subscriptions.started_at': '2026-06-01T00:00:00.000', revenue: 128400 }, …]
-  // regionRows: [{ region: 'Europe', revenue: 391500 }, …]
-  // planRows: [{ plan: 'Growth', revenue: 612300 }, …]  (unfiltered: the donut is the filter)
-  const { kpis, trendRows, regionRows, planRows, pageRows, total } = useDashboardRows({
-    planFilter, granularity,
-    page: state.page, pageSize: state.pageSize, sort: state.sort,
-  });
-
-  return (
-    <ChartsProvider>
-      <KpiNumberComparison
-        title="Revenue · Last 30 days"
-        measure={revenue}
-        results={results([kpis.current])}
-        resultsComparison={results([kpis.previous])}
-        comparisonPeriod="Previous period"
-        primaryDateRange={currentRange}
-        comparisonDateRange={previousRange}
-        displayChangeAsPercentage
-      />
-      <KpiNumber title="Revenue · Last 12 months" measure={revenue} results={results([kpis.year])} />
-      <DonutChart
-        title="Share by plan"
-        description="Click a segment to filter the whole dashboard"
-        dimension={plan}
-        measure={revenue}
-        results={results(planRows)}
-        showLegend
-        showTooltips
-        onSegmentClick={({ dimensionValue }) =>
-          dimensionValue && setPlanFilter((f) => (f === dimensionValue ? null : dimensionValue))
-        }
-      />
-      <LineChart
-        title="Revenue · Trend"
-        xAxis={startedAt}
-        measures={[revenue]}
-        results={results(trendRows)}
-        granularity={granularity}
-        setGranularity={setGranularity}
-        showTooltips
-      />
-      <BarChart
-        title="Revenue · By category"
-        dimension={region}
-        measures={[revenue]}
-        results={results(regionRows)}
-        showTooltips
-      />
-      <TablePaginated
-        title="Revenue · Breakdown"
-        dimensionsAndMeasures={[region, plan, revenue, customers]}
-        results={results(pageRows)}
-        totalResults={{ isLoading: false, total }}
-        state={state}
-        setState={setState}
-      />
-    </ChartsProvider>
-  );
-}`;
+// same wiring, with the site's sample datasets replaced by a small in-file
+// data layer. It is a real module (site/examples/Dashboard.tsx), so it is
+// type-checked and rendered by the tests. Keep the two in step. The source
+// printed below is dashboardSource, which the Markdown twin shares.
 
 const dashboardWiring = [
   {
     title: 'One filter, five components',
-    body: 'The donut’s onSegmentClick payload carries the clicked dimension value. Storing it in useState and re-querying is the whole cross-filtering implementation.',
+    body: 'The donut’s onSegmentClick payload carries the clicked dimension value. Storing it in useState and re-querying is the whole cross-filtering implementation. Clicking the same slice again clears the filter.',
   },
   {
     title: 'Granularity is just state',
-    body: 'The line chart’s built-in switcher calls setGranularity; the query re-runs and every time bucket, label and tooltip follows. Clicking the same slice again clears the filter.',
+    body: 'The line chart’s built-in switcher calls setGranularity; the query re-runs and every time bucket, label and tooltip follows.',
   },
   {
     title: 'The table is controlled',
@@ -148,6 +61,7 @@ const DashboardExample = () => {
   return (
     <>
       <div className="container showcase__body">
+        <h2 className="sr-only">The running dashboard</h2>
         <div className={`app-window${canvas.dark ? ' is-dark' : ''}`}>
           <div className="app-window__bar">
             <span className="app-window__dots" aria-hidden>
@@ -185,9 +99,9 @@ const DashboardExample = () => {
         <div className="section__head">
           <h2>The source</h2>
           <p>
-            The dashboard above, as you would write it: your data hook returns the rows, the components do the rest.
-            Layout is an ordinary CSS grid, so it isn’t shown. Every chart’s props are adjustable in the{' '}
-            <a href={href('/charts')}>gallery</a> and explained in the <a href={href('/docs')}>docs</a>.
+            The dashboard above as one file that runs as pasted. A stand-in data layer at the top takes the place
+            of your API: swap its rows and queries for your own. Try any chart’s props in its playground, from the{' '}
+            <a href={href('/docs/components')}>components</a> pages.
           </p>
         </div>
         <CodeBlock code={dashboardSource} label="Dashboard.tsx" />
@@ -216,7 +130,7 @@ const ChatExample = () => (
           Paste whatever a model might send. Valid specs render with the real components; wrong ones still render
           something visible. The quickest way to test your prompts: copy the tool input from your logs and drop it in.
           Setting up the tool and the system prompt is covered in the{' '}
-          <a href={href('/docs')}>docs</a>.
+          <a href={href('/docs/charts-from-a-model')}>charts from a model</a> guide.
         </p>
       </div>
       <SpecPlayground />
@@ -227,13 +141,10 @@ const ChatExample = () => (
 export const Examples = ({ example }: { example: ExampleId }) => {
   useDocumentTitle(example === 'dashboard' ? 'Dashboard example' : 'AI chat example', BRAND.name);
   return (
-    <div className="page">
+    <div className="page" {...contentTarget}>
       <div className="container page__head">
-        <h1>Examples</h1>
-        <p className="lede">
-          Two complete apps built on the same components: a dashboard your users explore, and an AI assistant that
-          answers in charts.
-        </p>
+        <Breadcrumb items={[{ label: 'Examples', href: href('/examples') }, { label: examples.find((e) => e.id === example)!.label }]} />
+        <h1>{examples.find((e) => e.id === example)!.label}</h1>
         <nav className="example-tabs" aria-label="Examples">
           {examples.map((e) => (
             <a
@@ -243,6 +154,7 @@ export const Examples = ({ example }: { example: ExampleId }) => {
               aria-current={e.id === example ? 'page' : undefined}
             >
               <strong>{e.label}</strong>
+              {/* Each card describes its example: the selected one is this page's introduction. */}
               <span>{e.blurb}</span>
             </a>
           ))}
@@ -250,7 +162,7 @@ export const Examples = ({ example }: { example: ExampleId }) => {
       </div>
       <div className="context-strip">
         <div className="container">
-          <ChartContextBar hint="This example follows the site-wide theme, language and data." />
+          <ChartContextBar compact hint="This example follows the site-wide theme, language and data." />
         </div>
       </div>
       {example === 'dashboard' ? <DashboardExample /> : <ChatExample />}

@@ -6,7 +6,9 @@ import { DeepPartial } from './generated/types/deep-partial';
 import { injectCssVariables } from './generated/theme/styles/styles.utils';
 import { loadThemeFonts } from './generated/theme/fonts/fonts.utils';
 import { getClientContextTimezone } from './generated/theme/utils/clientContext.utils';
+import { additions } from './i18n/additions';
 import { fr } from './i18n/fr';
+import { defaultChartOptions, defaultStyles } from './theme';
 
 export type ChartsProviderProps = {
   theme?: DeepPartial<Theme>;
@@ -31,9 +33,11 @@ const mergeTheme = <T,>(base: T, override: unknown): T => {
 
 const baseTheme: Theme = {
   ...remarkableTheme,
+  styles: { ...remarkableTheme.styles, ...defaultStyles },
+  charts: { ...remarkableTheme.charts, ...defaultChartOptions } as Theme['charts'],
   i18n: {
     ...remarkableTheme.i18n,
-    translations: { ...remarkableTheme.i18n.translations, fr },
+    translations: mergeTheme({ ...remarkableTheme.i18n.translations, fr }, additions),
   },
 };
 
@@ -47,7 +51,8 @@ export const ChartsProvider = ({ theme, timezone, children }: ChartsProviderProp
   }, [theme, timezone]);
 
   // Components read CSS variables via getComputedStyle during their own render,
-  // so the variables must exist before children render, not in an effect.
+  // so the variables must exist before children render, not in an effect. A
+  // server render has no document: components use their built-in fallbacks.
   useMemo(() => {
     if (typeof document !== 'undefined') injectCssVariables(resolvedTheme.styles);
   }, [resolvedTheme.styles]);

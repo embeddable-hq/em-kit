@@ -1,0 +1,319 @@
+/* Top navigation, docs sidebar, search, footer. Loaded after site.css, so rules here win. */
+
+/* Header */
+.nav__links nav {
+  display: flex;
+  gap: 20px;
+}
+
+.nav__links a,
+.mobile-menu__links a {
+  text-decoration: none;
+  color: var(--s-text-muted);
+  font-weight: 500;
+}
+
+.nav__links a:hover,
+.nav__links a.is-active,
+.mobile-menu__links a:hover,
+.mobile-menu__links a.is-active {
+  color: var(--s-text);
+}
+
+.nav__links a.is-active {
+  box-shadow: 0 2px 0 var(--s-accent);
+  padding-bottom: 2px;
+}
+
+.nav__links a:focus-visible,
+.mobile-menu a:focus-visible,
+.nav__brand:focus-visible,
+.nav__icon-button:focus-visible,
+.footer a:focus-visible {
+  outline: 2px solid var(--s-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.nav__icon-button {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: var(--s-text);
+  background: transparent;
+  border: 1px solid var(--s-border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.nav__icon-button:hover {
+  background: var(--s-bg-muted);
+}
+
+.mobile-menu {
+  display: none;
+}
+
+body.is-menu-open {
+  overflow: hidden;
+}
+
+/* Search */
+.search-button {
+  color: var(--s-text-muted);
+}
+
+.search-dialog__results {
+  padding: 8px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.search-dialog__group {
+  color: var(--s-text-muted);
+}
+
+.search-dialog__item {
+  border-radius: 8px;
+}
+
+.search-dialog__item.is-active {
+  background: var(--s-accent-soft);
+  box-shadow: inset 2px 0 0 var(--s-accent);
+}
+
+.search-dialog__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-dialog__hint {
+  flex: none;
+  color: var(--s-text-muted);
+}
+
+.search-dialog__empty {
+  margin: 0;
+}
+
+.search-dialog__footer {
+  display: flex;
+  gap: 16px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--s-border);
+  background: var(--s-bg-subtle);
+  font-size: 0.78rem;
+  color: var(--s-text-muted);
+}
+
+/* The sidebar list, wherever it is shown (the docs column or the mobile menu). */
+.docs-sidebar__nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.docs-sidebar__nav a {
+  display: block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  color: var(--s-text-muted);
+  text-decoration: none;
+}
+
+.docs-sidebar__nav a:hover {
+  color: var(--s-text);
+  background: var(--s-bg-subtle);
+}
+
+.docs-sidebar__nav a:focus-visible {
+  outline: 2px solid var(--s-accent);
+  outline-offset: 2px;
+}
+
+.docs-sidebar__nav a.is-active,
+.docs-sidebar__nav a.is-active:hover {
+  color: var(--s-accent);
+  background: var(--s-accent-soft);
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--s-accent);
+}
+
+.docs-sidebar__nav .docs-sidebar__title {
+  display: block;
+  padding: 0 10px 6px;
+}
+
+/* Docs sidebar: scrolls on its own, stays put while the page scrolls. */
+.docs-sidebar {
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding-bottom: 24px;
+}
+
+.docs-sidebar__section {
+  margin-bottom: 22px;
+}
+
+.docs-sidebar__title {
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--s-text);
+}
+
+.docs-sidebar__group {
+  margin-top: 12px;
+}
+
+.docs-sidebar__group-title {
+  display: block;
+  padding: 0 10px 2px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--s-text-muted);
+}
+
+.docs-toc a {
+  color: var(--s-text-muted);
+}
+
+.docs-toc a:hover,
+.docs-toc a.is-active {
+  color: var(--s-text);
+}
+
+/* Footer */
+.footer {
+  color: var(--s-text-muted);
+}
+
+.footer__inner p {
+  margin: 0;
+}
+
+.footer__inner nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+
+.footer a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--s-border-strong);
+}
+
+.footer a:hover {
+  color: var(--s-text);
+}
+
+/* One header pattern below 860px, the same width at which the docs sidebar collapses:
+   brand, search icon, menu button. The menu holds the site links and, on docs pages, the sidebar. */
+@media (max-width: 860px) {
+  .nav__inner {
+    gap: 12px;
+  }
+
+  .nav__links {
+    display: none;
+  }
+
+  .nav__controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .nav__cta {
+    display: none;
+  }
+
+  .search-button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .search-button__label,
+  .search-button kbd {
+    display: none;
+  }
+
+  .nav__icon-button {
+    display: inline-flex;
+  }
+
+  /* Absolute, not fixed: the header's backdrop-filter makes it the containing block. */
+  .mobile-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    height: calc(100vh - 61px);
+    height: calc(100dvh - 61px);
+    z-index: 19;
+    display: block;
+    background: var(--s-bg);
+    border-top: 1px solid var(--s-border);
+  }
+
+  .mobile-menu[hidden] {
+    display: none;
+  }
+
+  .mobile-menu__body {
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px 16px 48px;
+  }
+
+  .mobile-menu__links nav {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--s-border);
+  }
+
+  .mobile-menu__links a {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 6px;
+  }
+
+  .mobile-menu__links a.is-active {
+    background: var(--s-accent-soft);
+    color: var(--s-accent);
+    font-weight: 600;
+  }
+
+  .mobile-menu .docs-sidebar__nav a {
+    padding: 8px 10px;
+  }
+
+  /* The desktop sidebar is replaced by the menu. */
+  .docs-sidebar {
+    display: none;
+  }
+
+  .footer__inner {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .docs-sidebar a,
+  .nav__links a {
+    transition: color 0.12s, background-color 0.12s;
+  }
+}

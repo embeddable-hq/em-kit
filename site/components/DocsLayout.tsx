@@ -1,10 +1,11 @@
-import { IconChevronLeft, IconChevronRight, IconMenu2 } from '@tabler/icons-react';
-import { ReactNode, useEffect, useState } from 'react';
-import { docsNav, NavLink } from '../docs/nav';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { ReactNode, useEffect, useId, useRef, useState } from 'react';
+import { docsNav, flatNav, NavLink } from '../content/nav';
+
+/** What the skip link jumps to: the page's content column, focusable so the next Tab starts inside it. */
+export const contentTarget = { id: 'content', tabIndex: -1 } as const;
 
 export type TocItem = { id: string; title: string; depth?: 2 | 3 };
-
-const allLinks = docsNav.flatMap((s) => s.links);
 
 // Highlights the section heading nearest the top of the viewport.
 const useActiveHeading = (ids: string[]) => {
@@ -29,83 +30,137 @@ const useActiveHeading = (ids: string[]) => {
   return active;
 };
 
-const Sidebar = ({ route, onNavigate }: { route: string; onNavigate?: () => void }) => (
-  <nav className="docs-sidebar__nav" aria-label="Documentation">
-    {docsNav.map((section) => (
-      <div key={section.title} className="docs-sidebar__section">
-        <span className="docs-sidebar__title">{section.title}</span>
-        <ul>
-          {section.links.map((link) => (
-            <li key={link.path}>
-              <a
-                href={link.path}
-                className={route === link.path ? 'is-active' : ''}
-                aria-current={route === link.path ? 'page' : undefined}
-                onClick={onNavigate}
-              >
-                {link.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    ))}
-  </nav>
+const SidebarLink = ({ link, route, onNavigate }: { link: NavLink; route: string; onNavigate?: () => void }) => (
+  <li>
+    <a
+      href={link.path}
+      className={route === link.path ? 'is-active' : ''}
+      aria-current={route === link.path ? 'page' : undefined}
+      onClick={onNavigate}
+    >
+      {link.title}
+    </a>
+  </li>
 );
 
-const Pager = ({ route }: { route: string }) => {
-  const index = allLinks.findIndex((l) => l.path === route);
-  if (index === -1) return null;
-  const prev: NavLink | undefined = allLinks[index - 1];
-  const next: NavLink | undefined = allLinks[index + 1];
+// Brings the current page into view inside whichever box scrolls the sidebar,
+// without moving the page itself.
+const scrollCurrentIntoView = (root: HTMLElement | null) => {
+  const link = root?.querySelector<HTMLElement>('[aria-current="page"]');
+  const scroller = link?.closest<HTMLElement>('[data-sidebar-scroll]');
+  if (!root || !link || !scroller) return;
+  const box = scroller.getBoundingClientRect();
+  const within = (el: Element) => el.getBoundingClientRect().top - box.top + scroller.scrollTop;
+  const top = within(link);
+  const bottom = top + link.offsetHeight;
+  const margin = 12;
+  // Scroll only when the link is out of view, as scrollIntoView({ block: 'nearest' }) would.
+  if (top >= scroller.scrollTop && bottom <= scroller.scrollTop + scroller.clientHeight) return;
+  let next = top < scroller.scrollTop ? top - margin : bottom + margin - scroller.clientHeight;
+  // Then land on the first heading or link that is whole, so no row is left half cut at the top.
+  const rows = [...root.querySelectorAll('.docs-sidebar__title, .docs-sidebar__group-title, li > a')].map(within);
+  const whole = rows.filter((y) => y >= next - 1 && y <= top).sort((x, y) => x - y)[0];
+  if (whole !== undefined) next = whole - margin / 2;
+  scroller.scrollTop = Math.max(0, next);
+};
+
+// Section, then (for components) type groups, then links: three levels at most.
+export const Sidebar = ({ route, onNavigate }: { route: string; onNavigate?: () => void }) => {
+  const ref = useRef<HTMLElement>(null);
+  const ids = useId();
+  useEffect(() => scrollCurrentIntoView(ref.current), [route]);
   return (
-    <nav className="docs-pager" aria-label="Previous and next pages">
-      {prev ? (
-        <a href={prev.path} className="docs-pager__link">
-          <span className="docs-pager__dir">
-            <IconChevronLeft size={14} aria-hidden /> Previous
-          </span>
-          {prev.title}
-        </a>
-      ) : (
-        <span />
-      )}
-      {next && (
-        <a href={next.path} className="docs-pager__link docs-pager__link--next">
-          <span className="docs-pager__dir">
-            Next <IconChevronRight size={14} aria-hidden />
-          </span>
-          {next.title}
-        </a>
-      )}
+    <nav className="docs-sidebar__nav" aria-label="Documentation" ref={ref}>
+      {docsNav.map((section) => {
+        const grouped = new Set((section.groups ?? []).flatMap((g) => g.links.map((l) => l.path)));
+        return (
+          <div key={section.title} className="docs-sidebar__section">
+            <span className="docs-sidebar__title">{section.title}</span>
+            <ul>
+              {section.links
+                .filter((l) => !grouped.has(l.path))
+                .map((link) => (
+                  <SidebarLink key={link.path} link={link} route={route} onNavigate={onNavigate} />
+                ))}
+              {(section.groups ?? []).map((group) => (
+                <li key={group.title} className="docs-sidebar__group">
+                  <span id={`${ids}-${group.title}`} className="docs-sidebar__group-title">
+                    {group.title}
+                  </span>
+                  <ul aria-labelledby={`${ids}-${group.title}`}>
+                    {group.links.map((link) => (
+                      <SidebarLink key={link.path} link={link} route={route} onNavigate={onNavigate} />
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
     </nav>
   );
 };
 
+/** Previous and next links in the docs' style: also the playground's and anywhere a page has neighbours. */
+export const PagerLinks = ({ prev, next, label }: { prev?: NavLink; next?: NavLink; label: string }) => (
+  <nav className="docs-pager" aria-label={label}>
+    {prev ? (
+      <a href={prev.path} className="docs-pager__link">
+        <span className="docs-pager__dir">
+          <IconChevronLeft size={14} aria-hidden /> Previous
+        </span>
+        {prev.title}
+      </a>
+    ) : (
+      <span />
+    )}
+    {next && (
+      <a href={next.path} className="docs-pager__link docs-pager__link--next">
+        <span className="docs-pager__dir">
+          Next <IconChevronRight size={14} aria-hidden />
+        </span>
+        {next.title}
+      </a>
+    )}
+  </nav>
+);
+
+const Pager = ({ route }: { route: string }) => {
+  const index = flatNav.findIndex((l) => l.path === route);
+  if (index === -1) return null;
+  return <PagerLinks prev={flatNav[index - 1]} next={flatNav[index + 1]} label="Previous and next pages" />;
+};
+
+export type Crumb = { label: string; href?: string };
+
+/**
+ * The line above a page's H1: "Components · Bars". The last item is the
+ * page's own parent or the page itself; items with an href are links.
+ * Looks the same on component pages, playgrounds and examples.
+ */
+export const Breadcrumb = ({ items }: { items: Crumb[] }) => (
+  <nav className="docs-head__section crumbs" aria-label="Breadcrumb">
+    {items.map((item, i) => (
+      <span key={item.label} className="crumbs__item">
+        {i > 0 && <span aria-hidden> · </span>}
+        {item.href ? <a href={item.href}>{item.label}</a> : item.label}
+      </span>
+    ))}
+  </nav>
+);
+
 // shadcn-style three columns: section sidebar, the page, and its contents.
 export const DocsLayout = ({ route, toc, children }: { route: string; toc: TocItem[]; children: ReactNode }) => {
   const active = useActiveHeading(toc.map((t) => t.id));
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => setMenuOpen(false), [route]);
 
   return (
     <div className="docs-layout container container--wide">
-      <aside className="docs-sidebar">
-        <button
-          type="button"
-          className="docs-sidebar__toggle button button--small"
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((o) => !o)}
-        >
-          <IconMenu2 size={16} aria-hidden /> Menu
-        </button>
-        <div className={`docs-sidebar__panel${menuOpen ? ' is-open' : ''}`}>
-          <Sidebar route={route} onNavigate={() => setMenuOpen(false)} />
-        </div>
+      <aside className="docs-sidebar" data-sidebar-scroll>
+        <Sidebar route={route} />
       </aside>
       <div className="docs-main">
-        <article className="docs-article">{children}</article>
+        <article className="docs-article" {...contentTarget}>{children}</article>
         <Pager route={route} />
       </div>
       {toc.length > 0 && (

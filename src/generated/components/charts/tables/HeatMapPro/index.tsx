@@ -72,6 +72,15 @@ export const getHeatDimension = (
   };
 };
 
+const getThemeColor = (theme: Theme, name: string): string | undefined => {
+  const styles = theme.styles as Record<string, string | undefined>;
+  let value = styles[name];
+  for (let depth = 0; value?.startsWith('var(') && depth < 10; depth++) {
+    value = styles[value.slice(4, -1).split(',')[0]!.trim()];
+  }
+  return value || undefined;
+};
+
 const HeatMapPro = (props: HeatMapProProps) => {
   const theme = useTheme() as Theme;
   i18nSetup(theme);
@@ -196,7 +205,11 @@ const HeatMapPro = (props: HeatMapProProps) => {
         rowDimension={pivotRowDimension}
         columnDimension={pivotColumnDimension}
         maxColor={maxColor}
-        midColor={midColor ?? getStyle('--em-tablechart-heatmap-color', '#FF5400')}
+        midColor={
+          midColor ??
+          getThemeColor(theme, '--em-tablechart-heatmap-color') ??
+          getStyle('--em-tablechart-heatmap-color', '#FF5400')
+        }
         minColor={minColor}
         showValues={showValues}
         minThreshold={minThreshold}

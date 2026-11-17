@@ -63,9 +63,9 @@ export const KpiChart: FC<KpiChartProps> = ({
             </AutoTextSize>
           )}
         >
-          <h2 title={displayValue?.toString()} style={{ fontSize: valueFontSize }}>
+          <div className={styles.kpiChartValue} title={displayValue?.toString()} style={{ fontSize: valueFontSize }}>
             {displayValue}
-          </h2>
+          </div>
         </ConditionalWrapper>
       </div>
 

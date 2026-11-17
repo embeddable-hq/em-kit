@@ -11,7 +11,7 @@
   height: var(--em-card-feedback-icon-size, 1rem);
 }
 
-.feedback h2 {
+.feedback .title {
   margin: unset;
   text-align: center;
   font-style: normal;
@@ -34,7 +34,7 @@
 }
 
 .feedback.error,
-.feedback.error h2,
+.feedback.error .title,
 .feedback.error p {
   color: var(--em-card-feedback-color--error, #bc1010);
 }

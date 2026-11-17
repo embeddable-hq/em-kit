@@ -69,7 +69,20 @@ export const ChartCardMenuPro: React.FC<ChartCardMenuProProps> = (props) => {
     <Dropdown
       side="bottom"
       align="end"
-      triggerComponent={isLoading ? <ChartCardLoading /> : <ActionIcon icon={IconDotsVertical} />}
+      triggerComponent={
+        isLoading ? (
+          <ChartCardLoading />
+        ) : (
+          <ActionIcon
+            icon={IconDotsVertical}
+            aria-label={
+              props.title
+                ? i18n.t('charts.menuLabel', { title: props.title })
+                : i18n.t('charts.menuLabelUntitled')
+            }
+          />
+        )
+      }
     >
       <SelectFieldContent className={styles.list} autoFocus>
         {menuOptions?.map((option) => {

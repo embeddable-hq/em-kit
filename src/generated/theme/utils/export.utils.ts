@@ -9,8 +9,6 @@ import {
   isDimension,
   isMeasure,
 } from '../../../runtime/core';
-import * as XLSX from 'xlsx';
-import domtoimage from 'dom-to-image-more';
 import { Chart } from 'chart.js';
 import { Theme } from '../theme.types';
 import { getThemeFormatter } from '../formatter/formatter.utils';
@@ -123,7 +121,7 @@ export function exportCSV({
   downloadBlob(url, `${title ?? 'untitled'}.csv`);
 }
 
-export function exportXLSX({
+export async function exportXLSX({
   data = [],
   dimensionsAndMeasures = [],
   title,
@@ -131,6 +129,7 @@ export function exportXLSX({
 }: ChartCardMenuOptionOnClickProps) {
   const xlsxData = formatData(data, dimensionsAndMeasures, theme);
 
+  const XLSX = await import('xlsx');
   const worksheet = XLSX.utils.aoa_to_sheet(xlsxData);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
@@ -205,6 +204,7 @@ export async function exportPNG({
   }
 
   try {
+    const { default: domtoimage } = await import('dom-to-image-more');
     const dataUrl = await withChartsAtPixelRatio<string>(element, PNG_EXPORT_SCALE, () =>
       domtoimage.toPng(element, {
         cacheBust: true,

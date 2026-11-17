@@ -1,57 +1,34 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Layout } from './components/Layout';
-import { getEntry } from './catalog/registry';
-import { BRAND } from './config';
-import { getGuide } from './docs/guides';
-import { ChartPage } from './pages/ChartPage';
-import { ComponentDocPage } from './pages/ComponentDocPage';
-import { ComponentsIndex } from './pages/ComponentsIndex';
-import { DocPage } from './pages/DocPage';
-import { Examples, isExampleId } from './pages/Examples';
-import { Gallery } from './pages/Gallery';
-import { Landing } from './pages/Landing';
-import { useDocumentTitle, useRoute } from './router';
-import { SiteSettingsProvider } from './state';
+import { App, loadPage, preparePage } from './App';
+import { initialRoute, useRoute } from './router';
+import { SettingsProvider } from './settings';
 import './site.css';
+import './styles/nav.css';
+import './styles/landing.css';
+import './styles/docs.css';
+import './styles/components.css';
+import './styles/charts.css';
+import './styles/chrome.css';
+import './styles/code.css';
 
-const NotFound = () => {
-  useDocumentTitle('Page not found', BRAND.name);
-  return (
-    <div className="container page">
-      <h1>Page not found</h1>
-      <p>
-        <a href="/">Back to the home page</a> or <a href="/docs/components">browse the components</a>.
-      </p>
-    </div>
+const Root = () => <App route={useRoute(preparePage)} />;
+
+const mount = () =>
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <SettingsProvider>
+        <Root />
+      </SettingsProvider>
+    </StrictMode>,
   );
-};
 
-const App = () => {
-  const route = useRoute();
-  const chartMatch = route.match(/^\/charts\/([\w-]+)(?:\/([\w-]+))?$/);
-  const chartEntry = chartMatch ? getEntry(chartMatch[1]!) : undefined;
-  const componentEntry = getEntry(route.match(/^\/docs\/components\/([\w-]+)$/)?.[1] ?? '');
-  const guide = getGuide(route.match(/^\/docs\/([\w-]+)$/)?.[1] ?? '');
-  const exampleId = route === '/examples' ? 'dashboard' : route.match(/^\/examples\/([\w-]+)$/)?.[1];
-
-  let page;
-  if (route === '/') page = <Landing />;
-  else if (route === '/charts') page = <Gallery />;
-  else if (route === '/docs/components') page = <ComponentsIndex route={route} />;
-  else if (componentEntry) page = <ComponentDocPage key={route} entry={componentEntry} route={route} />;
-  else if (guide) page = <DocPage key={route} guide={guide} route={route} />;
-  else if (isExampleId(exampleId)) page = <Examples example={exampleId} />;
-  else if (chartEntry) page = <ChartPage entry={chartEntry} variantId={chartMatch?.[2]} />;
-  else page = <NotFound />;
-
-  return <Layout route={route}>{page}</Layout>;
-};
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <SiteSettingsProvider>
-      <App />
-    </SiteSettingsProvider>
-  </StrictMode>,
-);
+// Each page is its own chunk (see App.tsx), and so are the chart library and a
+// guide's live charts. The static build's HTML stays on screen until the
+// chunks this page shows are here (its HTML preloads them), so the first
+// render replaces it with the same content rather than a loading state. If a
+// chunk cannot be fetched, the HTML is left as it is: readable, with links
+// that still work.
+const page = loadPage(initialRoute());
+if (page) page.then(mount, (error) => console.error(error));
+else mount();

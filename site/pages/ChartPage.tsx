@@ -1,26 +1,32 @@
+import { IconArrowLeft } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import type { FieldInputs, Granularity } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
+import { Breadcrumb, contentTarget, PagerLinks } from '../components/DocsLayout';
 import { DatasetSelect, LanguageSwitcher, ThemeSwitcher } from '../components/Switchers';
 import { useChart } from '../components/useChart';
 import { ChartSettings } from '../catalog/build';
+import { fieldOptionDefault, fieldOptionNote } from '../catalog/fieldOptionNotes';
 import { propNote } from '../catalog/propNotes';
+import { playgroundFrame } from '../catalog/sizes';
 import { chartEntries, ChartEntry, DataState, getVariant } from '../catalog/registry';
+import { flatNav, NavLink } from '../content/nav';
 import { componentFieldOptions, componentProps, FieldDoc, FieldOptionDoc, PropDoc } from '../generated/props';
 import { BRAND } from '../config';
-import { href, navigate, useDocumentTitle } from '../router';
+import { dataStates } from '../content/components';
+import { navigate, useDocumentTitle } from '../router';
+import { componentPath, playgroundPath } from '../content/routes';
 import { useCanvas, useSiteSettings } from '../state';
 
-const dataStates: { id: DataState; label: string }[] = [
-  { id: 'ready', label: 'Data' },
-  { id: 'loading', label: 'Loading' },
-  { id: 'empty', label: 'Empty' },
-  { id: 'error', label: 'Error' },
-];
+// The playground is where a component's props are tried out. What the
+// component is for, its examples and its reference are on its docs page, one
+// breadcrumb away: nothing here repeats them.
 
 const granularities: Granularity[] = ['day', 'week', 'month', 'quarter', 'year'];
 
 type Tab = 'preview' | 'code' | 'data';
+// "Rows", not "Data": the data state switch beside it is the other thing called data.
+const tabLabels: Record<Tab, string> = { preview: 'Preview', code: 'Code', data: 'Rows' };
 
 // How each prop is edited, inferred from its generated type.
 type ControlKind = 'boolean' | 'number' | 'text' | 'color' | 'granularity' | 'event' | 'data';
@@ -34,9 +40,17 @@ const controlKind = (prop: PropDoc, entry: ChartEntry): ControlKind => {
   return 'data';
 };
 
-const propTooltip = (prop: PropDoc) => {
-  const note = propNote(prop.name) ?? prop.doc;
-  return `${prop.required ? 'required · ' : ''}${prop.type}${note ? `\n${note}` : ''}`;
+// Tooltips are plain text: the notes' `code` marks would show as backticks.
+const plain = (text: string) => text.replace(/`/g, '');
+
+const propTooltip = (prop: PropDoc, entry: ChartEntry) => {
+  const note = propNote(prop.name, String(entry.exportName)) ?? prop.doc;
+  return `${prop.required ? 'required · ' : ''}${prop.type}${note ? `\n${plain(note)}` : ''}`;
+};
+
+const optionTooltip = (option: FieldOptionDoc) => {
+  const fallback = fieldOptionDefault(option);
+  return plain(`${fieldOptionNote(option)}${fallback ? ` Default: ${fallback}.` : ''}`);
 };
 
 const safeStringify = (value: unknown) => {
@@ -83,7 +97,7 @@ const FieldOptionControl = ({
       {option.name}
     </label>
   );
-  const title = optionDescription(option);
+  const title = optionTooltip(option);
 
   if (option.type === 'boolean') {
     return (
@@ -316,6 +330,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
   return (
     <div className="playground">
       <div className="playground__main">
+        <h2 className="sr-only">{tabLabels[tab]}</h2>
         <div className="tabs" role="tablist" aria-label="View">
           {(['preview', 'code', 'data'] as Tab[]).map((t) => (
             <button
@@ -326,7 +341,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
               className={tab === t ? 'is-active' : ''}
               onClick={() => setTab(t)}
             >
-              {t === 'preview' ? 'Preview' : t === 'code' ? 'Code' : 'Data'}
+              {tabLabels[t]}
             </button>
           ))}
         </div>
@@ -337,13 +352,14 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
               className={`playground__canvas${canvas.dark ? ' is-dark' : ''}`}
               style={{ background: canvas.background }}
             >
-              <div style={{ height: 480 }}>
+              {/* A preset about a small card is drawn at the size its code prints (registry `width`). */}
+              <div style={playgroundFrame(entry, variantId, built.props)}>
                 <Component {...built.props} />
               </div>
             </div>
             <div className="events">
               <div className="events__head">
-                <h3>Events</h3>
+                <h2>Events</h2>
                 {events.length > 0 && (
                   <button type="button" className="text-button" onClick={clearEvents}>
                     Clear
@@ -369,10 +385,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
 
         {tab === 'code' && (
           <div className="playground__panel">
-            <p className="muted">
-              Generated from the current settings, prop edits included. Replace the sample rows with your own query and
-              it runs as-is.
-            </p>
+            <p className="muted">Generated from the current settings, prop edits included.</p>
             <CodeBlock code={built.code} />
           </div>
         )}
@@ -381,7 +394,8 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
           <div className="playground__panel">
             <p className="muted">
               The rows passed to the chart. One object per row; keys match each field’s <code>name</code>. Time values
-              are ISO strings, keyed by both the field name and <code>name.granularity</code>.
+              are ISO strings with no time zone. A time field used to group bars or plot points is also read from{' '}
+              <code>name.granularity</code>.
             </p>
             {built.sampleRows.length === 0 ? (
               <p className="muted">No rows in the “{dataState}” state.</p>
@@ -390,7 +404,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
                 <CodeBlock
                   key={varName}
                   label={`${varName} · ${rows.length} rows`}
-                  code={safeStringify(rows.slice(0, 12)) + (rows.length > 12 ? `\n// … ${rows.length - 12} more` : '')}
+                  code={safeStringify(rows.slice(0, 12)) + (rows.length > 12 ? `\n// and ${rows.length - 12} more rows` : '')}
                 />
               ))
             )}
@@ -400,12 +414,12 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
 
       <aside className="controls" aria-label="Chart settings">
         <div className="controls__group-head">
-          <h3>Preview context</h3>
+          <h2>Preview context</h2>
           <p>How this chart looks in your app.</p>
         </div>
         <div className="control">
           <span className="control__label">Chart theme</span>
-          <ThemeSwitcher showLabels />
+          <ThemeSwitcher />
         </div>
         <div className="control">
           <span className="control__label">Chart language</span>
@@ -434,7 +448,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
         </div>
 
         <div className="controls__group-head controls__group-head--divided">
-          <h3>Props</h3>
+          <h2>Props</h2>
           <p>
             All of them, live: edits update the preview and the code together. Hover a prop for what it does.
             {(Object.keys(overrides).length > 0 || Object.keys(fieldOverrides).length > 0) && (
@@ -465,7 +479,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
               className="select"
               value={variantId ?? ''}
               onChange={(e) => {
-                navigate(`/charts/${entry.id}${e.target.value ? `/${e.target.value}` : ''}`);
+                navigate(playgroundPath(entry.id, e.target.value || undefined));
               }}
             >
               <option value="">{entry.name}</option>
@@ -479,7 +493,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
         )}
 
         {byKind.granularity.map((prop) => (
-          <div className="control" key={prop.name} title={propTooltip(prop)}>
+          <div className="control" key={prop.name} title={propTooltip(prop, entry)}>
             <label className="control__label control__label--prop" htmlFor={`prop-${prop.name}`}>
               {prop.name}
             </label>
@@ -502,7 +516,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
           const kind = controlKind(prop, entry);
           const current = built.props[prop.name];
           return (
-            <div className="control" key={prop.name} title={propTooltip(prop)}>
+            <div className="control" key={prop.name} title={propTooltip(prop, entry)}>
               <label className="control__label control__label--prop" htmlFor={`prop-${prop.name}`}>
                 {prop.name}
               </label>
@@ -548,7 +562,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
           <div className="control">
             <div className="switches">
               {byKind.boolean.map((prop) => (
-                <label key={prop.name} className="switch" title={propTooltip(prop)}>
+                <label key={prop.name} className="switch" title={propTooltip(prop, entry)}>
                   <input
                     type="checkbox"
                     checked={Boolean(built.props[prop.name])}
@@ -574,7 +588,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
             <span className="control__label">From the sample data</span>
             <div className="prop-chips">
               {byKind.data.map((prop) => (
-                <code key={prop.name} className="prop-chip" title={propTooltip(prop)}>
+                <code key={prop.name} className="prop-chip" title={propTooltip(prop, entry)}>
                   {prop.name}
                 </code>
               ))}
@@ -587,7 +601,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
             <span className="control__label">Events · logged under the preview</span>
             <div className="prop-chips">
               {byKind.event.map((prop) => (
-                <code key={prop.name} className="prop-chip" title={propTooltip(prop)}>
+                <code key={prop.name} className="prop-chip" title={propTooltip(prop, entry)}>
                   {prop.name}
                 </code>
               ))}
@@ -599,117 +613,41 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
   );
 };
 
-const optionType = (option: FieldOptionDoc) => {
-  const base = option.options?.length ? option.options.map((o) => `'${o}'`).join(' | ') : option.type;
-  if (!option.array) return base;
-  return option.options && option.options.length > 1 ? `(${base})[]` : `${base}[]`;
-};
-
-const optionDescription = (option: FieldOptionDoc) => {
-  const sentence = (text: string) => (/[.!?]$/.test(text) ? text : `${text}.`);
-  const parts = [sentence(option.label)];
-  if (option.description) parts.push(sentence(option.description));
-  if (option.supportedTypes) parts.push(`Only on ${option.supportedTypes.join(' and ')} fields.`);
-  if (option.defaultValue !== undefined) parts.push(`Default: ${JSON.stringify(option.defaultValue)}.`);
-  return parts.join(' ');
-};
-
-// One row per option, listing the field props that read it: most options
-// repeat across a chart's fields, so a table per field would mostly repeat.
-export const FieldOptions = ({ entry }: { entry: ChartEntry }) => {
-  const fields = componentFieldOptions[String(entry.exportName)] ?? {};
-  const rows = useMemo(() => {
-    const byName = new Map<string, { option: FieldOptionDoc; fields: string[] }>();
-    for (const [fieldName, field] of Object.entries(fields)) {
-      for (const option of field.inputs) {
-        const row = byName.get(option.name);
-        if (row) row.fields.push(fieldName);
-        else byName.set(option.name, { option, fields: [fieldName] });
-      }
-    }
-    return [...byName.values()];
-  }, [fields]);
-
-  const example = rows.find((r) => r.option.name === 'prefix') ?? rows[0];
-  if (!example) return null;
-
-  return (
-    <section className="field-options" aria-labelledby="field-options">
-      <h2 id="field-options">Field options</h2>
-      <p className="muted">
-        Set these on a dimension or measure&rsquo;s <code>inputs</code>, e.g.{' '}
-        <code>{`measure({ name: 'revenue', inputs: { ${example.option.name}: … } })`}</code>.
-      </p>
-      <div className="field-options__scroll">
-        <table className="doc-table">
-          <thead>
-            <tr>
-              <th>Option</th>
-              <th>Type</th>
-              <th>Read from</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(({ option, fields: on }) => (
-              <tr key={option.name}>
-                <td>
-                  <code>{option.name}</code>
-                </td>
-                <td>
-                  <code>{optionType(option)}</code>
-                </td>
-                <td>
-                  <div className="prop-chips">
-                    {on.map((f) => (
-                      <code key={f} className="prop-chip">
-                        {f}
-                      </code>
-                    ))}
-                  </div>
-                </td>
-                <td>{optionDescription(option)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  );
+// The neighbours in the docs sidebar's order, so previous and next here are
+// the same components as on the docs pages, but their playgrounds.
+const neighbours = (entry: ChartEntry): { prev?: NavLink; next?: NavLink } => {
+  const ordered = flatNav.flatMap((l) => {
+    const e = chartEntries.find((c) => componentPath(c.id) === l.path);
+    return e ? [e] : [];
+  });
+  const at = ordered.indexOf(entry);
+  const link = (e?: ChartEntry): NavLink | undefined => (e ? { title: e.name, path: playgroundPath(e.id) } : undefined);
+  return { prev: link(ordered[at - 1]), next: link(ordered[at + 1]) };
 };
 
 export const ChartPage = ({ entry, variantId }: { entry: ChartEntry; variantId?: string }) => {
   const variant = getVariant(entry, variantId);
   useDocumentTitle(`${variant?.name ?? entry.name} playground`, BRAND.name);
-  const index = chartEntries.indexOf(entry);
-  const prev = chartEntries[index - 1];
-  const next = chartEntries[index + 1];
+  const { prev, next } = neighbours(entry);
 
   return (
-    <div className="container page">
-      <nav className="breadcrumb" aria-label="Breadcrumb">
-        <a href={href('/charts')}>Gallery</a>
-        <span aria-hidden>/</span>
-        <span>{entry.group}</span>
-        <span aria-hidden>/</span>
-        <span>Playground</span>
-      </nav>
+    <div className="container page playground-page" {...contentTarget}>
       <div className="page__head">
-        <h1>{entry.name}</h1>
-        <p className="lede">{variant?.description ?? entry.description}</p>
-        <div className="docs-head__actions">
-          <code className="badge">{`<${String(entry.exportName)} />`}</code>
-          <a className="button button--small" href={`/docs/components/${entry.id}`}>
-            Docs and examples
-          </a>
-        </div>
+        <Breadcrumb
+          items={[
+            { label: 'Components', href: '/docs/components' },
+            { label: String(entry.group) },
+            { label: entry.name, href: componentPath(entry.id) },
+          ]}
+        />
+        <h1>{entry.name} playground</h1>
+        <a className="button button--small" href={componentPath(entry.id)}>
+          <IconArrowLeft size={15} stroke={1.75} aria-hidden />
+          Back to {entry.name}
+        </a>
       </div>
       <Playground key={`${entry.id}/${variant?.id ?? ''}`} entry={entry} variantId={variant?.id} />
-      <FieldOptions entry={entry} />
-      <nav className="pager" aria-label="More charts">
-        {prev ? <a href={href(`/charts/${prev.id}`)}>← {prev.name}</a> : <span />}
-        {next && <a href={href(`/charts/${next.id}`)}>{next.name} →</a>}
-      </nav>
+      <PagerLinks prev={prev} next={next} label="Other playgrounds" />
     </div>
   );
 };

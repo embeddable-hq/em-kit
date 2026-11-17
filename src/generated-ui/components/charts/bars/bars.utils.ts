@@ -1,4 +1,5 @@
-import { ChartData, ChartOptions } from 'chart.js';
+import { CartesianScaleOptions, ChartData, ChartOptions, FontSpec, Scale } from 'chart.js';
+import { toFont, toPadding } from 'chart.js/helpers';
 import { getChartColors } from '../charts.constants';
 import { getStyleNumber } from '../../../styles/styles.utils';
 import { mergician } from 'mergician';
@@ -107,6 +108,28 @@ const getBarVerticalChartOptions = (
   };
 };
 
+const fitLabelsToAxisWidth = (scale: Scale): void => {
+  const { ticks, grid, title } = scale.options as unknown as CartesianScaleOptions;
+  const ctx = scale.ctx;
+  if (!ticks.display || ticks.mirror || !ctx) return;
+  const fallback = scale.chart.options.font as Partial<FontSpec>;
+  const titleHeight = title.display
+    ? toFont(title.font as Partial<FontSpec>, fallback).lineHeight + toPadding(title.padding as Parameters<typeof toPadding>[0]).height
+    : 0;
+  const maxWidth =
+    scale.maxWidth - (grid.drawTicks ? (grid.tickLength ?? 0) : 0) - titleHeight - ticks.padding * 2;
+  if (!(maxWidth > 0)) return;
+  ctx.save();
+  ctx.font = toFont(ticks.font as Partial<FontSpec>, fallback).string;
+  for (const tick of scale.ticks) {
+    if (typeof tick.label !== 'string' || ctx.measureText(tick.label).width <= maxWidth) continue;
+    let text = tick.label;
+    while (text.length > 1 && ctx.measureText(`${text}…`).width > maxWidth) text = text.slice(0, -1);
+    tick.label = `${text.trimEnd()}…`;
+  }
+  ctx.restore();
+};
+
 const getBarHorizontalChartOptions = (
   config: BarChartHorizontalConfigurationProps,
 ): Partial<ChartOptions<'bar'>> => {
@@ -155,6 +178,7 @@ const getBarHorizontalChartOptions = (
         },
         ticks: getChartjsAxisOptionsScalesTicksDefault(),
         reverse: config.reverseYAxis,
+        afterTickToLabelConversion: fitLabelsToAxisWidth,
       },
     },
   };

@@ -1,0 +1,162 @@
+/* Guide pages and shared docs blocks (install command, steps, callouts). Loaded after site.css, so rules here win. */
+
+.install-command {
+  max-width: 560px;
+}
+
+.install-command__tabs {
+  margin-bottom: 6px;
+}
+
+/* A guide's example running under its code. */
+.guide-demo {
+  margin: 0;
+  padding: 12px 20px 20px;
+  border: 1px solid var(--s-border);
+  border-radius: var(--s-radius-lg);
+  min-width: 0;
+  transition: background 0.2s;
+}
+
+.guide-demo__label {
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--s-text-subtle);
+}
+
+.guide-demo > div > p,
+.guide-demo > p {
+  margin: 12px 0 0;
+  font-size: 0.9rem;
+}
+
+.guide-demo.is-dark {
+  border-color: #27272a;
+}
+
+.guide-demo.is-dark .guide-demo__label,
+.guide-demo.is-dark p {
+  color: #d4d4d8;
+}
+
+/* Guide tables: let the first column wrap; inline code stays on one line. */
+.guide .doc-table td:first-child {
+  white-space: normal;
+}
+
+.guide .doc-table td:first-child,
+.guide .doc-table th:first-child {
+  padding-left: 0;
+}
+
+.guide > h3 {
+  margin-top: 12px;
+  font-size: 1.02rem;
+}
+
+.guide > h3 + p {
+  margin-top: -8px;
+}
+
+.guide--accessibility .doc-table td:first-child {
+  white-space: nowrap;
+}
+
+/* The comparison table's first column is a row header, not a column header. */
+.comparison-table tbody th {
+  min-width: 160px;
+  padding-left: 0;
+  font-size: inherit;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--s-text);
+}
+
+/* A cue that a code block scrolls sideways: a soft shadow on the edge that
+   has more code beyond it. The first two layers move with the code and cover
+   the shadow at each end; the last two stay put. */
+.guide .code-block:not(.code-block--plain) pre {
+  background:
+    linear-gradient(to right, var(--s-bg-subtle) 50%, transparent) left center / 28px 100% no-repeat local,
+    linear-gradient(to left, var(--s-bg-subtle) 50%, transparent) right center / 28px 100% no-repeat local,
+    linear-gradient(to right, rgb(0 0 0 / 14%), transparent) left center / 12px 100% no-repeat scroll,
+    linear-gradient(to left, rgb(0 0 0 / 14%), transparent) right center / 12px 100% no-repeat scroll;
+}
+
+/* Install tabs: every command is in the HTML; only the chosen one is shown. */
+.install-command__panel[hidden] {
+  display: none;
+}
+
+/* The one line a guide opens with when its samples need the quick start's provider. */
+.guide-note p {
+  margin: 0;
+  color: var(--s-text-muted, inherit);
+  font-size: 0.9375rem;
+}
+
+/* A closed section of a guide (the Next.js files on the quick start). */
+.guide-details {
+  border: 1px solid var(--s-border);
+  border-radius: var(--s-radius);
+  background: var(--s-bg-subtle);
+}
+
+.guide-details > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.guide-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.guide-details > summary::before {
+  content: '';
+  flex: none;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 7px solid currentColor;
+  transition: transform 0.15s;
+}
+
+.guide-details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.guide-details > summary:hover {
+  color: var(--s-accent);
+}
+
+.guide-details > summary:focus-visible {
+  outline: 2px solid var(--s-accent);
+  outline-offset: 2px;
+  border-radius: var(--s-radius);
+}
+
+.guide-details__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px 16px;
+  min-width: 0;
+}
+
+.guide-details__body > p {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guide-details > summary::before {
+    transition: none;
+  }
+}

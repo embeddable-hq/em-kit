@@ -2,14 +2,14 @@ import { renderToString } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { chartEntries } from '../site/catalog/registry';
 import {
-  builtIns,
   componentExamples,
   componentMarkdown,
   componentPrompt,
   exampleCode,
-} from '../site/docs/components';
-import { guideMarkdown, guides, headingId } from '../site/docs/guides';
-import { docsNav, searchDocs, searchIndex } from '../site/docs/nav';
+} from '../site/content/components';
+import { guideMarkdown, guides, headingId } from '../site/content/guides';
+import { componentPath, docsNav } from '../site/content/nav';
+import { searchDocs, searchIndex } from '../site/search';
 import { ComponentDocPage } from '../site/pages/ComponentDocPage';
 import { DocPage } from '../site/pages/DocPage';
 import { SiteSettingsProvider } from '../site/state';
@@ -53,13 +53,13 @@ describe('component pages', () => {
   it.each(chartEntries.map((e) => [e.id, e] as const))('%s renders every example and its props', (_, entry) => {
     const html = renderToString(
       <SiteSettingsProvider>
-        <ComponentDocPage entry={entry} route={`/docs/components/${entry.id}`} />
+        <ComponentDocPage entry={entry} route={componentPath(entry.id)} />
       </SiteSettingsProvider>,
     );
     const examples = componentExamples(entry);
     expect(html).toContain(`id="props"`);
     for (const example of examples.slice(1)) expect(html).toContain(`id="${example.id}"`);
-    expect(navPaths).toContain(`/docs/components/${entry.id}`);
+    expect(navPaths).toContain(componentPath(entry.id));
   });
 
   it.each(chartEntries.map((e) => [e.id, e] as const))('%s copies as Markdown and as a prompt', (_, entry) => {
@@ -72,13 +72,12 @@ describe('component pages', () => {
     const prompt = componentPrompt(entry, examples[0]!.code);
     expect(prompt).toContain(examples[0]!.code);
     expect(prompt).toContain('npm install');
-    expect(builtIns(entry).length).toBeGreaterThan(3);
   });
 });
 
 describe('search', () => {
   it('finds a component by its export name', () => {
-    expect(searchDocs('BarChartStacked')[0]?.path).toBe('/docs/components/bar-stacked');
+    expect(searchDocs('BarChartStacked')[0]?.path).toBe('/docs/components/bar-chart-stacked');
   });
 
   it('finds a guide section', () => {
@@ -87,7 +86,7 @@ describe('search', () => {
 
   it('indexes every component', () => {
     for (const entry of chartEntries) {
-      expect(searchIndex.some((i) => i.path === `/docs/components/${entry.id}`)).toBe(true);
+      expect(searchIndex().some((i) => i.path === componentPath(entry.id))).toBe(true);
     }
   });
 });

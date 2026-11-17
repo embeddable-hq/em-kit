@@ -115,7 +115,8 @@ export type TimeDeserializedValue = { date: Date | undefined; relativeTimeString
 export type TimeRangeDeserializedValue = {
   from: Date | undefined;
   to: Date | undefined;
-  relativeTimeString: string | undefined;
+  // Optional: fixed dates have none, and every reader treats a missing one as ''.
+  relativeTimeString?: string;
 };
 export type Time = TimeDeserializedValue;
 export type TimeRange = TimeRangeDeserializedValue | undefined;

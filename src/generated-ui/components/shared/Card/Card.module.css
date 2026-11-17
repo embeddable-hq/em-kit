@@ -52,7 +52,7 @@
   height: var(--em-card-info-icon-size, 1rem);
 }
 
-.card .cardHeader .cardHeaderTitle h1 {
+.card .cardHeader .cardHeaderTitle h3 {
   margin: unset;
   overflow-wrap: break-word;
   font-style: normal;

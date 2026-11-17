@@ -76,7 +76,11 @@ const aggregateFunnelSections = (
 };
 
 export const getFunnelOptionsDatalabelsFormatter =
-  (config: Partial<FunnelChartProProps>) => (value: number, context: Context) => {
+  (
+    config: Partial<FunnelChartProProps>,
+    formatValue: (value: number) => string = (value) => value.toLocaleString(),
+  ) =>
+  (value: number, context: Context) => {
     const labels = context.chart.data.labels as (string | number)[] | undefined;
     const label = String(labels?.[context.dataIndex] ?? '');
     if (!config.showValueLabels) return label;
@@ -85,7 +89,7 @@ export const getFunnelOptionsDatalabelsFormatter =
     const percentage = total > 0 ? (value / total) * 100 : 0;
     const valueText = config.displayPercentages
       ? `${percentage.toFixed(1)}%`
-      : value.toLocaleString();
+      : formatValue(value);
     return `${label}: ${valueText}`;
   };
 
@@ -112,7 +116,12 @@ export const getFunnelChartProOptions = (
     },
   };
 
-  if (!options.showSectionLabels) return base;
+  // Value labels use the measure's formatting, as the tooltip does.
+  const formatValue = (value: number) => themeFormatter.data(countMeasure, value);
+  if (!options.showSectionLabels) {
+    if (options.displayPercentages) return base;
+    return { ...base, plugins: { ...base.plugins, datalabels: { formatter: formatValue } } };
+  }
 
   return {
     ...base,
@@ -120,7 +129,7 @@ export const getFunnelChartProOptions = (
       ...base.plugins,
       datalabels: {
         display: 'auto',
-        formatter: getFunnelOptionsDatalabelsFormatter(options),
+        formatter: getFunnelOptionsDatalabelsFormatter(options, formatValue),
       },
     },
   };

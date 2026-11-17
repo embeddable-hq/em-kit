@@ -1,152 +1,97 @@
 import {
-  IconAdjustmentsHorizontal,
-  IconBrush,
   IconClick,
-  IconDatabase,
+  IconCurrencyDollar,
+  IconDownload,
   IconLanguage,
-  IconLayoutCards,
+  IconLoader,
   IconPalette,
-  IconShieldCheck,
-  IconSparkles,
+  IconTable,
   IconTimeline,
 } from '@tabler/icons-react';
 import type { ComponentType } from 'react';
-import { CHART_KINDS, defaultTheme } from '../../src';
 
-// The full benefit list shown on the landing page, in one place. Each point
-// says what the library does for you, not what you still configure or supply;
-// where an option is involved, the point says so. No point repeats another
-// one, here or elsewhere on the page. Counts are computed, so they can't go stale.
+// What every component already does, as the landing page tells it: the
+// reason to use this rather than a chart library. Each item says exactly what
+// is handled, in a sentence or two, and is only listed if the page proves it:
+// `proof` is the place on the landing page where the visitor can see or try
+// it, and is the item's one link. `path` is the guide that documents it; the
+// landing does not link it (the docs do). The comparison with a chart
+// library, need by need and in code, is on /docs/why.
 
-const tokenCount = Object.keys(defaultTheme.styles).length;
-
-export type BenefitGroup = {
+export type Benefit = {
   title: string;
-  lead: string;
+  text: string;
+  /** Where on the landing page it can be seen: an anchor on the page, the link's words, and which way it is. */
+  proof: { href: string; label: string; direction: 'above' | 'below' };
+  /** The guide that documents it. */
+  path: string;
+  guide: string;
   icon: ComponentType<{ size?: number; stroke?: number; 'aria-hidden'?: boolean }>;
-  points: string[];
-  wide?: boolean;
 };
 
-export const benefitGroups: BenefitGroup[] = [
+export const benefits: Benefit[] = [
   {
-    title: 'Consistent colour, automatically',
-    lead: 'Every value keeps one colour across the whole dashboard.',
+    title: 'Formatting',
+    text: 'Set a currency, a prefix, decimals or compact numbers once on a field. Axis ticks, value labels, tooltips and exports all follow, in the reader’s locale.',
+    proof: { href: '#live-card', label: 'Hover a bar on the card below', direction: 'below' },
+    path: '/docs/describing-your-data',
+    guide: 'Describing your data',
+    icon: IconCurrencyDollar,
+  },
+  {
+    title: 'Colours and themes',
+    text: 'One theme object sets the colours, fonts, corner radius and spacing of every component. A value such as “Enterprise” keeps its colour from one chart to the next.',
+    proof: { href: '#charts', label: 'Try the themes above', direction: 'above' },
+    path: '/docs/theming',
+    guide: 'Theming',
     icon: IconPalette,
-    points: [
-      'A colour per value, shared by every chart on the page',
-      'New values pick colours not already in use',
-      'Assignments survive a page refresh',
-      'Pin any value or measure to a colour you choose',
-      'Reverse KPI change colours where lower is better',
-    ],
   },
   {
-    title: 'Time series done properly',
-    lead: 'Dates are handled the way analysts expect.',
+    title: 'Time series',
+    text: 'Dates are labelled for their granularity, and periods missing from your rows are added, so a gap shows as a gap. A picker in the card switches between weeks, months and quarters.',
+    proof: { href: '#time-series', label: 'In the area chart above', direction: 'above' },
+    path: '/docs/time-series',
+    guide: 'Time series',
     icon: IconTimeline,
-    points: [
-      'Missing periods filled, so gaps show as gaps',
-      'Granularity picker built in, from seconds to years',
-      'Timezone-aware buckets, including ISO weeks and quarters',
-      'Pass last period’s rows to get overlays and KPI deltas',
-      'Option to connect gaps on line charts',
-    ],
   },
   {
-    title: 'Formatting and localisation',
-    lead: 'Numbers and dates read right in every locale.',
+    title: 'Loading, empty and error states',
+    text: 'Every card draws its own skeleton, empty state and error message from the one `results` prop, so you design none of them.',
+    proof: { href: '#states', label: 'Try them on the card below', direction: 'below' },
+    path: '/docs/loading-empty-and-errors',
+    guide: 'Loading, empty and errors',
+    icon: IconLoader,
+  },
+  {
+    title: 'Export',
+    text: 'The menu in each card’s corner downloads its data as CSV or Excel, saves the chart as a PNG and opens it full screen.',
+    proof: { href: '#live-card', label: 'Open the menu on the card below', direction: 'below' },
+    path: '/docs/tables',
+    guide: 'Tables',
+    icon: IconDownload,
+  },
+  {
+    title: 'Translations',
+    text: 'Titles, field names, values, dates and numbers follow the provider’s language. English, German and French are built in, and you can add your own.',
+    proof: { href: '#charts', label: 'Try DE or FR above', direction: 'above' },
+    path: '/docs/localisation',
+    guide: 'Localisation',
     icon: IconLanguage,
-    points: [
-      'Locale-aware numbers, currencies and dates',
-      'Prefixes, suffixes, decimals and compact "1.2M" per field',
-      'Your translations reach titles, legends, axes, tooltips and table headers',
-      'Dimension values translate too, not just labels',
-    ],
   },
   {
-    title: 'Sensible defaults, every state designed',
-    lead: 'Pass fields and rows; the rest is already decided.',
-    icon: IconAdjustmentsHorizontal,
-    points: [
-      'Every display prop is optional',
-      'Loading, empty and error states, styled and consistent',
-      'Keeps the chart on screen while it refetches',
-      'Fills and resizes with its container',
-      'Options to group long tails into "Other" and truncate labels',
-    ],
-  },
-  {
-    title: 'Card, chrome and export included',
-    lead: 'Each chart arrives as a finished card.',
-    icon: IconLayoutCards,
-    points: [
-      'Title, description and info tooltip on every card',
-      'CSV, Excel and PNG export with no code',
-      'Tooltips, legends, value and total labels',
-      'Log scale, axis ranges and reversed axes',
-      'Table cell styles and markdown cells',
-    ],
-  },
-  {
-    title: 'Events for every interaction',
-    lead: 'Clicks come back as data you can act on.',
+    title: 'Click events',
+    text: 'A click hands your handler the value or the period that was clicked, typed, ready to use as a filter.',
+    proof: { href: '#clicks', label: 'Click a bar below', direction: 'below' },
+    path: '/docs/events',
+    guide: 'Events',
     icon: IconClick,
-    points: [
-      'Typed click events on bars, points, slices, cells and rows',
-      'Payloads carry the clicked value and its time range',
-      'Store the clicked value in state to cross-filter a dashboard',
-      'Interaction events for your product analytics',
-    ],
   },
   {
-    title: 'Themeable to the pixel',
-    lead: 'Match your product, not ours.',
-    icon: IconBrush,
-    points: [
-      `${tokenCount.toLocaleString('en-US')} design tokens in three layers`,
-      'One theme object restyles every chart',
-      'Dark mode in a handful of overrides',
-      'Per-chart Chart.js overrides and custom fonts',
-    ],
-  },
-  {
-    title: 'Bring your own data',
-    lead: 'Keep your API, warehouse and caching as they are.',
-    icon: IconDatabase,
-    points: [
-      'Rows from any API, warehouse or cache',
-      'No query engine, server or vendor runtime',
-      'One response shape for every chart',
-      'Describe a field once, reuse it everywhere',
-      'Tables that page and sort against your API, plus pivots and heat maps',
-    ],
-  },
-  {
-    title: 'Production-ready',
-    lead: 'Built to be depended on.',
-    icon: IconShieldCheck,
-    points: [
-      'Fully typed props, with a generated reference',
-      'Tested across every component, data state and language',
-      'Hardened in production dashboards',
-      'React 19 is the only peer dependency',
-    ],
-  },
-  {
-    title: 'Built for AI chat',
-    lead: 'A model picks the chart; the same components render it.',
-    icon: IconSparkles,
-    wide: true,
-    points: [
-      `${CHART_KINDS.length} chart kinds a model can choose from`,
-      'Tool definitions for Anthropic and OpenAI, generated from the types',
-      'Repairs common model mistakes in dates, keys and numbers',
-      'Works out KPI totals, date ranges and donut centres the model left out',
-      'Never renders a blank: a bad spec becomes a table or a clear error',
-      'A bare mode that sits flat inside a chat bubble',
-      'Draws while rows stream in, without flicker',
-      'A click on the chart becomes the next prompt',
-    ],
+    title: 'Charts and tables from one description',
+    text: 'Describe a field once. The same fields and rows drive bars, lines, pies, KPIs, tables, pivot tables and heat maps.',
+    proof: { href: '#charts', label: 'See eight of them above', direction: 'above' },
+    path: '/docs/describing-your-data',
+    guide: 'Describing your data',
+    icon: IconTable,
   },
 ];

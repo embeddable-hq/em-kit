@@ -51,7 +51,9 @@ const regionSpec = (region: string): ChartSpec => ({
   measures: [revenueField],
   granularity: 'month',
   rows: MONTHS.map((month, i) => ({ month, revenue: REVENUE[region]![i] })),
-  options: { showTooltips: true },
+  // One series named by the title, so no legend; and no labels on the points,
+  // where the first one would sit on the value axis. The tooltip has the figures.
+  options: { showTooltips: true, showLegend: false, showValueLabels: false },
 });
 
 const overview = () => {

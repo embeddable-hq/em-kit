@@ -1,5 +1,5 @@
 {
-  "name": "charts-ui",
+  "name": "rkit",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,12 @@
     "exports": "node scripts/exports.mjs",
     "types:check": "tsc --noEmit",
     "dev": "vite",
-    "check": "npm run sync && npm run types:check && npm run test",
+    "site:build": "node scripts/site-build.mjs",
+    "site:check": "node scripts/site-build.mjs --check",
+    "site:preview": "node scripts/site-preview.mjs",
+    "audit": "node scripts/audit.mjs",
+    "size": "node scripts/size.mjs",
+    "check": "npm run sync && npm run types:check && npm run test && npm run site:check",
     "test": "vitest run",
     "field-inputs": "node scripts/extract-field-inputs.mjs"
   },

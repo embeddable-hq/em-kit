@@ -20,6 +20,10 @@ export const fr: ResourceLanguage = {
       'menuOptions.downloadCSV': 'Télécharger en CSV',
       'menuOptions.downloadPNG': 'Télécharger en PNG',
       'menuOptions.downloadXLSX': 'Télécharger en XLSX',
+      // Added by this package (see additions.ts).
+      menuLabel: 'Menu du graphique : {{title}}',
+      menuLabelUntitled: 'Menu du graphique',
+      previousPeriodSeries: '{{label}} (période précédente)',
       errorTitle: 'Une erreur est survenue.',
       errorMessage: 'Une erreur est survenue lors du chargement du graphique.',
       emptyTitle: 'Aucun résultat.',

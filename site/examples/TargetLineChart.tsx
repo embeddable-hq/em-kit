@@ -55,7 +55,10 @@ export const TargetLineChart = (props: TargetLineChartProps) => {
   // The value-formatting overlay. It formats each dataset with the measure at
   // the same index, so the target is listed twice to share its formatting.
   // <LineChart> merges this onto its own themed base options.
-  const options = getLineChartProOptions({ data, dimension: xAxis, measures: [measure, measure] }, theme);
+  const options = getLineChartProOptions(
+    { data, dimension: xAxis, measures: [measure, measure] },
+    theme,
+  );
 
   return (
     <ChartCard

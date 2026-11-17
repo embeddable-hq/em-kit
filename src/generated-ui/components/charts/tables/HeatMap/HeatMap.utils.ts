@@ -94,15 +94,27 @@ export const lerpColor = (a: string, b: string, t: number) => {
   return rgbToHex(lerp(A.r, B.r, t), lerp(A.g, B.g, t), lerp(A.b, B.b, t));
 };
 
-/** YIQ perceived brightness, used to pick white/black text. */
-const getBrightness = (color: string) => {
+/** WCAG relative luminance, 0 (black) to 1 (white). */
+const getLuminance = (color: string) => {
   const { r, g, b } = hexToRgb(color);
-  return (r * 299 + g * 587 + b * 114) / 1000;
+  const linear = (channel: number) => {
+    const c = channel / 255;
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
 };
 
-/** Returns '#FFFFFF' for dark backgrounds, '#212129' for light ones. */
+/** WCAG contrast ratio of two colours, 1 to 21. */
+const getContrast = (a: string, b: string) => {
+  const la = getLuminance(a);
+  const lb = getLuminance(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+};
+
+/** White where it reaches 4.5:1 on the cell, else '#212129', else black. */
 export const getCellColor = (backgroundColor: string) => {
-  return getBrightness(backgroundColor) < 150 ? '#FFFFFF' : '#212129';
+  if (getContrast(backgroundColor, '#FFFFFF') >= 4.5) return '#FFFFFF';
+  return getContrast(backgroundColor, '#212129') >= 4.5 ? '#212129' : '#000000';
 };
 
 /* -------------------------------------------------------------------------- */

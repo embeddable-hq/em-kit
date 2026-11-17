@@ -1,0 +1,92 @@
+/* How chart previews are framed and sized across the site. Loaded after site.css, so rules here win. */
+
+/*
+ * The chart font. The package's default theme (src/theme.ts) sets this same
+ * stack through ChartsProvider; it is repeated here only so that nothing drawn
+ * before the provider mounts can fall back to the browser's serif.
+ */
+:root {
+  --em-core-font-family--base: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/*
+ * Example dashboard. Six tracks instead of three, so the trend takes two thirds
+ * of a row and the ranked bars and the table half each: wide enough that no
+ * axis label has to tilt and no table column is cut. The donut sits beside the
+ * trend in a card as tall as its ring and legend need, not in a column two
+ * rows tall with a band of nothing round the ring. Rows are as tall as their
+ * tallest card needs (the table shows all five rows and its pager).
+ */
+.demo-app__main {
+  min-width: 0;
+  container-type: inline-size;
+}
+
+.demo-app__grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-rows: 200px 400px 430px;
+  grid-template-areas:
+    'kpi1 kpi1 kpi1 kpi2 kpi2 kpi2'
+    'line line line line donut donut'
+    'bar bar bar table table table';
+}
+
+/* A narrower window: the bars and the table take a row each. */
+@container (max-width: 820px) {
+  .demo-app__grid {
+    grid-template-rows: 200px 400px 300px 430px;
+    grid-template-areas:
+      'kpi1 kpi1 kpi1 kpi2 kpi2 kpi2'
+      'line line line line donut donut'
+      'bar bar bar bar bar bar'
+      'table table table table table table';
+  }
+}
+
+/* The stacked layouts from site.css, restated because the rules above come later. */
+@media (max-width: 1000px) {
+  .demo-app__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    grid-template-areas:
+      'kpi1 kpi2'
+      'donut donut'
+      'line line'
+      'bar bar'
+      'table table';
+  }
+
+  .demo-app__cell--bar {
+    height: 300px;
+  }
+
+  .demo-app__cell--table {
+    height: 430px;
+  }
+}
+
+@media (max-width: 720px) {
+  .demo-app__grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'kpi1' 'kpi2' 'donut' 'line' 'bar' 'table';
+  }
+}
+
+/*
+ * A pie or donut on a component's page: a card about as wide as it is tall, so
+ * the ring fills it instead of sitting in the middle of a wide, empty card.
+ */
+.chart-slot--round {
+  max-width: 600px;
+  margin-inline: auto;
+}
+
+/*
+ * Components index: each card is as tall as its own chart needs. Cards in a
+ * row are sized alike already; the one pair that is not (a pivot table with
+ * every row and its totals beside a four-row heat map) should not leave an
+ * empty band in the shorter card.
+ */
+.index-grid {
+  align-items: start;
+}

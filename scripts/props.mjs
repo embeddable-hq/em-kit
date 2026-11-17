@@ -33,6 +33,75 @@ const result = {};
 const fieldOptions = {};
 const missingFieldOptions = [];
 
+// Where the upstream types say less than the component does, the reference
+// says what a caller needs to know.
+//   menuOptions: typed `(string | unknown)[]` upstream, which prints as
+//     `unknown[]`. The values are the card menu's option ids.
+//   results: optional in the grouped and stacked charts' shared base type, but
+//     no chart has anything to draw without it.
+const MENU_OPTIONS_SOURCE = path.join(ROOT, 'src/generated/components/types/ExportOption.type.ts');
+const menuOptionIds = [
+  ...(/ExportOptionTypeOptions = \{([^}]*)\}/.exec(fs.readFileSync(MENU_OPTIONS_SOURCE, 'utf8'))?.[1] ?? '').matchAll(
+    /:\s*'([^']+)'/g,
+  ),
+].map((m) => m[1]);
+if (!menuOptionIds.length) {
+  console.error(`props: no menu option ids found in ${path.relative(ROOT, MENU_OPTIONS_SOURCE)}.`);
+  process.exit(1);
+}
+const TYPE_OVERRIDES = { menuOptions: `(${menuOptionIds.map((id) => `"${id}"`).join(' | ')})[]` };
+const ALWAYS_REQUIRED = new Set(['results']);
+
+// `((args: X) => void) | undefined` minus the `undefined` leaves a pair of
+// parentheses around the whole type; drop them when they wrap all of it.
+const unwrapParens = (text) => {
+  if (!text.startsWith('(') || !text.endsWith(')')) return text;
+  let depth = 0;
+  for (let i = 0; i < text.length; i += 1) {
+    if (text[i] === '(') depth += 1;
+    else if (text[i] === ')') depth -= 1;
+    if (depth === 0 && i < text.length - 1) return text;
+  }
+  return text.slice(1, -1);
+};
+
+const isOurs = (symbol) =>
+  Boolean(symbol?.declarations?.some((d) => !program.isSourceFileDefaultLibrary(d.getSourceFile()) && !d.getSourceFile().fileName.includes('/node_modules/')));
+
+// A shape printed from its properties, so an intersection (`A & { ... }`)
+// reads as the one object a handler receives.
+const shapeOf = (type, declaration) =>
+  `{ ${checker
+    .getPropertiesOfType(type)
+    .map((p) => {
+      const text = checker.typeToString(checker.getTypeOfSymbolAtLocation(p, declaration), undefined, ts.TypeFormatFlags.NoTruncation);
+      return `${p.name}${p.flags & ts.SymbolFlags.Optional ? '?' : ''}: ${text};`;
+    })
+    .join(' ')} }`;
+
+// Short unions of string literals behind an alias, anywhere inside a shape
+// (`direction: OrderDirection`): the name says nothing a caller can type, so
+// the shape spells the values out.
+const literalAliases = (type, found = new Map(), depth = 0) => {
+  if (depth > 3) return found;
+  const bare = checker.getNonNullableType(type);
+  if (bare.aliasSymbol && bare.isUnion() && bare.types.length <= 4 && bare.types.every((t) => t.isStringLiteral())) {
+    found.set(bare.aliasSymbol.name, bare.types.map((t) => JSON.stringify(t.value)).join(' | '));
+    return found;
+  }
+  for (const member of bare.isUnionOrIntersection() ? bare.types : [bare]) {
+    if (!(member.flags & ts.TypeFlags.Object) || member.getCallSignatures().length) continue;
+    if (member.symbol && !isOurs(member.symbol)) continue;
+    for (const prop of checker.getPropertiesOfType(member)) literalAliases(checker.getTypeOfSymbol(prop), found, depth + 1);
+  }
+  return found;
+};
+const spellOut = (text, type) => {
+  let out = text;
+  for (const [name, values] of literalAliases(type)) out = out.replace(new RegExp(`\\b${name}\\b`, 'g'), values);
+  return out;
+};
+
 for (const exported of exports) {
   if (!exported.name.endsWith('Props')) continue;
   const componentName = exported.name.slice(0, -'Props'.length);
@@ -55,10 +124,21 @@ for (const exported of exports) {
   const props = checker.getPropertiesOfType(type).map((prop) => {
     const declaration = prop.valueDeclaration ?? prop.declarations?.[0] ?? sourceFile;
     const propType = checker.getTypeOfSymbolAtLocation(prop, declaration);
-    const required = !(prop.flags & ts.SymbolFlags.Optional);
+    const optional = Boolean(prop.flags & ts.SymbolFlags.Optional);
+    const required = !optional || ALWAYS_REQUIRED.has(prop.name);
     const nonNullable = checker.getNonNullableType(propType);
     let typeText = checker.typeToString(propType, undefined, ts.TypeFormatFlags.NoTruncation);
-    if (!required) typeText = typeText.replace(/^undefined \| /, '').replace(/ \| undefined$/, '');
+    if (optional) typeText = unwrapParens(typeText.replace(/^undefined \| /, '').replace(/ \| undefined$/, ''));
+    if (TYPE_OVERRIDES[prop.name]) typeText = TYPE_OVERRIDES[prop.name];
+
+    // A short union of string literals behind an alias (PositionValue,
+    // HeightMode) reads better spelled out: the alias name says nothing a
+    // caller can type.
+    if (/^[A-Za-z]+$/.test(typeText) && nonNullable.isUnion() && nonNullable.types.length <= 4) {
+      if (nonNullable.types.every((t) => t.isStringLiteral())) {
+        typeText = nonNullable.types.map((t) => JSON.stringify(t.value)).join(' | ');
+      }
+    }
 
     // A handler behind a named alias prints as the alias; show the signature,
     // and the shape of its payload parameter where it has one.
@@ -80,7 +160,10 @@ for (const exported of exports) {
             undefined,
             ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.InTypeAlias,
           );
-          if (payload.startsWith('{')) payload = `${checker.typeToString(paramType)} = ${payload}`;
+          // An intersection expands to `A & { ... }`, which still names a type
+          // the page does not define: print its properties instead.
+          if (!payload.startsWith('{') && paramType.isIntersection()) payload = shapeOf(paramType, declaration);
+          if (payload.startsWith('{')) payload = `${checker.typeToString(paramType)} = ${spellOut(payload, paramType)}`;
           else payload = undefined;
         }
       }
@@ -93,7 +176,7 @@ for (const exported of exports) {
         undefined,
         ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.InTypeAlias,
       );
-      if (expanded.startsWith('{')) payload = `${typeText} = ${expanded}`;
+      if (expanded.startsWith('{')) payload = `${typeText} = ${spellOut(expanded, nonNullable)}`;
     }
 
     // Internal alias names keep the upstream Pro suffix; the display text
@@ -127,8 +210,49 @@ if (missingFieldOptions.length) {
   process.exit(1);
 }
 
+// Exported types a caller writes out by hand rather than building with a
+// helper. The reference names them in a prop's type; this is what is behind
+// the name, printed from the declaration so the members keep their order and a
+// key that must be present (`relativeTimeString: string | undefined`) is not
+// mistaken for an optional one.
+const DEFINED_TYPES = ['Granularity', 'TimeRange'];
+
+const printTypeNode = (node) => {
+  if (ts.isParenthesizedTypeNode(node)) return printTypeNode(node.type);
+  if (ts.isUnionTypeNode(node)) return node.types.map(printTypeNode).join(' | ');
+  if (ts.isLiteralTypeNode(node) && ts.isStringLiteral(node.literal)) return JSON.stringify(node.literal.text);
+  if (ts.isTypeLiteralNode(node)) {
+    const members = node.members
+      .filter(ts.isPropertySignature)
+      .map((m) => `${m.name.getText()}${m.questionToken ? '?' : ''}: ${printTypeNode(m.type)};`);
+    return `{ ${members.join(' ')} }`;
+  }
+  if (ts.isTypeReferenceNode(node) && !node.typeArguments) {
+    let symbol = checker.getSymbolAtLocation(node.typeName);
+    if (symbol && symbol.flags & ts.SymbolFlags.Alias) symbol = checker.getAliasedSymbol(symbol);
+    const alias = isOurs(symbol) ? symbol.declarations.find(ts.isTypeAliasDeclaration) : undefined;
+    if (alias) return printTypeNode(alias.type);
+  }
+  return node.getText();
+};
+
+const typeDefinitions = {};
+for (const name of DEFINED_TYPES) {
+  let symbol = exports.find((e) => e.name === name);
+  if (symbol && symbol.flags & ts.SymbolFlags.Alias) symbol = checker.getAliasedSymbol(symbol);
+  const alias = symbol?.declarations?.find(ts.isTypeAliasDeclaration);
+  if (!alias) {
+    console.error(`props: ${name} is not a type alias exported from src/index.ts.`);
+    process.exit(1);
+  }
+  typeDefinitions[name] = printTypeNode(alias.type);
+}
+
 const header = `// Generated by scripts/props.mjs from the public component types. Do not edit.
 export type PropDoc = { name: string; type: string; required: boolean; payload?: string; doc?: string };
+
+/** What is behind a named type a caller writes by hand, by name. */
+export const typeDefinitions: Record<string, string> = ${JSON.stringify(typeDefinitions, null, 2)};
 
 export type FieldOptionDoc = {
   name: string;

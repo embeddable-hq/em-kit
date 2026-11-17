@@ -1,0 +1,135 @@
+/* Component page code: an example's excerpt, its full file behind a
+   disclosure, the lines that differ from the usage example highlighted, and
+   the bits around the code (the usage aside, the props legend). */
+
+.code-block__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.code-block__legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--s-font);
+  color: var(--s-text-muted);
+}
+
+.code-block__legend a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.code-block__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--s-accent-soft);
+  box-shadow: inset 3px 0 0 var(--s-accent);
+}
+
+/* An excerpt: the full-file toggle and Copy sit at the right of the bar, in
+   reading order, so the toggle stays put whether it is open or shut. Shut,
+   the excerpt shows; open, the whole file does. */
+.code-block--excerpt {
+  position: relative;
+}
+
+.code-block--excerpt > .code-block__bar {
+  min-height: 37px;
+  padding-right: 230px;
+}
+
+.code-block__full > summary {
+  position: absolute;
+  top: 0;
+  right: 76px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 37px;
+  padding: 0 8px;
+  color: var(--s-text-muted);
+  font-size: 0.8rem;
+  font-weight: 550;
+  white-space: nowrap;
+  cursor: pointer;
+  list-style: none;
+}
+
+.code-block--excerpt > .code-block__copy {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  min-width: 62px;
+}
+
+.code-block__full > summary::-webkit-details-marker {
+  display: none;
+}
+
+.code-block__full > summary::before {
+  content: '';
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid currentColor;
+  transition: transform 0.15s;
+}
+
+.code-block__full[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.code-block__full > summary:hover {
+  color: var(--s-text);
+}
+
+.code-block__full > summary:focus-visible {
+  outline: 2px solid var(--s-accent);
+  outline-offset: -4px;
+  border-radius: 6px;
+}
+
+.code-block__full[open] ~ .code-block__excerpt {
+  display: none;
+}
+
+/* Narrow: the legend gives way to the toggle. */
+@media (max-width: 640px) {
+  .code-block--excerpt .code-block__legend {
+    display: none;
+  }
+}
+
+/* A highlighted line runs the full width of the block, padding included. */
+.code-block .sh__line--marked {
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: calc(100% + 32px);
+  margin: 0 -16px;
+  padding: 0 16px 0 13px;
+  border-left: 3px solid var(--s-accent);
+  background: var(--s-accent-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-block__full > summary::before {
+    transition: none;
+  }
+}
+
+/* Usage: the install tabs, then what the component needs around it, as one
+   short table of label and sentence. */
+/* The one line under the usage code: the install command and a link to the quick start. */
+.component-page .usage-setup {
+  margin: 0;
+  color: var(--s-text-muted);
+  font-size: 0.9rem;
+}
+
+.component-page .api-table td:last-child {
+  width: 50%;
+  line-height: 1.5;
+}

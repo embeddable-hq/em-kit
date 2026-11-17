@@ -20,7 +20,7 @@
   text-align: center;
 }
 
-.kpiChartValueContainer h2 {
+.kpiChartValueContainer .kpiChartValue {
   width: 100%;
   margin: unset;
   overflow: hidden;
@@ -29,8 +29,6 @@
   color: var(--em-kpichart-color, #212129);
   font-family: var(--em-kpichart-font-family, sans-serif);
   font-weight: var(--em-kpichart-number-font-weight, 700);
-  /* Follow AutoTextSize, not a host page's h2 rule. */
-  font-size: inherit;
 }
 
 .kpiComparisonContainer {

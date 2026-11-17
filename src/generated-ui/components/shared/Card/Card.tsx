@@ -60,7 +60,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({ title, subtitle, tooltip
   return (
     <div className={styles.cardHeader}>
       <div className={styles.cardHeaderTitle}>
-        {title && <h1>{title}</h1>}
+        {title && <h3>{title}</h3>}
         {tooltip && (
           <Tooltip
             side="top"

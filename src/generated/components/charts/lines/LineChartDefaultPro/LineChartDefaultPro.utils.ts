@@ -70,7 +70,7 @@ export const getLineChartProData = (
           });
 
       return {
-        clip: props.hasMinMaxYAxisRange,
+        clip: props.hasMinMaxYAxisRange ? { left: false, right: false, top: 0, bottom: 0 } : false,
         label: themeFormatter.dimensionOrMeasureTitle(measure),
         data: values,
         backgroundColor: setColorAlpha(backgroundColor, 0.5),

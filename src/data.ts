@@ -24,6 +24,10 @@ type FieldOptions = {
 // a granularity, grouping charts read `${name}.${granularity}` instead, so
 // supply the value under both keys. Time values must be ISO strings without a
 // zone suffix: `YYYY-MM-DDTHH:mm:ss.sss`.
+//
+// A time dimension's granularity can be given at the top level or in `inputs`;
+// both end up in `inputs.granularity`, which is where the charts read it. The
+// top-level value wins when both are set.
 export const dimension = ({
   name,
   title,
@@ -32,15 +36,18 @@ export const dimension = ({
   meta,
   inputs,
   granularity,
-}: FieldOptions & { granularity?: Granularity }): Dimension => ({
-  name,
-  title: title ?? name,
-  nativeType: type,
-  description,
-  meta,
-  __type__: DIMENSION_TYPE,
-  inputs: granularity || inputs ? ({ ...inputs, granularity } as DimensionSubInputs) : undefined,
-});
+}: FieldOptions & { granularity?: Granularity }): Dimension => {
+  const bucket = granularity ?? inputs?.granularity;
+  return {
+    name,
+    title: title ?? name,
+    nativeType: type,
+    description,
+    meta,
+    __type__: DIMENSION_TYPE,
+    inputs: bucket || inputs ? ({ ...inputs, granularity: bucket } as DimensionSubInputs) : undefined,
+  };
+};
 
 export const measure = ({ name, title, type = 'number', description, meta, inputs }: FieldOptions): Measure => ({
   name,

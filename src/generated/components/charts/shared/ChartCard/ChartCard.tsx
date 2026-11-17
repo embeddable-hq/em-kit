@@ -74,6 +74,20 @@ export const ChartCard = React.forwardRef<HTMLDivElement, ChartCardProps>((props
 
   const [showMaximizedDialog, setShowMaximizedDialog] = useState(false);
 
+  const canvasLabel = [title, description].filter(Boolean).join('. ');
+  React.useEffect(() => {
+    const card = cardRef.current;
+    if (!card || !canvasLabel || typeof MutationObserver === 'undefined') return;
+    const nameCanvases = () =>
+      card.querySelectorAll('canvas').forEach((canvas) => {
+        if (canvas.getAttribute('aria-label') !== canvasLabel) canvas.setAttribute('aria-label', canvasLabel);
+      });
+    nameCanvases();
+    const observer = new MutationObserver(nameCanvases);
+    observer.observe(card, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [canvasLabel, showMaximizedDialog]);
+
   const hasData = Boolean(data?.data && data.data?.length > 0);
 
   const isLoading = !data || data?.isLoading;

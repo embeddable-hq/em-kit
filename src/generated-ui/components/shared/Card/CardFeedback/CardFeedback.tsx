@@ -20,7 +20,7 @@ export const CardFeedback: React.FC<CardFeedbackProps> = ({
   return (
     <div className={clsx(styles.feedback, styles[variant], className)}>
       {Icon && <Icon />}
-      <h2>{title}</h2>
+      <div className={styles.title}>{title}</div>
       <p>{message}</p>
     </div>
   );

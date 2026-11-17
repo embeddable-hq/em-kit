@@ -1,189 +1,134 @@
-import { IconCheck } from "@tabler/icons-react";
-import { CodeBlock } from "../components/CodeBlock";
-import { RawVsKit } from "./DocPage";
-import { HeroShowcase } from "../components/HeroShowcase";
-import { ChartContextBar } from "../components/Switchers";
-import { aiLandingCode } from "../catalog/aiSnippets";
-import { benefitGroups } from "../catalog/benefits";
-import { chartEntries } from "../catalog/registry";
-import { BRAND } from "../config";
-import { href, useDocumentTitle } from "../router";
+import { IconArrowDown, IconArrowRight, IconArrowUp } from '@tabler/icons-react';
+import { contentTarget } from '../components/DocsLayout';
+import { HeroShowcase } from '../components/HeroShowcase';
+import { InlineCode } from '../components/InlineCode';
+import { InstallCommand } from '../components/InstallCommand';
+import { ChartContextBar } from '../components/Switchers';
+import { AgentDocs } from '../components/landing/AgentDocs';
+import { ChartRange, rangeEntries } from '../components/landing/ChartRange';
+import { cardLines, LiveCard } from '../components/landing/LiveCard';
+import { benefits } from '../catalog/benefits';
+import { chartEntries } from '../catalog/registry';
+import { BRAND } from '../config';
 
-const Checklist = ({ points }: { points: string[] }) => (
-  <ul className="benefit__points">
-    {points.map((point) => (
-      <li key={point}>
-        <IconCheck size={16} stroke={2.5} aria-hidden />
-        {point}
-      </li>
-    ))}
-  </ul>
-);
+const total = chartEntries.length;
 
-const installCode = `npm install ${BRAND.packageName}`;
-
-const dashboardCode = `import { BarChart, dimension, measure, results } from '${BRAND.packageName}';
-
-const region = dimension({ name: 'region', title: 'Region' });
-const revenue = measure({ name: 'revenue', title: 'Revenue', inputs: { prefix: '$' } });
-
-// rows: [{ region: 'Europe', revenue: 391500 }, …] from your own data layer
-<BarChart
-  title="Revenue by region"
-  dimension={region}
-  measures={[revenue]}
-  results={results(rows)}
-  onBarClicked={({ dimensionValue }) => setRegion(dimensionValue)}
-/>`;
-
-const waysIn = [
-  {
-    title: "In a dashboard: one component per chart",
-    caption: "A complete chart: its fields, your rows and a click handler.",
-    code: dashboardCode,
-    link: { label: "See the dashboard example", path: "/examples" },
-  },
-  {
-    title: "In AI chat: one tool call per chart",
-    caption:
-      "What the model sends back, and the one component that renders it.",
-    code: aiLandingCode,
-    link: { label: "See the AI chat example", path: "/examples/ai-chat" },
-  },
-];
-
+// The landing page: five sections, one job each.
+//   1. Hero: what it is, install, a live chart.
+//   2. Range: eight components live, under the theme / language / data switcher.
+//   3. Done for you: what every component handles, in detail, each item said
+//      once and pointing at its proof on this page; then one finished card,
+//      live, whose state the visitor can switch.
+//   4. Agents: what exists for coding agents and for models.
+//   5. Call to action.
+// The comparison with a chart library (the table, and the same card as two
+// files) is on /docs/why, linked from under the live card.
+// One link per destination: the hero's two buttons, the closing quick-start
+// button. The guides are linked from the docs, not from the items. The ids
+// (#charts, #time-series, #live-card, #states, #clicks) are what the items link to.
+// The document title and head tags for "/" come from site/head.ts.
 export const Landing = () => {
-  useDocumentTitle(undefined, BRAND.name);
   return (
-    <>
-      <section className="hero container">
-        <div className="hero__copy">
-          <span className="eyebrow">Open source · MIT · React</span>
-          <h1>Charts your users will trust, on data you already have.</h1>
+    <div className="lp" {...contentTarget}>
+      <section className="lp-hero container" aria-labelledby="lp-title">
+        <div className="lp-hero__copy">
+          <span className="eyebrow">{total} components · MIT licensed</span>
+          <h1 id="lp-title">Finished React chart components for teams that already have a data layer.</h1>
           <p className="lede">
-            {chartEntries.length} finished chart components for dashboards and
-            AI chat. Not just the drawing: formatting, colours, time series,
-            states, export and translations are done. You bring the rows.
+            A chart library draws the chart. {BRAND.name} ships the whole card. You bring the rows.
           </p>
-          <div className="hero__actions">
-            <a
-              className="button button--primary"
-              href={href("/docs/quick-start")}
-            >
+          <div className="lp-hero__actions">
+            <a className="button button--primary" href="/docs/quick-start">
               Get started
             </a>
-            <a className="button" href={href("/docs/components")}>
-              Browse components
+            <a className="button" href="/docs/components">
+              See the components
             </a>
           </div>
-          <div className="hero__install">
-            <CodeBlock code={installCode} label="bash" compact />
+          <div className="lp-hero__install">
+            <InstallCommand />
+            <p className="muted">Needs react and react-dom 19.1.1 or later.</p>
           </div>
         </div>
-      </section>
-
-      <section className="showcase">
-        <div className="context-strip">
-          <div className="container">
-            <ChartContextBar hint="Both surfaces are live. See them in another theme, language or dataset." />
-          </div>
-        </div>
-        <div className="container showcase__body">
+        <div className="lp-hero__demo">
+          <h2 className="lp-sr">Live example</h2>
           <HeroShowcase />
         </div>
       </section>
 
-      <section className="section container">
-        <div className="section__head">
-          <h2>Everything a chart needs, already done</h2>
-          <p>
-            The long tail of production charting ships in the box, consistent
-            across every component.
-          </p>
+      <section id="charts" className="lp-charts" aria-labelledby="lp-charts-title">
+        <div className="context-strip lp-strip">
+          <div className="container">
+            <ChartContextBar compact hint="Change the theme, language or sample data and watch the charts follow." />
+          </div>
         </div>
-        <div className="benefit-grid">
-          {benefitGroups.map(({ title, lead, icon: Icon, points, wide }) => (
-            <article
-              key={title}
-              className={`benefit${wide ? " benefit--wide" : ""}`}
-            >
-              <span className="benefit__icon">
-                <Icon size={20} stroke={1.75} aria-hidden />
-              </span>
-              <h3>{title}</h3>
-              <p>{lead}</p>
-              <Checklist points={points} />
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section section--tinted">
-        <div className="container">
-          <div className="section__head">
-            <h2>Skip the code a chart library leaves to you</h2>
+        <div className="container lp-section lp-section--after-strip">
+          <div className="lp-head">
+            <h2 id="lp-charts-title">Charts, KPIs and tables</h2>
             <p>
-              The same production card twice. A chart library draws the bars;
-              everything around them is yours to write, for every chart. Here
-              it&rsquo;s already done.
+              {rangeEntries.length} of the {total} components, live. Hover one, or open its menu to export CSV, Excel
+              or PNG.
             </p>
           </div>
-          <RawVsKit />
-          <p className="section__more">
-            <a className="text-link" href="/docs/why">
-              See everything you&rsquo;d otherwise build →
-            </a>
-          </p>
+          <ChartRange />
         </div>
       </section>
 
-      <section className="section">
-        <div className="container">
-          <div className="section__head">
-            <h2>Same components, two ways in</h2>
-            <p>
-              Whether your code places the chart or a model chooses it, it
-              renders the same themed, localised card.
-            </p>
-          </div>
-          <div className="ways-in">
-            {waysIn.map((way) => (
-              <article key={way.title} className="ways-in__item">
-                <h3>{way.title}</h3>
-                <p>{way.caption}</p>
-                <CodeBlock code={way.code} />
-                <a className="text-link" href={href(way.link.path)}>
-                  {way.link.label} →
-                </a>
-              </article>
-            ))}
-          </div>
+      <section className="container lp-section" aria-labelledby="lp-done-title">
+        <div className="lp-head">
+          <h2 id="lp-done-title">Done for you in every component</h2>
+          <p>What you would otherwise build around a chart library, already in each card.</p>
         </div>
+        <ul className="lp-benefits">
+          {benefits.map(({ title, text, proof, icon: Icon }) => {
+            const Arrow = proof.direction === 'above' ? IconArrowUp : IconArrowDown;
+            return (
+              <li key={title} className="lp-benefit">
+                <span className="lp-benefit__icon">
+                  <Icon size={18} stroke={1.75} aria-hidden />
+                </span>
+                <div className="lp-benefit__body">
+                  <h3>{title}</h3>
+                  <p>
+                    <InlineCode>{text}</InlineCode>
+                  </p>
+                  <a className="lp-benefit__proof" href={proof.href}>
+                    {proof.label} <Arrow size={14} aria-hidden />
+                  </a>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+        <h3 id="lp-live-title" className="lp-live-title">
+          One finished card
+        </h3>
+        <LiveCard />
+        <p className="lp-more">
+          This card is {cardLines.kit} lines of code. On a chart library it is {cardLines.raw}, with one export format,
+          one language and no click handler.{' '}
+          <a className="text-link" href="/docs/why">
+            Compare the two, need by need <IconArrowRight size={15} aria-hidden />
+          </a>
+        </p>
       </section>
 
-      <section className="section container">
-        <div className="cta">
-          <h2>Ship your first chart in five minutes</h2>
-          <p>
-            Install, wrap your app in the provider, pass rows. Every example in
-            the gallery runs as-is.
-          </p>
-          <div className="hero__actions">
-            <a
-              className="button button--primary"
-              href={href("/docs/quick-start")}
-            >
-              Read the quick start
-            </a>
-            <a className="button" href={href("/docs/components")}>
-              Browse components
-            </a>
-            <a className="button" href={href("/examples")}>
-              See the examples
-            </a>
-          </div>
+      <section className="container lp-section" aria-labelledby="lp-agents-title">
+        <div className="lp-head">
+          <h2 id="lp-agents-title">Built for coding agents and AI chat</h2>
+        </div>
+        <AgentDocs />
+      </section>
+
+      <section className="container lp-section lp-section--last" aria-labelledby="lp-cta-title">
+        <div className="lp-cta">
+          <h2 id="lp-cta-title">Render your first chart</h2>
+          <p>Install the package, add the provider, pass your rows.</p>
+          <a className="button lp-cta__button" href="/docs/quick-start">
+            Read the quick start
+          </a>
         </div>
       </section>
-    </>
+    </div>
   );
 };

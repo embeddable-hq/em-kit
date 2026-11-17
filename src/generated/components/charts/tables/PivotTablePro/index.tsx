@@ -26,9 +26,11 @@ export type PivotTableProProps = {
   displayNullAs?: string;
   columnWidth?: number;
   firstColumnWidth?: number;
-  expandedRowKeys: string[];
-  setExpandedRowKey: (expandedRowKeys: string) => void;
+  expandedRowKeys?: string[];
+  setExpandedRowKey?: (expandedRowKeys: string) => void;
 } & ChartCardHeaderProps;
+
+const NO_EXPANDED_ROWS: string[] = [];
 
 const PivotTablePro = (props: PivotTableProProps) => {
   const theme = useTheme() as Theme;
@@ -43,7 +45,7 @@ const PivotTablePro = (props: PivotTableProProps) => {
     displayNullAs,
     columnWidth,
     firstColumnWidth,
-    expandedRowKeys,
+    expandedRowKeys = NO_EXPANDED_ROWS,
     setExpandedRowKey,
   } = props;
 
@@ -109,7 +111,7 @@ const PivotTablePro = (props: PivotTableProProps) => {
 
   const handleRowExpand = (rowKey: string) => {
     setLoadingRows((prev) => new Set(prev).add(rowKey));
-    setExpandedRowKey(rowKey);
+    setExpandedRowKey?.(rowKey);
   };
 
   useEffect(() => {
