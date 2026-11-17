@@ -1,6 +1,27 @@
 {
   "name": "em-kit",
   "version": "0.0.0",
+  "description": "EmKit by Embeddable: finished React chart, KPI and table components for teams that already have a data layer.",
+  "keywords": [
+    "react",
+    "charts",
+    "chart.js",
+    "dashboard",
+    "kpi",
+    "table",
+    "data visualization",
+    "customer-facing analytics",
+    "embedded analytics",
+    "multi-tenant",
+    "embeddable"
+  ],
+  "homepage": "https://emkit.embeddable.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/embeddable-hq/em-kit.git"
+  },
+  "bugs": "https://github.com/embeddable-hq/em-kit/issues",
+  "author": "Embeddable (https://embeddable.com)",
   "private": true,
   "type": "module",
   "license": "MIT",
