@@ -4,7 +4,6 @@ import { chartEntries } from '../site/catalog/registry';
 import {
   componentExamples,
   componentMarkdown,
-  componentPrompt,
   exampleCode,
 } from '../site/content/components';
 import { guideMarkdown, guides, headingId } from '../site/content/guides';
@@ -62,16 +61,12 @@ describe('component pages', () => {
     expect(navPaths).toContain(componentPath(entry.id));
   });
 
-  it.each(chartEntries.map((e) => [e.id, e] as const))('%s copies as Markdown and as a prompt', (_, entry) => {
+  it.each(chartEntries.map((e) => [e.id, e] as const))('%s copies as Markdown', (_, entry) => {
     const examples = componentExamples(entry).map((example) => ({ example, code: exampleCode(entry, example, base) }));
     const markdown = componentMarkdown(entry, examples);
     expect(markdown).toContain(`# ${entry.name}`);
     expect(markdown).toContain(`<${String(entry.exportName)} />`);
     expect(markdown).toContain('## Props');
-
-    const prompt = componentPrompt(entry, examples[0]!.code);
-    expect(prompt).toContain(examples[0]!.code);
-    expect(prompt).toContain('npm install');
   });
 });
 

@@ -12,15 +12,12 @@ import { fieldOptionDefault, ignoredFieldOptions } from '../site/catalog/fieldOp
 import { codeDefaults, COMPARISON_PERIODS, GRANULARITIES, ignoredProps } from '../site/catalog/propNotes';
 import { getComponent } from '../site/catalog/chartComponents';
 import { ChartEntry, chartEntries, TableState } from '../site/catalog/registry';
-import { BRAND } from '../site/config';
 import {
   axisOrderNote,
   componentExamples,
   componentPageMarkdown,
-  componentPrompt,
   defaultsNote,
   exampleCode,
-  granularityKeyProps,
   keyboardRows,
   notesOf,
   propDefault,
@@ -614,47 +611,11 @@ describe('notes and the code beside them', () => {
   });
 });
 
-// ---- G9: the copy prompt ----------------------------------------------------------
+// ---- Time as the grouping field ------------------------------------------------------
 
-describe('copy prompt', () => {
-  const promptOf = (entry: ChartEntry) => componentPrompt(entry, exampleCode(entry, componentExamples(entry)[0]!, base));
-
-  const controls = each.filter(([, entry]) => entry.group === 'Controls');
-
-  // A control holds a value and draws nothing from it: its prompt is about
-  // where the value goes, and promises none of a chart's work.
-  it.each(controls)('%s is a control: its prompt is about its value', (_, entry) => {
-    const prompt = promptOf(entry);
-    expect(prompt).toContain('Keep the value in my own state');
-    expect(prompt).toContain('needs no height');
-    expect(prompt).toMatch(/every file that renders the provider or this control starts with `'use client'`/);
-    expect(prompt.includes('one row per option')).toBe(propsOf(entry).some((p) => p.name === 'results'));
-    const steps = prompt.replace(exampleCode(entry, componentExamples(entry)[0]!, base), '');
-    for (const chartWork of ['fills its parent', 'tooltips', 'the legend', 'export', 'colours']) expect(steps).not.toContain(chartWork);
-    expect(prompt).toContain(`${BRAND.url}${componentPath(entry.id)}.md`);
-  });
-
-  it.each(each.filter(([, entry]) => entry.group !== 'Controls'))('%s fits its kind of component', (_, entry) => {
-    const prompt = promptOf(entry);
-    const props = new Set(propsOf(entry).map((p) => p.name));
-    expect(prompt.includes('the legend')).toBe(props.has('showLegend'));
-    expect(prompt.includes('tooltips')).toBe(props.has('showTooltips'));
-    // A KPI is a card and a table is a table: neither is "the chart" that fills its parent.
-    if (entry.group === 'KPIs') expect(prompt).toContain('The card fills its parent');
-    if (/^(Table|Pivot)/.test(nameOf(entry))) expect(prompt).toMatch(/The table (fills its parent|grows to fit)/);
-    if (entry.group === 'KPIs' || /^(Table|Pivot)/.test(nameOf(entry))) expect(prompt).not.toContain('The chart fills its parent');
-    for (const prop of ['state', 'setState', 'totalResults', 'allResults'].filter((p) => props.has(p))) {
-      expect(prompt).toContain(`\`${prop}\``);
-    }
-    expect(prompt).toMatch(/every file that renders the provider or this (chart|card|table) starts with `'use client'`/);
-    expect(prompt).toContain("`theme={{ formatter: { locale: 'en-US' } }}`");
-    expect(prompt.includes('as hex, such as')).toBe(nameOf(entry) === 'HeatMap');
-    // The row-key rule only where it applies, and as a condition.
-    expect(prompt.includes('name.<granularity>')).toBe(granularityKeyProps(entry).length > 0);
-    if (granularityKeyProps(entry).length) expect(prompt).toMatch(/If a time field with a `granularity` is passed as/);
-    expect(prompt).toContain(`${BRAND.url}${componentPath(entry.id)}.md`);
-  });
-
+// The time series guide (#grouping-by-time): a stacked bar chart reads a time
+// groupBy from `name.<granularity>`, and a grouped line chart from `name`.
+describe('time as the grouping field', () => {
   it('the row-key rule says what the charts read', () => {
     const month = dimension({ name: 'month', title: 'Month', type: 'time', granularity: 'month' });
     const quarter = dimension({ name: 'quarter', title: 'Quarter' });
@@ -668,11 +629,9 @@ describe('copy prompt', () => {
     const plain = [{ quarter: 'Q1', month: '2026-01-01T00:00:00.000', revenue: 1 }];
     const keyed = [{ quarter: 'Q1', 'month.month': '2026-01-01T00:00:00.000', revenue: 1 }];
     // BarChartStacked reads a time groupBy from `name.<granularity>`.
-    expect(granularityKeyProps(chartEntries.find((e) => e.id === 'bar-stacked')!)).toContain('groupBy');
     expect(groupsOf(<BarChartStacked xAxis={quarter} groupBy={month} measure={revenue} results={results(keyed)} />)).toEqual(['2026-01-01T00:00:00.000']);
     expect(groupsOf(<BarChartStacked xAxis={quarter} groupBy={month} measure={revenue} results={results(plain)} />)).not.toContain('2026-01-01T00:00:00.000');
-    // LineChartGrouped reads it from `name`, so its prompt says nothing about it.
-    expect(granularityKeyProps(chartEntries.find((e) => e.id === 'line-grouped')!)).toEqual([]);
+    // LineChartGrouped reads it from `name`.
     expect(groupsOf(<LineChartGrouped xAxis={dimension({ name: 'quarter', type: 'time', granularity: 'quarter' })} groupBy={month} measure={revenue} results={results([{ quarter: '2026-01-01T00:00:00.000', month: '2026-01-01T00:00:00.000', revenue: 1 }])} />)).toContain('2026-01-01T00:00:00.000');
   });
 });

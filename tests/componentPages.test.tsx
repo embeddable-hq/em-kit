@@ -16,7 +16,6 @@ import { BRAND } from '../site/config';
 import {
   componentExamples,
   componentPageMarkdown,
-  componentPrompt,
   componentsIndexMarkdown,
   exampleCode,
   exampleView,
@@ -32,7 +31,7 @@ import { componentPath, playgroundPath } from '../site/content/routes';
 import { componentFieldOptions } from '../site/generated/props';
 import { ChartPage } from '../site/pages/ChartPage';
 import { ComponentDocPage } from '../site/pages/ComponentDocPage';
-import { ComponentsIndex } from '../site/pages/ComponentsIndex';
+import { cardExample, ComponentsIndex } from '../site/pages/ComponentsIndex';
 import { SiteSettingsProvider } from '../site/state';
 
 // Component pages, the components index and the playground: one skeleton on
@@ -75,7 +74,9 @@ describe('component page', () => {
     const header = article.querySelector('[data-section="header"]')!;
     expect(header.querySelector('h1')!.textContent).toBe(entry.name);
     expect(header.querySelector('.lede')!.textContent!.split(/[.!?]\s/).length).toBe(1);
-    for (const label of ['Copy page as Markdown', 'Copy prompt', 'Open in playground']) expect(count(html, label)).toBe(1);
+    for (const label of ['Copy page as Markdown', 'Open in playground']) expect(count(html, label)).toBe(1);
+    // Removed on 18 Nov 2026 (site/STANDARDS.md, "Known and out of scope").
+    expect(html).not.toContain('Copy prompt');
     expect(header.querySelector(`a[href="${playgroundPath(entry.id)}"]`)).not.toBeNull();
 
     // Preview: the states are a switch on the chart, not sections of their own.
@@ -320,45 +321,6 @@ describe('component Markdown', () => {
   });
 });
 
-describe('component prompt', () => {
-  it.each(each)('%s agrees with the code it carries', (_, entry) => {
-    const code = exampleCode(entry, componentExamples(entry)[0]!, base);
-    const prompt = componentPrompt(entry, code);
-
-    expect(prompt).toContain(code);
-    expect(prompt).toContain(`npm install ${BRAND.packageName}`);
-    expect(prompt).toContain(`pnpm add ${BRAND.packageName}`);
-    expect(prompt).toContain(`${BRAND.url}${componentPath(entry.id)}.md`);
-    for (const prop of requiredProps(entry)) expect(prompt).toContain(`\`${prop}\``);
-
-    // One instruction about the provider, matching whether the code has it.
-    expect(prompt).not.toContain('Skip this if it is already there');
-    expect(count(prompt.replace(code, ''), 'ChartsProvider')).toBe(1);
-    expect(prompt.includes('The code includes `<ChartsProvider>`')).toBe(code.includes('<ChartsProvider'));
-    // And one about height, matching whether the code has a sized wrapper. A control sizes itself.
-    if (entry.group === 'Controls') {
-      expect(prompt).toContain('needs no height');
-      return;
-    }
-    expect(prompt.includes('Keep the wrapper’s height')).toBe(/height/i.test(code));
-    expect(prompt.includes('render it inside an element with a height')).toBe(!/height/i.test(code));
-  });
-
-  it('words the steps from the code, either way', () => {
-    const entry = chartEntries[0]!;
-    const bare = componentPrompt(entry, '<KpiNumber measure={revenue} results={results(rows)} />');
-    expect(bare).toContain('Add it if my app has none');
-    expect(bare).toContain('render it inside an element with a height');
-    const complete = componentPrompt(
-      entry,
-      '<ChartsProvider><div style={{ height: 160 }}><KpiNumber measure={revenue} results={results(rows)} /></div></ChartsProvider>',
-    );
-    expect(complete).toContain('The code includes `<ChartsProvider>`');
-    expect(complete).toContain('Keep the wrapper’s height');
-    expect(complete).not.toContain('Add it if my app has none');
-  });
-});
-
 describe('components index', () => {
   const html = render(<ComponentsIndex route="/docs/components" />);
   const page = dom(html).querySelector('.components-index')!;
@@ -389,6 +351,13 @@ describe('components index', () => {
       expect(card.querySelector('.chart-canvas')).not.toBeNull();
       expect(card.querySelector('code')!.textContent).toBe(String(entry.exportName));
       expect([...card.querySelectorAll('button')].map((b) => b.textContent)).toEqual(['View code', 'Copy code']);
+      // Two links a visitor can see as links: the component's page and its playground,
+      // each named after the component, since every card has the same two labels.
+      const links = [...card.querySelectorAll<HTMLAnchorElement>('.index-card__actions a')];
+      expect(links.map((a) => a.textContent)).toEqual(['Docs', 'Playground']);
+      expect(links.map((a) => a.getAttribute('aria-label'))).toEqual([`${entry.name} docs`, `${entry.name} playground`]);
+      expect(links[0]!.getAttribute('href')).toBe(componentPath(entry.id));
+      expect(links[1]!.getAttribute('href')).toBe(playgroundPath(entry.id, cardExample(entry).variantId));
     }
     // One page for this job: no link to a second gallery.
     expect(page.innerHTML).not.toContain('href="/charts');
@@ -415,6 +384,8 @@ describe('playground', () => {
     expect(page.querySelector('.controls')).not.toBeNull();
     expect([...page.querySelectorAll('[aria-label="Data state"] [role="radio"]')].length).toBe(4);
     expect(page.querySelector('.events')).not.toBeNull();
+    // Each field's options are open to begin with, so their controls are in view.
+    for (const group of page.querySelectorAll<HTMLDetailsElement>('details.field-control')) expect(group.open).toBe(true);
 
     // Gone: what the docs page already says.
     expect(page.querySelector('.lede')).toBeNull();

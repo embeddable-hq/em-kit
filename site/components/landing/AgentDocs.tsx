@@ -46,10 +46,6 @@ export const AgentDocs = () => {
             </dt>
             <dd>Any page as Markdown: add .md to its URL.</dd>
           </div>
-          <div>
-            <dt>Copy prompt</dt>
-            <dd>On each component page: install, provider and code for an agent.</dd>
-          </div>
         </dl>
         <a className="text-link" href="/docs/ai">
           Use {BRAND.name} with AI →

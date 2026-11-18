@@ -936,7 +936,7 @@ export const guides: Guide[] = [
       { code: chatPrompt, lang: 'text' },
       { h2: 'One component at a time', id: 'copy-buttons' },
       {
-        md: 'Every [component page](/docs/components) has two buttons. **Copy page as Markdown** copies the page as text an assistant can read: purpose, a complete example and the props table. **Copy prompt** copies an instruction that tells an assistant to add that component to your project, with the install command and the code.',
+        md: 'Every [component page](/docs/components) has a **Copy page as Markdown** button. It copies the page as text an assistant can read: purpose, install, a complete example and the props table.',
       },
       {
         md: 'To let a model in your own product answer with a chart, see [Charts from a model](/docs/charts-from-a-model).',

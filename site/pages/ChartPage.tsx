@@ -185,8 +185,9 @@ const FieldOptionControl = ({
   );
 };
 
-// One collapsible group per field prop. Values apply to every field the prop
-// holds, so a list prop like `measures` changes all its measures at once.
+// One collapsible group per field prop, open to begin with so its controls
+// are in view. Values apply to every field the prop holds, so a list prop
+// like `measures` changes all its measures at once.
 const FieldOptionsControls = ({
   fields,
   builtProps,
@@ -218,7 +219,7 @@ const FieldOptionsControls = ({
         const switches = editable.filter((o) => o.type === 'boolean');
         const others = editable.filter((o) => o.type !== 'boolean');
         return (
-          <details key={name} className="field-control">
+          <details key={name} className="field-control" open>
             <summary>
               <code>{name}</code>
               <span className="muted">{setCount > 0 ? `${setCount} set` : `${editable.length} options`}</span>
