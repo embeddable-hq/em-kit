@@ -80,7 +80,14 @@ for (const component of published) {
     dropped.push(`${component.name}.${key}`);
     return false;
   });
-  const body = entries.map(([key, value]) => `    ${key}: ${JSON.stringify(value)},`).join('\n');
+  // A control's placeholder is the one default that is text a reader sees:
+  // it becomes a "key|fallback" string, translated in src/i18n.
+  const isControl = component.path.startsWith('components/editors/');
+  const printed = (key, value) =>
+    isControl && key === 'placeholder' && typeof value === 'string'
+      ? `controls.placeholder.${component.name.charAt(0).toLowerCase()}${component.name.slice(1)}|${value}`
+      : value;
+  const body = entries.map(([key, value]) => `    ${key}: ${JSON.stringify(printed(key, value))},`).join('\n');
   defaultsLines.push(`  ${component.name}: {\n${body}\n  } satisfies Partial<${typeAlias}>,`);
 
   if (component.status === 'exported') {

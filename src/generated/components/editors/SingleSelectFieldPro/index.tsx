@@ -5,7 +5,7 @@ import { useTheme } from '../../../../runtime/react';
 import { Theme } from '../../../theme/theme.types';
 import { EditorCard, EditorCardHeaderProps } from '../shared/EditorCard/EditorCard';
 import { resolveI18nProps } from '../../component.utils';
-import { i18n } from '../../../theme/i18n/i18n';
+import { i18n, i18nSetup } from '../../../theme/i18n/i18n';
 import { SingleSelectField } from '../../../../generated-ui/index';
 import { dispatchEventUserInteraction } from '../../../utils/events.utils';
 
@@ -22,11 +22,12 @@ export type SingleSelectFieldProProps = {
   componentName?: string;
   trackingId?: string;
   setSearchValue?: (search: string) => void;
-  onChange?: (selectedValue: string | null) => void;
+  onChange?: (selectedValue: string | undefined) => void;
 } & EditorCardHeaderProps;
 
 const SingleSelectFieldPro = (props: SingleSelectFieldProProps) => {
   const theme: Theme = useTheme() as Theme;
+  i18nSetup(theme);
   const themeFormatter = getThemeFormatter(theme);
 
   const { title, description, dimension, placeholder, tooltip } = resolveI18nProps(props);
@@ -77,7 +78,7 @@ const SingleSelectFieldPro = (props: SingleSelectFieldProProps) => {
         noOptionsMessage={showNoOptionsMessage ? i18n.t('common.noOptionsFound') : undefined}
         onChange={(newValue) => {
           dispatchEventUserInteraction({ componentName, trackingId, value: newValue });
-          onChange?.(newValue as string | null);
+          onChange?.((newValue as string | null) ?? undefined);
         }}
         onSearch={setSearchValue}
         avoidCollisions={false}

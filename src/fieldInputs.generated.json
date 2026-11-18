@@ -4522,5 +4522,253 @@
         "inputs": []
       }
     }
+  },
+  "ComparisonPeriodSelectFieldPro": {
+    "label": "Comparison Period Select Field",
+    "fields": {}
+  },
+  "GranularitySelectFieldPro": {
+    "label": "Granularity Select Field",
+    "fields": {}
+  },
+  "MultiSelectFieldPro": {
+    "label": "Multi Select Field",
+    "fields": {
+      "dimension": {
+        "kind": "dimension",
+        "label": "Dimension (to load Dropdown values)",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "optionalSecondDimension": {
+        "kind": "dimension",
+        "label": "Optional secondary dimension",
+        "required": false,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "SingleSelectFieldPro": {
+    "label": "Single Select Field",
+    "fields": {
+      "dimension": {
+        "kind": "dimension",
+        "label": "Dimension (to load Dropdown values)",
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "optionalSecondDimension": {
+        "kind": "dimension",
+        "label": "Optional secondary dimension",
+        "required": false,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "TextFieldPro": {
+    "label": "Text Field",
+    "fields": {}
+  },
+  "DateRangePickerCustomPro": {
+    "label": "Date-Range Picker - Custom",
+    "fields": {}
+  },
+  "DateRangeSelectFieldPro": {
+    "label": "Date-Range Picker - Presets",
+    "fields": {}
   }
 }

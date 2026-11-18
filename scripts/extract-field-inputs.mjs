@@ -9,9 +9,9 @@
 
 import { build } from 'esbuild';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { components } from './components.manifest.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const FIELD_INPUTS_OUT = path.join(ROOT, 'src/fieldInputs.generated.json');
@@ -88,14 +88,25 @@ const describeSubInput = (sub) => {
 // Bundles and evaluates every chart's definition.ts; returns each one's
 // directory (relative to src/, as the component manifest spells it) and meta.
 export const extractDefinitionMetas = async (proSrcRoot) => {
-  const chartsDir = path.join(proSrcRoot, 'components/charts');
-  const definitions = walk(chartsDir).filter((f) => /(^|[\\/])definition\.ts$/.test(f)).sort();
+  // Every published component's definition: the charts, and the controls the
+  // manifest exports (the other editors' definitions need Embeddable to load).
+  const publishedDirs = new Set(
+    components.filter((c) => c.status !== 'skipped').map((c) => path.join(proSrcRoot, c.path)),
+  );
+  const definitions = walk(path.join(proSrcRoot, 'components'))
+    .filter((f) => /(^|[\\/])definition\.ts$/.test(f))
+    .filter((f) => f.includes(`${path.sep}charts${path.sep}`) || publishedDirs.has(path.dirname(f)))
+    .sort();
 
   const entry = definitions
     .map((file, i) => `export * as d${i} from ${JSON.stringify(file)};`)
     .join('\n');
 
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'emkit-field-inputs-'));
+  // Inside this package, so the bundle's `react` import resolves: a control's
+  // definition imports a constant from its component, and React with it.
+  const cache = path.join(ROOT, 'node_modules/.cache');
+  fs.mkdirSync(cache, { recursive: true });
+  const tmp = fs.mkdtempSync(path.join(cache, 'emkit-field-inputs-'));
   const outfile = path.join(tmp, 'definitions.mjs');
   try {
     await build({
@@ -107,6 +118,8 @@ export const extractDefinitionMetas = async (proSrcRoot) => {
       logLevel: 'error',
       jsx: 'automatic',
       external: ['react', 'react-dom', 'react/*'],
+      // Bundled CommonJS dependencies `require` React, which an ES module can't without this.
+      banner: { js: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);" },
       // The upstream source is extracted to a temp dir with no node_modules;
       // its npm dependencies are carried in this package.
       nodePaths: [path.join(ROOT, 'node_modules')],

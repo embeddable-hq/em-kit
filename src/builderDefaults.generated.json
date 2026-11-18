@@ -325,5 +325,44 @@
       "csv",
       "xlsx"
     ]
+  },
+  "components/editors/ComparisonPeriodSelectFieldPro": {
+    "placeholder": "Select a date-comparison"
+  },
+  "components/editors/GranularitySelectFieldPro": {
+    "placeholder": "Select a granularity",
+    "granularities": [
+      "hour",
+      "day",
+      "week",
+      "month",
+      "quarter",
+      "year"
+    ],
+    "clearable": false
+  },
+  "components/editors/MultiSelectFieldPro": {
+    "placeholder": "Select values...",
+    "maxOptions": 200,
+    "showSelectAll": false,
+    "autoApply": false,
+    "clearable": true
+  },
+  "components/editors/SingleSelectFieldPro": {
+    "placeholder": "Select value...",
+    "maxOptions": 200,
+    "clearable": true
+  },
+  "components/editors/TextFieldPro": {},
+  "components/editors/dates/DateRangePickerCustomPro": {
+    "placeholder": "Select a date-range",
+    "clearable": true,
+    "showTwoMonths": false
+  },
+  "components/editors/dates/DateRangePickerPresetsPro": {
+    "placeholder": "Select a date-range",
+    "showCustomRangeOptions": true,
+    "showTwoMonths": false,
+    "clearable": true
   }
 }

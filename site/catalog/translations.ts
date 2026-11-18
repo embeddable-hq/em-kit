@@ -170,6 +170,12 @@ const sentences = {
     de: '{a} nach {b}, Anteil an allen Stufen',
     fr: '{a} par {b}, part du total des étapes',
   },
+  // Controls: a select is titled with its field, the rest with what they set.
+  only: { en: '{a}', de: '{a}', fr: '{a}' },
+  dateRange: { en: 'Date range', de: 'Zeitraum', fr: 'Période' },
+  granularity: { en: 'Granularity', de: 'Granularität', fr: 'Granularité' },
+  compareTo: { en: 'Compare to', de: 'Vergleichen mit', fr: 'Comparer à' },
+  search: { en: 'Search', de: 'Suche', fr: 'Recherche' },
   growth: { en: '{a} growth, month on month', de: '{a}: Wachstum zum Vormonat', fr: '{a} : croissance mensuelle' },
 } satisfies Record<string, Sentence>;
 
@@ -177,6 +183,21 @@ type TitleSpec = [keyof typeof sentences, TitleField, TitleField?, TitleField?];
 
 // Keyed by chart entry id, and by `${entry}--${preset}` for a preset.
 const chartTitles: Record<string, TitleSpec> = {
+  'date-range-picker': ['dateRange', 'time'],
+  'date-range-picker--two-months': ['dateRange', 'time'],
+  'date-range-picker--calendar-only': ['dateRange', 'time'],
+  'date-range-picker-custom': ['dateRange', 'time'],
+  'date-range-picker-custom--two-months': ['dateRange', 'time'],
+  'granularity-select': ['granularity', 'time'],
+  'granularity-select--limited': ['granularity', 'time'],
+  'comparison-period-select': ['compareTo', 'time'],
+  'comparison-period-select--dates': ['compareTo', 'time'],
+  'single-select': ['only', 'category'],
+  'single-select--required': ['only', 'category'],
+  'multi-select': ['only', 'group'],
+  'multi-select--select-all': ['only', 'group'],
+  'text-field': ['search', 'category'],
+  'text-field--starting-text': ['search', 'category'],
   kpi: ['last30', 'secondary'],
   'kpi-comparison': ['last30', 'primary'],
   bar: ['by', 'secondary', 'segment'],

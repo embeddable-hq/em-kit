@@ -109,11 +109,25 @@ const locales: Record<string, () => Promise<any>> = {
   zh_hk: () => import('dayjs/locale/zh-hk'),
   zh_tw: () => import('dayjs/locale/zh-tw'),
 };
+const loadedLocales = new Set(['en']);
+
+// True when dayjs can format in this locale now: dayjs has no such locale and
+// stays as it is, or the locale is loaded, and is then made the current one
+// (another provider, or another request on a server, may have switched it).
+export const isDayjsLocaleReady = (locale: string): boolean => {
+  const key = locale.toLowerCase();
+  if (!locales[key]) return true;
+  if (!loadedLocales.has(key)) return false;
+  if (dayjs.locale() !== key) dayjs.locale(locale);
+  return true;
+};
+
 export async function loadDayjsLocale(locale: string): Promise<void> {
   const loader = locales[locale.toLowerCase()];
   if (!loader) return;
   try {
     await loader();
+    loadedLocales.add(locale.toLowerCase());
     dayjs.locale(locale);
   } catch {
     console.warn(`Locale "${locale}" not supported, falling back to "en".`);
@@ -127,11 +141,13 @@ type UseLoadDayjsLocaleProps = {
 
 export const useLoadDayjsLocale = (): UseLoadDayjsLocaleProps => {
   const theme: Theme = useTheme() as Theme;
-  const [dayjsLocaleReady, setDayjsLocaleReady] = useState(false);
+  const [dayjsLocaleReady, setDayjsLocaleReady] = useState(() =>
+    isDayjsLocaleReady(theme.i18n.language ?? theme.formatter.locale),
+  );
   useEffect(() => {
     const locale = theme.i18n.language ?? theme.formatter.locale;
     const loadLocale = async () => {
-      setDayjsLocaleReady(false);
+      if (!isDayjsLocaleReady(locale)) setDayjsLocaleReady(false);
       await loadDayjsLocale(locale);
       setDayjsLocaleReady(true);
     };

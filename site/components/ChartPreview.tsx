@@ -155,7 +155,9 @@ export const ChartPreview = ({
   // page, and so is a round one; on the index the card is its own size.
   const width = size === 'page' ? exampleWidth(entry, example.variantId) : undefined;
   // The frame is the chart's one border, and its card inside draws none (components.css).
-  const classes = ['chart-canvas', canvas.dark ? 'is-dark' : '', width || round ? 'chart-canvas--fit' : ''];
+  // A control has no card of its own, so the frame gives it the padding a card would.
+  const control = entry.group === 'Controls' ? 'chart-canvas--control' : '';
+  const classes = ['chart-canvas', canvas.dark ? 'is-dark' : '', width || round ? 'chart-canvas--fit' : '', control];
   return (
     <div className={classes.filter(Boolean).join(' ')} style={{ background: canvas.background }}>
       <LazyMount

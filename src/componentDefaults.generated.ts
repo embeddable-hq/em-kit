@@ -27,6 +27,13 @@ import type { HeatMapProProps as HeatMapBaseProps } from './generated/components
 import type { PivotTableProProps as PivotTableBaseProps } from './generated/components/charts/tables/PivotTablePro';
 import type { TableChartPaginatedProProps as TablePaginatedBaseProps } from './generated/components/charts/tables/TableChartPaginated';
 import type { TableScrollableProProps as TableScrollableBaseProps } from './generated/components/charts/tables/TableScrollable';
+import type { DateComparisonSelectFieldPro as ComparisonPeriodSelectBaseProps } from './generated/components/editors/ComparisonPeriodSelectFieldPro';
+import type { GranularitySelectFieldProProps as GranularitySelectBaseProps } from './generated/components/editors/GranularitySelectFieldPro';
+import type { MultiSelectFieldProProps as MultiSelectBaseProps } from './generated/components/editors/MultiSelectFieldPro';
+import type { SingleSelectFieldProProps as SingleSelectBaseProps } from './generated/components/editors/SingleSelectFieldPro';
+import type { TextFieldProProps as TextFieldBaseProps } from './generated/components/editors/TextFieldPro';
+import type { DateRangePickerPresetsProps as DateRangePickerCustomBaseProps } from './generated/components/editors/dates/DateRangePickerCustomPro';
+import type { DateRangePickerPresetsProps as DateRangePickerBaseProps } from './generated/components/editors/dates/DateRangePickerPresetsPro';
 
 export const componentDefaults = {
   BarChart: {
@@ -213,4 +220,38 @@ export const componentDefaults = {
     showIndex: true,
     menuOptions: ["csv","xlsx"],
   } satisfies Partial<TableScrollableBaseProps>,
+  ComparisonPeriodSelect: {
+    placeholder: "controls.placeholder.comparisonPeriodSelect|Select a date-comparison",
+  } satisfies Partial<ComparisonPeriodSelectBaseProps>,
+  GranularitySelect: {
+    placeholder: "controls.placeholder.granularitySelect|Select a granularity",
+    granularities: ["hour","day","week","month","quarter","year"],
+    clearable: false,
+  } satisfies Partial<GranularitySelectBaseProps>,
+  MultiSelect: {
+    placeholder: "controls.placeholder.multiSelect|Select values...",
+    maxOptions: 200,
+    showSelectAll: false,
+    autoApply: false,
+    clearable: true,
+  } satisfies Partial<MultiSelectBaseProps>,
+  SingleSelect: {
+    placeholder: "controls.placeholder.singleSelect|Select value...",
+    maxOptions: 200,
+    clearable: true,
+  } satisfies Partial<SingleSelectBaseProps>,
+  TextField: {
+
+  } satisfies Partial<TextFieldBaseProps>,
+  DateRangePickerCustom: {
+    placeholder: "controls.placeholder.dateRangePickerCustom|Select a date-range",
+    clearable: true,
+    showTwoMonths: false,
+  } satisfies Partial<DateRangePickerCustomBaseProps>,
+  DateRangePicker: {
+    placeholder: "controls.placeholder.dateRangePicker|Select a date-range",
+    showCustomRangeOptions: true,
+    showTwoMonths: false,
+    clearable: true,
+  } satisfies Partial<DateRangePickerBaseProps>,
 };

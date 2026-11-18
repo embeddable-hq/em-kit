@@ -11,6 +11,16 @@ when the language changes; the pivot table's `expandedRowKeys` and
 payload types; table cell copy buttons show on focus; clickable heat-map cells
 have an accessible name.
 
+# Upstream changes from EmKit (controls, 18 Nov 2026)
+
+Carried as `contentRewrites` in `scripts/sync.mjs`; each has its reason there.
+
+- **remarkable-ui `DateRangePicker`** imports every react-day-picker locale (`import * as rdpLocales from 'react-day-picker/locale'`): about 160 KB gzipped in any bundle that contains a date picker. Here the calendar is `React.lazy` and the locales load when a picker in another language mounts.
+- **remarkable-pro `useLoadDayjsLocale`** starts every mount at "not ready", so the date pickers and the comparison select render nothing on a server and pop in after the first paint. Here English, and any locale already loaded, is ready on the first render.
+- **`SingleSelectFieldPro` and `MultiSelectFieldPro`** resolve their title before `i18nSetup(theme)`, so under a second provider or on a server the title comes out in the language that rendered last.
+- **`TextFieldPro`**'s input has no accessible name (the title is a heading beside it). Here it is named after the title, or the placeholder.
+- **Types:** `GranularitySelectFieldPro.onChange` takes `string` (it is only called with a granularity) and its props use the unexported `TGranularityValue`; `SingleSelectFieldPro` and `ComparisonPeriodSelectFieldPro` report `null` when cleared, which their own value props do not accept. Here they report `Granularity`, and `undefined` when cleared.
+
 # Upstream changes from EmKit (server rendering, funnel labels)
 
 EmKit carries these as `contentRewrites` in `scripts/sync.mjs`. Each one can be dropped once the matching change lands upstream.

@@ -7,6 +7,7 @@ import {
   Granularity,
   Measure,
   NativeDataType,
+  TimeRange,
 } from './runtime/core';
 import type { FieldInputs } from './fieldInputs';
 
@@ -57,6 +58,16 @@ export const measure = ({ name, title, type = 'number', description, meta, input
   meta,
   __type__: MEASURE_TYPE,
   inputs,
+});
+
+// A preset date range by name ('Last 30 days', 'This month', …: the provider's
+// `defaults.dateRangesOptions`), as the starting value of a date range picker.
+// The picker works out the dates, in the provider's time zone, and reports
+// them through its `onChange`.
+export const dateRangePreset = (name: string): TimeRange => ({
+  from: undefined,
+  to: undefined,
+  relativeTimeString: name,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

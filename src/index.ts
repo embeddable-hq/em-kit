@@ -34,7 +34,7 @@ export type {
 } from './spec';
 
 // Data contract
-export { dimension, measure, results } from './data';
+export { dateRangePreset, dimension, measure, results } from './data';
 export type { FieldInputs } from './fieldInputs';
 export type {
   DataResponse,
@@ -44,6 +44,19 @@ export type {
   Granularity,
   TimeRange,
 } from './runtime/core';
+
+// The presets a date range picker lists and the comparisons a comparison
+// select offers, each with the function that works out its dates. A theme
+// replaces either list whole (`defaults.dateRangesOptions`,
+// `defaults.comparisonPeriodsOptions`), so spread these to keep the rest.
+export {
+  defaultDateRangeOptions,
+  type DateRangeOption,
+} from './generated/theme/defaults/defaults.DateRanges.constants';
+export {
+  defaultComparisonPeriodOptions,
+  type ComparisonPeriodOption,
+} from './generated/theme/defaults/defaults.ComparisonPeriods.constants';
 
 // Event payloads and controlled state, under the names the props reference
 // uses for them (the upstream `Pro` infix dropped, as for the components).

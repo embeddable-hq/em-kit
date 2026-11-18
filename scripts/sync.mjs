@@ -77,6 +77,46 @@ const SOURCES = [
       // titles become <h3>; the KPI number and the empty/error title become a
       // <div> with a class, which their CSS selects instead of h2, so they look
       // the same and a host page's h2 rule no longer reaches them.
+      // The calendar's month and day names. Upstream imports every locale
+      // react-day-picker has, about 160 KB gzipped, into any bundle that
+      // contains a date picker. Here the set loads when a picker in another
+      // language mounts; English is built into react-day-picker.
+      {
+        file: 'components/editors/dates/DateRangePicker/DateRangePicker.tsx',
+        from: "import React, { useState } from 'react';\nimport { DateRange, DayPicker } from 'react-day-picker';",
+        to: "import React, { useEffect, useState } from 'react';\nimport type { DateRange, Locale } from 'react-day-picker';\n\n// The calendar is behind a click, so its code loads when a picker first opens.\nconst DayPicker = React.lazy(() => import('react-day-picker').then((module) => ({ default: module.DayPicker })));",
+        why: 'the calendar and its locales load on demand, not with every bundle that contains a date picker',
+      },
+      {
+        file: 'components/editors/dates/DateRangePicker/DateRangePicker.tsx',
+        from: "import * as rdpLocales from 'react-day-picker/locale';\n",
+        to: "\nconst isEnglish = (locale: string) => locale === 'en' || locale === 'enUS' || locale === 'en-US';\n",
+        why: 'no static import of every calendar locale',
+      },
+      {
+        file: 'components/editors/dates/DateRangePicker/DateRangePicker.tsx',
+        from: '  const currentYear = new Date().getFullYear();\n',
+        to: "  const currentYear = new Date().getFullYear();\n  const [loaded, setLoaded] = useState<{ name: string; locale: Locale | undefined }>();\n\n  useEffect(() => {\n    if (isEnglish(locale)) return;\n    let current = true;\n    import('react-day-picker/locale').then((all) => {\n      if (current) setLoaded({ name: locale, locale: (all as unknown as Record<string, Locale>)[locale] });\n    });\n    return () => {\n      current = false;\n    };\n  }, [locale]);\n",
+        why: 'loads the calendar locales when a picker in another language mounts',
+      },
+      {
+        file: 'components/editors/dates/DateRangePicker/DateRangePicker.tsx',
+        from: '      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n      locale={(rdpLocales as Record<string, any>)[locale]}\n',
+        to: '      locale={loaded?.name === locale ? loaded.locale : undefined}\n',
+        why: 'the loaded locale, and English until then',
+      },
+      {
+        file: 'components/editors/dates/DateRangePicker/DateRangePicker.tsx',
+        from: '  return (\n    <DayPicker\n',
+        to: '  return (\n    <React.Suspense fallback={<div className="rdp-root" style={{ minHeight: 300, minWidth: 280 * numberOfMonths }} />}>\n    <DayPicker\n',
+        why: 'holds the calendar’s place while its code loads (see above)',
+      },
+      {
+        file: 'components/editors/dates/DateRangePicker/DateRangePicker.tsx',
+        from: '      animate\n    />\n  );',
+        to: '      animate\n    />\n    </React.Suspense>\n  );',
+        why: 'closes the Suspense boundary (see above)',
+      },
       {
         file: 'components/shared/Card/Card.tsx',
         from: '{title && <h1>{title}</h1>}',
@@ -243,6 +283,105 @@ const SOURCES = [
         from: '    setExpandedRowKey(rowKey);',
         to: '    setExpandedRowKey?.(rowKey);',
         why: 'setExpandedRowKey is optional now',
+      },
+      // Controls. The granularity select hands back a Granularity, so a
+      // `useState<Granularity>` setter can be its onChange as it is.
+      {
+        file: 'components/editors/GranularitySelectFieldPro/index.tsx',
+        from: "import { TimeRange } from",
+        to: "import { Granularity, TimeRange } from",
+        why: 'the Granularity type for onChange (next rewrite)',
+      },
+      {
+        file: 'components/editors/GranularitySelectFieldPro/index.tsx',
+        from: '  onChange: (newGranularity: string) => void;',
+        to: '  onChange: (newGranularity: Granularity) => void;',
+        why: 'onChange is only ever called with a granularity; typed as string, a Granularity state setter was a type error',
+      },
+      {
+        file: 'components/editors/GranularitySelectFieldPro/index.tsx',
+        from: '  const handleChange = (newGranularity: string) => {',
+        to: '  const handleChange = (newGranularity: Granularity) => {',
+        why: 'matches onChange (see above)',
+      },
+      {
+        file: 'components/editors/GranularitySelectFieldPro/index.tsx',
+        from: "import { TGranularityValue } from '../../../theme/defaults/defaults.GranularityOptions.constants';\n",
+        to: '',
+        why: 'the props use the exported Granularity type, the same union (next rewrite)',
+      },
+      {
+        file: 'components/editors/GranularitySelectFieldPro/index.tsx',
+        from: '  granularity?: TGranularityValue;\n  granularities?: TGranularityValue[];',
+        to: '  granularity?: Granularity;\n  granularities?: Granularity[];',
+        why: 'TGranularityValue is not exported; Granularity is the same union, and the type onChange reports',
+      },
+      // The selects resolved their title before pointing i18n at this
+      // provider's theme, so under a second provider, or on a server, the title
+      // came out in whichever language rendered last.
+      ...['SingleSelectFieldPro', 'MultiSelectFieldPro'].flatMap((name) => [
+        {
+          file: `components/editors/${name}/index.tsx`,
+          from: "import { i18n } from '../../../theme/i18n/i18n';",
+          to: "import { i18n, i18nSetup } from '../../../theme/i18n/i18n';",
+          why: 'i18nSetup for the select (next rewrite)',
+        },
+        {
+          file: `components/editors/${name}/index.tsx`,
+          from: '  const themeFormatter = getThemeFormatter(theme);\n',
+          to: '  i18nSetup(theme);\n  const themeFormatter = getThemeFormatter(theme);\n',
+          why: 'the title and labels resolve in this provider’s language, as the other controls do',
+        },
+      ]),
+      {
+        file: 'components/editors/TextFieldPro/index.tsx',
+        from: '<TextField value={currentValue} placeholder={placeholder} onChange={handleChange} clearable />',
+        to: '<TextField\n        value={currentValue}\n        placeholder={placeholder}\n        onChange={handleChange}\n        clearable\n        aria-label={title || placeholder || undefined}\n      />',
+        why: 'the input had no accessible name: the title is a heading beside it, not its label',
+      },
+      // A cleared select reports `undefined`, the value its own prop takes for
+      // "nothing chosen", so one `useState<string>()` holds it. Upstream
+      // reports null, which the value prop does not accept.
+      {
+        file: 'components/editors/SingleSelectFieldPro/index.tsx',
+        from: '  onChange?: (selectedValue: string | null) => void;',
+        to: '  onChange?: (selectedValue: string | undefined) => void;',
+        why: 'a cleared single select reports undefined (see above)',
+      },
+      {
+        file: 'components/editors/SingleSelectFieldPro/index.tsx',
+        from: '          onChange?.(newValue as string | null);',
+        to: '          onChange?.((newValue as string | null) ?? undefined);',
+        why: 'a cleared single select reports undefined (see above)',
+      },
+      {
+        file: 'components/editors/ComparisonPeriodSelectFieldPro/index.tsx',
+        from: '  onChange: (newComparisonPeriod?: string | null) => void;',
+        to: '  onChange: (newComparisonPeriod: string | undefined) => void;',
+        why: 'a cleared comparison select reports undefined (see above)',
+      },
+      {
+        file: 'components/editors/ComparisonPeriodSelectFieldPro/index.tsx',
+        from: '    onChange(newComparisonPeriod);\n',
+        to: '    onChange(newComparisonPeriod ?? undefined);\n',
+        why: 'a cleared comparison select reports undefined (see above)',
+      },
+      // The date pickers and the comparison select render nothing until their
+      // dayjs locale has loaded, and started every time from "not loaded": so
+      // nothing on a server render, and a card that popped in after the first
+      // paint. English is built into dayjs and a loaded locale stays loaded,
+      // so both are ready on the first render.
+      {
+        file: 'utils/date.utils.ts',
+        from: 'export async function loadDayjsLocale(locale: string): Promise<void> {\n  const loader = locales[locale.toLowerCase()];\n  if (!loader) return;\n  try {\n    await loader();\n    dayjs.locale(locale);\n',
+        to: "const loadedLocales = new Set(['en']);\n\n// True when dayjs can format in this locale now: dayjs has no such locale and\n// stays as it is, or the locale is loaded, and is then made the current one\n// (another provider, or another request on a server, may have switched it).\nexport const isDayjsLocaleReady = (locale: string): boolean => {\n  const key = locale.toLowerCase();\n  if (!locales[key]) return true;\n  if (!loadedLocales.has(key)) return false;\n  if (dayjs.locale() !== key) dayjs.locale(locale);\n  return true;\n};\n\nexport async function loadDayjsLocale(locale: string): Promise<void> {\n  const loader = locales[locale.toLowerCase()];\n  if (!loader) return;\n  try {\n    await loader();\n    loadedLocales.add(locale.toLowerCase());\n    dayjs.locale(locale);\n",
+        why: 'remembers which locales are loaded, for the first render (see above)',
+      },
+      {
+        file: 'utils/date.utils.ts',
+        from: '  const [dayjsLocaleReady, setDayjsLocaleReady] = useState(false);\n  useEffect(() => {\n    const locale = theme.i18n.language ?? theme.formatter.locale;\n    const loadLocale = async () => {\n      setDayjsLocaleReady(false);\n',
+        to: '  const [dayjsLocaleReady, setDayjsLocaleReady] = useState(() =>\n    isDayjsLocaleReady(theme.i18n.language ?? theme.formatter.locale),\n  );\n  useEffect(() => {\n    const locale = theme.i18n.language ?? theme.formatter.locale;\n    const loadLocale = async () => {\n      if (!isDayjsLocaleReady(locale)) setDayjsLocaleReady(false);\n',
+        why: 'ready on the first render when the locale already is (see above)',
       },
       {
         file: 'components/editors/shared/GranularitySelectField/GranularitySelectField.tsx',

@@ -129,5 +129,15 @@ export const fr: ResourceLanguage = {
     granularity: {
       quarter: 'T{{quarter}} {{year}}',
     },
+    controls: {
+      placeholder: {
+        dateRangePicker: 'Sélectionner une période',
+        dateRangePickerCustom: 'Sélectionner une période',
+        granularitySelect: 'Sélectionner une granularité',
+        comparisonPeriodSelect: 'Sélectionner une comparaison',
+        singleSelect: 'Sélectionner une valeur…',
+        multiSelect: 'Sélectionner des valeurs…',
+      },
+    },
   },
 };

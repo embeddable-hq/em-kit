@@ -36,6 +36,8 @@ import {
   propType,
   purposeOf,
   TIME_RANGE_LINK,
+  takesResults,
+  CONTROL_SETUP_LINE,
   USAGE_SETUP_LINE,
   USAGE_SETUP_PATH,
   typeShapes,
@@ -73,23 +75,27 @@ export const useExampleCode = (entry: ChartEntry, example: ComponentExample) => 
 const Preview = ({ entry, example }: { entry: ChartEntry; example: ComponentExample }) => {
   const [state, setState] = useState<DataState>('ready');
   const hint = dataStates.find((s) => s.id === state)?.hint;
+  // A control that takes no rows has no loading, empty or error state to switch to.
+  const hasStates = takesResults(entry);
   return (
     <div className="preview">
       <div className="preview__bar">
-        <div className="segmented" role="radiogroup" aria-label="Preview state">
-          {dataStates.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              role="radio"
-              aria-checked={state === s.id}
-              className={state === s.id ? 'is-active' : ''}
-              onClick={() => setState(s.id)}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
+        {hasStates && (
+          <div className="segmented" role="radiogroup" aria-label="Preview state">
+            {dataStates.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                role="radio"
+                aria-checked={state === s.id}
+                className={state === s.id ? 'is-active' : ''}
+                onClick={() => setState(s.id)}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        )}
         <ChartContextBar compact />
       </div>
       <ChartPreview entry={entry} example={example} dataState={state} height={previewHeight(entry, 'page')} eager />
@@ -244,9 +250,10 @@ const TypesTable = ({ entry }: { entry: ChartEntry }) => {
 // install command, once, and a link to the quick start, which teaches the
 // provider, the height and the Next.js files. The Markdown twin carries that
 // setup in full, so it stands on its own (site/STANDARDS.md, settled conflicts).
-const UsageSetup = () => (
+const UsageSetup = ({ entry }: { entry: ChartEntry }) => (
   <p className="usage-setup">
-    Install with <code>{installCommand('npm')}</code>. <InlineCode>{USAGE_SETUP_LINE}</InlineCode>{' '}
+    Install with <code>{installCommand('npm')}</code>.{' '}
+    <InlineCode>{entry.group === 'Controls' ? CONTROL_SETUP_LINE : USAGE_SETUP_LINE}</InlineCode>{' '}
     <a href={USAGE_SETUP_PATH}>Quick start</a>.
   </p>
 );
@@ -423,7 +430,7 @@ export const ComponentDocPage = ({ entry, route }: { entry: ChartEntry; route: s
               ))}
             </ul>
           )}
-          <UsageSetup />
+          <UsageSetup entry={entry} />
         </section>
 
         <section className="docs-content" data-section="examples" aria-labelledby="examples">

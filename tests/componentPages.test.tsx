@@ -25,6 +25,7 @@ import {
   propsOf,
   requiredProps,
   siblingNote,
+  takesResults,
   writtenExamplesOf,
 } from '../site/content/components';
 import { componentPath, playgroundPath } from '../site/content/routes';
@@ -79,7 +80,8 @@ describe('component page', () => {
 
     // Preview: the states are a switch on the chart, not sections of their own.
     const states = [...article.querySelectorAll('[aria-label="Preview state"] [role="radio"]')].map((b) => b.textContent);
-    expect(states).toEqual(['Data', 'Loading', 'Empty', 'Error']);
+    // A control that takes no rows (a date picker, a text field) has no states to switch between.
+    expect(states).toEqual(takesResults(entry) ? ['Data', 'Loading', 'Empty', 'Error'] : []);
     for (const id of ['loading', 'empty', 'error']) expect(article.querySelector(`#${id}`)).toBeNull();
 
     // Usage: the default example's whole module, on the page without a click,
@@ -228,7 +230,7 @@ describe('props reference', () => {
       expect(propDescription(prop, entry)).not.toMatch(/Field options below|—/);
       expect(prop.type).not.toContain('unknown[]');
     }
-    expect(requiredProps(entry)).toContain('results');
+    if (takesResults(entry)) expect(requiredProps(entry)).toContain('results');
     expect(props.findIndex((p) => !p.required)).toBe(requiredProps(entry).length);
   });
 
@@ -253,7 +255,15 @@ describe('component Markdown', () => {
 
     expect(markdown.startsWith(`# ${entry.name}\n`)).toBe(true);
     const headings = [...markdown.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
-    expect(headings).toEqual(['Install', 'Usage', 'States', 'Examples', 'Props', 'Field options', ...(keyboardRows(entry) ? ['Keyboard'] : [])]);
+    expect(headings).toEqual([
+      'Install',
+      'Usage',
+      ...(takesResults(entry) ? ['States'] : []),
+      'Examples',
+      'Props',
+      'Field options',
+      ...(keyboardRows(entry) ? ['Keyboard'] : []),
+    ]);
 
     // Install, for every package manager, with the provider and the peer dependency.
     expect(markdown).toContain(installMarkdown());
@@ -325,7 +335,11 @@ describe('component prompt', () => {
     expect(prompt).not.toContain('Skip this if it is already there');
     expect(count(prompt.replace(code, ''), 'ChartsProvider')).toBe(1);
     expect(prompt.includes('The code includes `<ChartsProvider>`')).toBe(code.includes('<ChartsProvider'));
-    // And one about height, matching whether the code has a sized wrapper.
+    // And one about height, matching whether the code has a sized wrapper. A control sizes itself.
+    if (entry.group === 'Controls') {
+      expect(prompt).toContain('needs no height');
+      return;
+    }
     expect(prompt.includes('Keep the wrapper’s height')).toBe(/height/i.test(code));
     expect(prompt.includes('render it inside an element with a height')).toBe(!/height/i.test(code));
   });
@@ -352,7 +366,7 @@ describe('components index', () => {
   it('shows every component once, grouped by type, with counts that add up', () => {
     const cards = [...page.querySelectorAll('.index-card')];
     expect(cards.length).toBe(chartEntries.length);
-    expect(chartEntries.length).toBe(25);
+    expect(chartEntries.length).toBe(32);
 
     const groups = [...page.querySelectorAll('.index-group')];
     expect(groups.map((g) => g.getAttribute('data-group'))).toEqual([...chartGroups]);
