@@ -185,7 +185,7 @@ const global: Record<string, string> = {
   menuOptions: 'Which entries the card menu offers. Pass `[]` for none.',
 
   // Provider
-  theme: 'Deep-partial override of the default theme: styles (CSS variables), charts (Chart.js options per component), formatter, i18n, fonts.',
+  theme: 'Deep-partial override of the default theme: styles (CSS variables), charts (Chart.js options per component), formatter, i18n, fonts, defaults (the card menu’s entries).',
   timezone: 'IANA timezone used for date display, e.g. "Europe/Berlin".',
   children: 'Your app; every chart inside reads this provider’s theme.',
 

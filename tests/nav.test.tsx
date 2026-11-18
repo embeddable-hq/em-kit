@@ -90,7 +90,7 @@ describe('search', () => {
   it('matches csv on what a page says, not on shared keywords', () => {
     const results = searchDocs('csv');
     expect(results.length).toBeGreaterThan(0);
-    expect(results.length).toBeLessThan(8);
+    expect(results.length).toBeLessThan(9);
     expect(results.some((r) => r.kind === 'Guides')).toBe(true);
     for (const r of results.filter((x) => x.kind === 'Components')) {
       const entry = chartEntries.find((e) => componentPath(e.id) === r.path);
@@ -98,14 +98,14 @@ describe('search', () => {
     }
   });
 
-  it('leads with the card menu section for export, csv, excel, xlsx, png and download', () => {
+  it('leads with the card menu guide for export, csv, excel, xlsx, png and download', () => {
     for (const q of ['export', 'csv', 'excel', 'xlsx', 'png', 'download', 'CSV']) {
       const first = searchDocs(q)[0]!;
-      expect(first.path, q).toBe('/docs/accessibility#card');
+      expect(first.path, q).toBe('/docs/card-menu');
       expect(first.kind, q).toBe('Guides');
     }
     // Other queries are not touched by it.
-    expect(searchDocs('csv donut')[0]?.path).not.toBe('/docs/accessibility#card');
+    expect(searchDocs('csv donut')[0]?.path).not.toBe('/docs/card-menu');
   });
 
   it('finds the export menu from its formats: menuOptions and the guide section, without a flood', () => {
@@ -115,7 +115,8 @@ describe('search', () => {
       expect(results.filter((r) => r.title === 'menuOptions').length, q).toBeLessThanOrEqual(2);
       expect(results.length, q).toBeLessThan(12);
     }
-    expect(searchDocs('csv').some((r) => r.path === '/docs/accessibility#card')).toBe(true);
+    // The accessibility section on the menu is still found by a format's name.
+    expect(searchDocs('xlsx').some((r) => r.path === '/docs/accessibility#card')).toBe(true);
     // Words every prop's type has are not keywords.
     expect(searchDocs('boolean').filter((r) => r.kind === 'Props')).toHaveLength(0);
   });

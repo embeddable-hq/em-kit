@@ -8,6 +8,8 @@ import answerChartSource from '../examples/AnswerChart.tsx?raw';
 import appSource from '../examples/App.tsx?raw';
 import brandThemeSource from '../examples/BrandTheme.tsx?raw';
 import chartStatesSource from '../examples/ChartStates.tsx?raw';
+import copyJsonMenuSource from '../examples/CopyJsonMenu.tsx?raw';
+import customDownloadsSource from '../examples/CustomDownloads.tsx?raw';
 import revenueFromApiSource from '../examples/RevenueFromApi.tsx?raw';
 import clientProviderSource from '../examples/app/ClientProvider.tsx?raw';
 import revenueByRegionSource from '../examples/RevenueByRegion.tsx?raw';
@@ -761,6 +763,66 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: 'card-menu',
+    title: 'Card menu',
+    section: 'Guides',
+    description: 'Choose the entries in a card’s menu, add your own, and change what the downloads do.',
+    blocks: [
+      {
+        md: 'A chart’s card has a menu behind the ⋮ button in its header: download the data as CSV or XLSX, download the chart as a PNG, or maximize the card. You choose the entries per chart, and you can add your own or change what a built-in one does.',
+      },
+      { h2: 'Choose the entries for a chart', id: 'per-chart' },
+      {
+        md: '`menuOptions` lists the entries a chart offers, by `value`. The built-in values are `csv`, `xlsx`, `png` and `maximize`, and each [component page](/docs/components) gives its default: all four for most.',
+      },
+      {
+        md: 'Pass `[]` for no menu at all. `hideMenu` goes further and leaves out the card’s whole header: title, description and menu.',
+      },
+      { h2: 'Add your own entry', id: 'add' },
+      {
+        md: 'Entries are defined in the theme, at `defaults.chartMenuOptions`. Add yours to the built-in list, then name its `value` in the `menuOptions` of each chart that should offer it.',
+      },
+      { code: sample(copyJsonMenuSource), file: 'CopyJsonMenu.tsx' },
+      {
+        md: 'An override replaces the list, which is why the example starts from `defaultTheme.defaults.chartMenuOptions`. The menu button shows a spinner until `onClick` returns or, when it returns a promise, until that settles.',
+      },
+      { h2: 'What an entry receives', id: 'receives' },
+      {
+        md: [
+          '| Key | Value |',
+          '|---|---|',
+          '| `title` | The card’s title, translated. |',
+          '| `data` | The chart’s rows. On a table, every row from `allResults`, not the page on screen. |',
+          '| `dimensionsAndMeasures` | The fields the chart draws. |',
+          '| `containerRef`, `cardRef` | DOM refs to the chart’s body and to the whole card. |',
+          '| `theme` | The active theme, with its formatter and translations. |',
+          '| `options` | The entry’s own `options`. |',
+        ].join('\n'),
+      },
+      {
+        md: 'On a table, an entry waits for `allResults`, as the built-in downloads do: see [Tables](/docs/tables#props).',
+      },
+      { h2: 'Change a built-in entry', id: 'change' },
+      {
+        md: 'Map over the built-in list and return a changed copy of the entry. To keep the download and add a step, call the original `onClick` from yours.',
+      },
+      { code: sample(customDownloadsSource), file: 'CustomDownloads.tsx' },
+      {
+        md: 'The PNG entry reads two settings from its `options`. `pngBackgroundColor` is any CSS colour, and the image is transparent without it; `captureFullCard` includes the card’s title and description.',
+      },
+      { h2: 'Labels, icons and order', id: 'details' },
+      {
+        md: [
+          '- **Labels.** `labelKey` is a translation key, and text with no translation is shown as written, so a plain label works. For a translated label, add the key to your [translations](/docs/localisation#new-language) before the first chart renders.',
+          '- **Icons.** `iconSrc` is an SVG as a data URL: `data:image/svg+xml,` followed by the URL-encoded markup.',
+          '- **Order.** Entries appear in the order of the theme’s list, whatever the order of `menuOptions`.',
+          '- **No spinner.** `isInstantAction: true` runs an entry at once, without the spinner.',
+          '- **Errors.** An error thrown by `onClick` is not caught. Handle a failure inside it, for example to tell the reader.',
+        ].join('\n'),
+      },
+    ],
+  },
+  {
     slug: 'accessibility',
     title: 'Accessibility',
     section: 'Guides',
@@ -804,7 +866,7 @@ export const guides: Guide[] = [
       { h2: 'The card: menu, picker and states', id: 'card' },
       {
         md: [
-          '- **Export menu.** It works from the keyboard, with the keys below. Its button is named after the chart (“Chart menu: Revenue by region”) in the provider’s language.',
+          '- **Export menu.** It works from the keyboard, with the keys below. Its button is named after the chart (“Chart menu: Revenue by region”) in the provider’s language. Its entries are yours to change: see [Card menu](/docs/card-menu).',
           '- **Maximised view.** It opens as a modal dialog named after the chart’s title, with a “Minimize” button. Focus is not put back on the card when it closes.',
           '- **Granularity picker.** A menu button that shows the current value, with the same keys as the export menu.',
           '- **States.** The empty and error states are text. The loading skeleton has none, and a change of state is not announced: the card has no live region.',
