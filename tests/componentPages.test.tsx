@@ -31,7 +31,7 @@ import { componentPath, playgroundPath } from '../site/content/routes';
 import { componentFieldOptions } from '../site/generated/props';
 import { ChartPage } from '../site/pages/ChartPage';
 import { ComponentDocPage } from '../site/pages/ComponentDocPage';
-import { ComponentsIndex } from '../site/pages/ComponentsIndex';
+import { cardExample, ComponentsIndex } from '../site/pages/ComponentsIndex';
 import { SiteSettingsProvider } from '../site/state';
 
 // Component pages, the components index and the playground: one skeleton on
@@ -351,6 +351,13 @@ describe('components index', () => {
       expect(card.querySelector('.chart-canvas')).not.toBeNull();
       expect(card.querySelector('code')!.textContent).toBe(String(entry.exportName));
       expect([...card.querySelectorAll('button')].map((b) => b.textContent)).toEqual(['View code', 'Copy code']);
+      // Two links a visitor can see as links: the component's page and its playground,
+      // each named after the component, since every card has the same two labels.
+      const links = [...card.querySelectorAll<HTMLAnchorElement>('.index-card__actions a')];
+      expect(links.map((a) => a.textContent)).toEqual(['Docs', 'Playground']);
+      expect(links.map((a) => a.getAttribute('aria-label'))).toEqual([`${entry.name} docs`, `${entry.name} playground`]);
+      expect(links[0]!.getAttribute('href')).toBe(componentPath(entry.id));
+      expect(links[1]!.getAttribute('href')).toBe(playgroundPath(entry.id, cardExample(entry).variantId));
     }
     // One page for this job: no link to a second gallery.
     expect(page.innerHTML).not.toContain('href="/charts');
@@ -377,6 +384,8 @@ describe('playground', () => {
     expect(page.querySelector('.controls')).not.toBeNull();
     expect([...page.querySelectorAll('[aria-label="Data state"] [role="radio"]')].length).toBe(4);
     expect(page.querySelector('.events')).not.toBeNull();
+    // Each field's options are open to begin with, so their controls are in view.
+    for (const group of page.querySelectorAll<HTMLDetailsElement>('details.field-control')) expect(group.open).toBe(true);
 
     // Gone: what the docs page already says.
     expect(page.querySelector('.lede')).toBeNull();

@@ -1,4 +1,4 @@
-import { IconCode, IconX } from '@tabler/icons-react';
+import { IconAdjustments, IconCode, IconFileText, IconX } from '@tabler/icons-react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { highlight } from 'sugar-high';
 import { COPY_PAGE_LABEL, CopyButton } from '../components/CopyButton';
@@ -7,7 +7,7 @@ import { ChartContextBar } from '../components/Switchers';
 import { chartEntries, chartGroups, ChartEntry } from '../catalog/registry';
 import { BRAND } from '../config';
 import { codeSettings, componentExamples, componentsIndexMarkdown, exampleCode } from '../content/components';
-import { componentPath } from '../content/routes';
+import { componentPath, playgroundPath } from '../content/routes';
 import { useDocumentTitle } from '../router';
 import { useSiteSettings } from '../state';
 import { ChartPreview, isWidePreview } from '../components/ChartPreview';
@@ -43,6 +43,20 @@ const Card = ({ entry, open, onToggle }: { entry: ChartEntry; open: boolean; onT
         </h3>
         <code className="index-card__export">{String(entry.exportName)}</code>
         <div className="index-card__row">
+          <div className="index-card__actions">
+            <a className="button button--small" href={componentPath(entry.id)} aria-label={`${entry.name} docs`}>
+              <IconFileText size={15} stroke={1.75} aria-hidden />
+              Docs
+            </a>
+            <a
+              className="button button--small"
+              href={playgroundPath(entry.id, usage.variantId)}
+              aria-label={`${entry.name} playground`}
+            >
+              <IconAdjustments size={15} stroke={1.75} aria-hidden />
+              Playground
+            </a>
+          </div>
           <div className="index-card__actions">
             <button
               type="button"
