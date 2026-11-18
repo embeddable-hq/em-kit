@@ -1,5 +1,5 @@
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
-import { ReactNode, useEffect, useId, useRef, useState } from 'react';
+import { ReactNode, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { docsNav, flatNav, NavLink } from '../content/nav';
 
 /** What the skip link jumps to: the page's content column, focusable so the next Tab starts inside it. */
@@ -43,11 +43,19 @@ const SidebarLink = ({ link, route, onNavigate }: { link: NavLink; route: string
   </li>
 );
 
+// The box that scrolls the sidebar, named by its data-sidebar-scroll attribute.
+const sidebarScroller = (root: HTMLElement | null) => root?.closest<HTMLElement>('[data-sidebar-scroll]') ?? null;
+
+// Where each sidebar box was scrolled to, kept across page changes: every page
+// mounts a sidebar of its own (App.tsx keys pages by route), which would
+// otherwise start at the top and then jump to the page's link.
+const scrollPositions = new Map<string, number>();
+
 // Brings the current page into view inside whichever box scrolls the sidebar,
 // without moving the page itself.
 const scrollCurrentIntoView = (root: HTMLElement | null) => {
   const link = root?.querySelector<HTMLElement>('[aria-current="page"]');
-  const scroller = link?.closest<HTMLElement>('[data-sidebar-scroll]');
+  const scroller = sidebarScroller(root);
   if (!root || !link || !scroller) return;
   const box = scroller.getBoundingClientRect();
   const within = (el: Element) => el.getBoundingClientRect().top - box.top + scroller.scrollTop;
@@ -68,7 +76,19 @@ const scrollCurrentIntoView = (root: HTMLElement | null) => {
 export const Sidebar = ({ route, onNavigate }: { route: string; onNavigate?: () => void }) => {
   const ref = useRef<HTMLElement>(null);
   const ids = useId();
-  useEffect(() => scrollCurrentIntoView(ref.current), [route]);
+  // Both before the first paint, so the sidebar is never seen at the top and then moved.
+  useLayoutEffect(() => {
+    const scroller = sidebarScroller(ref.current);
+    if (!scroller) return;
+    const name = scroller.dataset.sidebarScroll ?? '';
+    scroller.scrollTop = scrollPositions.get(name) ?? 0;
+    const remember = () => scrollPositions.set(name, scroller.scrollTop);
+    scroller.addEventListener('scroll', remember, { passive: true });
+    return () => scroller.removeEventListener('scroll', remember);
+  }, []);
+  // Then, only when the page's link is out of view (a link in the page, search, or
+  // a pager link led here), scroll to it: a click in the sidebar leaves it where it is.
+  useLayoutEffect(() => scrollCurrentIntoView(ref.current), [route]);
   return (
     <nav className="docs-sidebar__nav" aria-label="Documentation" ref={ref}>
       {docsNav.map((section) => {
@@ -156,7 +176,7 @@ export const DocsLayout = ({ route, toc, children }: { route: string; toc: TocIt
 
   return (
     <div className="docs-layout container container--wide">
-      <aside className="docs-sidebar" data-sidebar-scroll>
+      <aside className="docs-sidebar" data-sidebar-scroll="page">
         <Sidebar route={route} />
       </aside>
       <div className="docs-main">
