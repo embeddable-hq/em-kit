@@ -136,6 +136,7 @@ describe('guide structure', () => {
       'tables',
       'theming',
       'localisation',
+      'card-menu',
       'accessibility',
       'ai',
       'charts-from-a-model',

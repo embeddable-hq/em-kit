@@ -2,6 +2,8 @@
 export { ChartsProvider, type ChartsProviderProps } from './ChartsProvider';
 export type { Theme } from './generated/theme/theme.types';
 export { remarkableTheme as defaultTheme } from './generated/theme/theme.constants';
+// An entry in a card's menu: theme.defaults.chartMenuOptions is a list of these.
+export type { ChartCardMenuOption } from './generated/theme/defaults/defaults.ChartCardMenu.constants';
 
 // AI chat: serializable specs in, charts out
 export { ChartFromSpec, type ChartFromSpecProps } from './ChartFromSpec';

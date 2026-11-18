@@ -54,9 +54,9 @@ const literals = (type: string) => {
   return (values.includes('csv') ? [...values, 'export', 'download'] : values).join(' ');
 };
 
-// What a visitor types for the card's export menu. The section that explains it
+// What a visitor types for the card's export menu. The guide that explains it
 // leads for these words, ahead of every prop whose type happens to list the formats.
-const CARD_MENU_PATH = '/docs/accessibility#card';
+const CARD_MENU_PATH = '/docs/card-menu';
 const cardMenuWords = new Set(['export', 'csv', 'excel', 'xlsx', 'png', 'download']);
 
 const suggestedPaths = ['/docs/quick-start', '/docs/components', '/docs/describing-your-data', '/docs/theming', '/examples', '/examples/ai-chat'];
@@ -145,7 +145,7 @@ export const searchDocs = (query: string): SearchItem[] => {
     .map((item) => ({ item, score: scoreItem(item, words, whole) }))
     .filter((x): x is { item: SearchItem; score: number } => x.score !== null)
     .sort((a, b) => b.score - a.score);
-  // The card-menu section comes first for the words that name its export formats.
+  // The card menu guide comes first for the words that name its export formats.
   if (words.length === 1 && cardMenuWords.has(words[0]!)) {
     const menu = index.find((i) => i.path === CARD_MENU_PATH);
     const top = scored[0]?.score ?? 0;

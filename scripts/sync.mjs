@@ -359,6 +359,15 @@ const SOURCES = [
         to: "triggerComponent={\n        isLoading ? (\n          <ChartCardLoading />\n        ) : (\n          <ActionIcon\n            icon={IconDotsVertical}\n            aria-label={\n              props.title\n                ? i18n.t('charts.menuLabel', { title: props.title })\n                : i18n.t('charts.menuLabelUntitled')\n            }\n          />\n        )\n      }",
         why: 'the menu button needs an accessible name; remove once remarkable-pro names it',
       },
+      // A menu entry whose onClick threw (rather than returning a rejected
+      // promise) never reached .finally, so the spinner stayed in place of the
+      // ⋮ button until the page was reloaded. The error itself still surfaces.
+      {
+        file: 'components/charts/shared/ChartCard/ChartCardMenuPro/ChartCardMenuPro.tsx',
+        from: '    setTimeout(() => {\n      Promise.resolve(onClick()).finally(() => setIsLoading(false));\n    }, 100);\n',
+        to: '    setTimeout(async () => {\n      try {\n        await onClick();\n      } finally {\n        setIsLoading(false);\n      }\n    }, 100);\n',
+        why: 'the menu comes back after an entry throws; remove once remarkable-pro clears the spinner',
+      },
       {
         file: 'components/charts/shared/ChartCard/ChartCard.tsx',
         from: '  const [showMaximizedDialog, setShowMaximizedDialog] = useState(false);\n',
