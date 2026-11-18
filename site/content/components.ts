@@ -1,6 +1,5 @@
 import { componentDefaults } from '../../src/componentDefaults.generated';
 // From its own module: the package's index would bring in every component.
-import { TABLE_SCROLLABLE_SIZE } from '../../src/generated/components/charts/tables/TableScrollable/TableScrollable.utils';
 import { buildChart, ChartRuntime, ChartSettings } from '../catalog/build';
 import {
   COMMON_FIELD_OPTIONS,
@@ -14,7 +13,7 @@ import {
 import { codeDefaults, ignoredProps, propNote } from '../catalog/propNotes';
 import { ChartEntry, chartEntries, chartGroups, DataState } from '../catalog/registry';
 import { DEFAULT_THEME_ID } from '../catalog/themes';
-import { installCommand, installMarkdown, packageManagers } from '../components/InstallCommand';
+import { installMarkdown } from '../components/InstallCommand';
 import { BRAND } from '../config';
 import { componentFieldOptions, componentProps, PropDoc, typeDefinitions } from '../generated/props';
 import { MEASURE_VALUE_UNSET, MEASURE_VALUES_HANDLERS, TIME_RANGE_NOTE } from './clickPayloads';
@@ -110,8 +109,6 @@ export const requiredProps = (entry: ChartEntry): string[] =>
   propsOf(entry)
     .filter((p) => p.required)
     .map((p) => p.name);
-
-const has = (props: PropDoc[], name: string) => props.some((p) => p.name === name);
 
 // "Bar chart · monthly columns" on the gallery card reads as "Monthly columns"
 // under the Bar chart page's own heading.
@@ -567,28 +564,6 @@ export const statesNote = (entry: ChartEntry) =>
     ? 'The select draws its own states from `results`: a spinner while `isLoading` is true, and “No options found” when `data` is `[]` or `error` is set. Pass your query’s state straight through.'
     : `The ${nounOf(entry)} draws its own states from \`results\`: a skeleton while \`isLoading\` is true and it has no rows, a spinner in the header while it reloads rows it already has, an empty state when \`data\` is \`[]\`, and the message when \`error\` is set. Pass your query’s state straight through.`;
 
-// A time dimension with a granularity is read from the row key
-// `name.<granularity>` rather than `name` when it is one of these props
-// (`getDimensionFieldName` upstream). On the x-axis it is always `name`.
-const granularityKeyed: Record<string, string[]> = {
-  BarChartGrouped: ['groupBy'],
-  BarChartGroupedHorizontal: ['groupBy'],
-  BarChartStacked: ['groupBy'],
-  BarChartStackedHorizontal: ['groupBy'],
-  ScatterChart: ['pointDimension', 'groupByDimension'],
-  BubbleChart: ['pointDimension', 'groupByDimension'],
-};
-
-/** The dimension props whose time values this component reads from `name.<granularity>`. */
-export const granularityKeyProps = (entry: ChartEntry): string[] => granularityKeyed[exportOf(entry)] ?? [];
-
-/** The row-key rule for those props, as a condition; empty for a component that has none. */
-export const granularityKeyNote = (entry: ChartEntry): string => {
-  const props = granularityKeyProps(entry);
-  if (!props.length) return '';
-  return `If a time field with a \`granularity\` is passed as ${list(props.map(code), 'or')}, its values are read from the row key \`name.<granularity>\` (for example \`created_at.month\`), not \`name\`.`;
-};
-
 // ---------------------------------------------------------------------------
 // Siblings: where one family's components name their main props differently
 // ---------------------------------------------------------------------------
@@ -809,151 +784,3 @@ export const componentsIndexMarkdown = () =>
       ];
     }),
   ].join('\n\n');
-
-// ---------------------------------------------------------------------------
-// Prompt
-// ---------------------------------------------------------------------------
-
-// The time rules a chart holds rows to (/docs/time-series#time-values): a row
-// is matched to its period by its exact start, so a mid-period or month-end
-// value is dropped. A table or card only formats the value.
-const timeValuesStep = (noun: 'chart' | 'card' | 'table') =>
-  noun === 'chart'
-    ? 'Time values are ISO strings with no time zone, each the start of its period: `2026-01-01T00:00:00.000` for January at `month`, the Monday for `week`. Rows at any other time are dropped. The time field’s `granularity` must match how my rows are bucketed: it labels the axis and fills periods with no row.'
-    : 'Time values are ISO strings with no time zone, such as `2026-01-01T00:00:00.000`. The time field’s `granularity` sets how the dates are written.';
-
-// A KPI card reads one number from one row (`results.data[0][measure.name]`
-// upstream), and the comparison card only draws the change once it has
-// `comparisonDateRange`, which `setComparisonDateRange` can work out for you.
-const kpiSteps = (entry: ChartEntry): string[] => {
-  const name = exportOf(entry);
-  if (name === 'KpiNumber') {
-    return ['   - The card reads only the first row: `results.data[0][measure.name]`. Pass one row holding the total, not one row per period.'];
-  }
-  if (name === 'KpiNumberComparison') {
-    return [
-      '   - The card reads only the first row of each result: `results.data[0][measure.name]` and `resultsComparison.data[0][measure.name]`. Pass one row holding each period’s total.',
-      '   - The change only shows with `comparisonDateRange` set. To have the card work out that range, pass `primaryDateRange`, `comparisonPeriod` and `setComparisonDateRange`: it calls the setter with the comparison dates, so keep them in state, pass them back as `comparisonDateRange` and query `resultsComparison` for them.',
-    ];
-  }
-  return [];
-};
-
-// A self-contained instruction for a coding agent: the code, the contract it
-// must keep, and what not to rebuild. The steps are worded from the code they
-// sit beside and from the component's own props, so neither can disagree with
-// the prompt: if the code already has the provider or a sized wrapper, the
-// prompt says so instead of asking for another, and it only names a legend,
-// tooltips, paging or time values for a component that has them.
-export const componentPrompt = (entry: ChartEntry, source: string, exampleName?: string) => {
-  const name = exportOf(entry);
-  const props = propsOf(entry);
-  const noun = nounOf(entry);
-  const hasProvider = source.includes('<ChartsProvider');
-  const hasHeight = /height/i.test(source);
-  const grows = source.includes('heightMode="auto"');
-  const hasTime = /granularity|type: 'time'/.test(source);
-  const what = exampleName && exampleName !== entry.name ? `${entry.name} (${exampleName.toLowerCase()})` : entry.name;
-  const others = packageManagers
-    .filter((m) => m !== 'npm')
-    .map((m) => code(installCommand(m)))
-    .join(', ');
-
-  // A control holds a value and draws nothing from it: the steps are about
-  // where the value goes, not about rows, heights or exports.
-  if (noun === 'control') {
-    const rows = has(props, 'results');
-    const required = requiredProps(entry);
-    return [
-      `Add a ${what} to my React app with the \`<${name} />\` component from the \`${pkg}\` package.`,
-      '',
-      `1. Install the package if it is missing: \`${installCommand('npm')}\` (or ${others}). ${PEER_NOTE}`,
-      '2. Start from this code:',
-      '',
-      fence(source),
-      '',
-      '3. Fit it into my app:',
-      '   - Keep the value in my own state, as the code does with `useState`, or lift it to wherever my queries are built. The control does not filter anything itself: put the value into my query, and pass the rows that come back to my charts as `results`.',
-      ...(rows
-        ? ['   - Replace the sample rows with one row per option from my own data layer, as `results`: `{ isLoading, error, data: rows }`. Each row holds the `dimension` value.']
-        : []),
-      hasProvider
-        ? '   - The code includes `<ChartsProvider>`. It is needed once, around the app or the part with charts and controls: if my app already has one, remove it from this code; if not, move it up to the app root.'
-        : `   - Controls need \`<ChartsProvider>\` (from \`${pkg}\`) around the app, once. Add it if my app has none.`,
-      '   - The control is as wide as its parent and needs no height: the wrapper in the code only sets the width of the example.',
-      `   - In the Next.js App Router, every file that renders the provider or this control starts with \`'use client'\`.`,
-      required.length
-        ? `4. Required props: ${list(required.map(code))}. Every other prop is optional.`
-        : '4. No prop is required.',
-      `5. Do not rebuild what the control already does: ${list([
-        ...(rows ? ['search', 'the loading and no-options states'] : []),
-        ...(hasTime || /Date|Period/.test(name) ? ['date arithmetic for presets, in the provider’s time zone'] : []),
-        'keyboard handling',
-        'translations',
-      ])}.`,
-      '',
-      `Full reference (every prop, more examples): ${BRAND.url}${componentPath(entry.id)}.md`,
-    ].join('\n');
-  }
-
-  // A table that pages is controlled: these are optional in its types, and it
-  // cannot page, sort or download without them.
-  const paging = ['state', 'setState', 'totalResults', 'allResults'].filter((prop) => has(props, prop));
-  const paged = has(props, 'state');
-  const keyNote = granularityKeyNote(entry);
-
-  const builtIn = [
-    noun === 'card' ? 'number formatting' : 'number and date formatting',
-    ...(noun === 'chart' ? ['colours'] : []),
-    ...(has(props, 'showTooltips') ? ['tooltips'] : []),
-    ...(has(props, 'showLegend') ? ['the legend'] : []),
-    ...(has(props, 'resultsComparison') && noun === 'card' ? ['the change against the comparison and its colour'] : []),
-    ...(paged ? ['the sort and paging controls'] : []),
-    'loading, empty and error states',
-    'export',
-    'translations',
-  ];
-
-  return [
-    `Add a ${what} to my React app with the \`<${name} />\` component from the \`${pkg}\` package.`,
-    '',
-    `1. Install the package if it is missing: \`${installCommand('npm')}\` (or ${others}). ${PEER_NOTE}`,
-    '2. Start from this code:',
-    '',
-    fence(source),
-    '',
-    '3. Fit it into my app:',
-    '   - Replace the sample rows with rows from my own data layer. Rows are plain objects, and each key must match a field’s `name`.',
-    hasProvider
-      ? '   - The code includes `<ChartsProvider>`. It is needed once, around the app or the part with charts: if my app already has one, remove it from this code; if not, move it up to the app root.'
-      : `   - Charts need \`<ChartsProvider>\` (from \`${pkg}\`) around the app, or the part with charts, once. Add it if my app has none.`,
-    grows
-      ? `   - With \`heightMode="auto"\` the ${noun} grows to fit its rows, so it needs no height from its parent.`
-      : hasHeight
-        ? `   - The ${noun} fills its parent. Keep the wrapper’s height, or put the ${noun} in an element that already has one.`
-        : `   - The ${noun} fills its parent, so render it inside an element with a height, for example \`<div style={{ height: 360 }}>\`.`,
-    `   - Pass my query’s state as \`results\`: \`{ isLoading, error, data: rows }\`. The ${noun} draws its own loading, empty and error states.`,
-    ...kpiSteps(entry),
-    ...(paged
-      ? [
-          `   - The table is controlled. Keep \`state\` in \`useState\` and build my query from it: ${
-            has(props, 'totalResults')
-              ? '`state.page`, `state.pageSize` (the table sets it to the rows that fit) and `state.sort`. Pass the row count across all pages as `totalResults`.'
-              : `\`state.page\` and \`state.sort\`. Serve ${TABLE_SCROLLABLE_SIZE} rows a page; a shorter page ends the scroll.`
-          }`,
-          '   - Pass every row, unpaged, as `allResults`: the CSV and Excel downloads in the card menu wait for it, and never finish without it. `state.isLoadingDownloadData` turns `true` when a reader asks for one, if I would rather fetch only then.',
-        ]
-      : []),
-    ...(hasTime ? [`   - ${timeValuesStep(noun)}`] : []),
-    ...(keyNote ? [`   - ${keyNote}`] : []),
-    `   - In the Next.js App Router, every file that renders the provider or this ${noun} starts with \`'use client'\`, and the provider pins the locale, \`theme={{ formatter: { locale: 'en-US' } }}\` (or the reader’s locale from the request), so the server and the browser format numbers alike.${
-      name === 'HeatMap' ? ` ${HEAT_MAP_NEXT_NOTE}` : ''
-    }`,
-    paging.length
-      ? `4. The types require ${list(requiredProps(entry).map(code))}. To page, sort and download, the table also needs ${list(paging.map(code))}, as in the code. Every other prop is optional.`
-      : `4. Required props: ${list(requiredProps(entry).map(code))}. Every other prop is optional.`,
-    `5. Do not rebuild what the component already does: ${list(builtIn)}. Formatting is set on each field’s \`inputs\` (\`prefix\`, \`suffix\`, \`decimalPlaces\`, \`currency\`).`,
-    '',
-    `Full reference (every prop, field options, more examples): ${BRAND.url}${componentPath(entry.id)}.md`,
-  ].join('\n');
-};

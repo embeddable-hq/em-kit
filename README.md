@@ -38,7 +38,7 @@ Docs pages are data, not JSX, so one source renders the page, its "On this page"
 | Path | What |
 |---|---|
 | `site/docs/guides.ts` | Every guide page as blocks (headings, Markdown prose, code, live demos), including "Why EmKit" and its comparison with a raw chart library. |
-| `site/docs/components.ts` | Per component, derived from the registry and generated props: its examples (presets, an "Other" bucket where supported, loading/empty/error), what it does for you, its Markdown and its "Copy prompt" text for AI coding assistants. |
+| `site/docs/components.ts` | Per component, derived from the registry and generated props: its examples (presets, an "Other" bucket where supported, loading/empty/error), what it does for you, and its Markdown. |
 | `site/docs/nav.ts` | The sidebar and the ⌘K search index. |
 | `site/pages/DocPage.tsx`, `ComponentDocPage.tsx`, `ComponentsIndex.tsx` | The guide, component and components-index pages. |
 

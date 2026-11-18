@@ -261,9 +261,10 @@ describe('use with AI', () => {
   const markdown = guideMarkdown(guideOf('ai'));
 
   it('names the endpoints that exist and gives one copyable block per assistant', () => {
-    for (const text of [`${BRAND.url}/llms.txt`, `${BRAND.url}/llms-full.txt`, '.md', 'Copy page as Markdown', 'Copy prompt']) {
+    for (const text of [`${BRAND.url}/llms.txt`, `${BRAND.url}/llms-full.txt`, '.md', 'Copy page as Markdown']) {
       expect(markdown).toContain(text);
     }
+    expect(markdown).not.toContain('Copy prompt');
     expect(h2s(guideOf('ai')).map((h) => h.h2)).toEqual(expect.arrayContaining(['Claude Code', 'Cursor', 'ChatGPT']));
     expect(guideOf('ai').blocks.filter((b) => 'code' in b)).toHaveLength(3);
   });

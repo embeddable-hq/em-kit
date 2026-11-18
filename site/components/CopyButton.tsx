@@ -1,23 +1,22 @@
-import { IconCheck, IconCopy, IconMarkdown, IconSparkles } from '@tabler/icons-react';
+import { IconCheck, IconCopy, IconMarkdown } from '@tabler/icons-react';
 import { useState } from 'react';
 
-type CopyKind = 'code' | 'prompt' | 'markdown';
+type CopyKind = 'code' | 'markdown';
 
-const icons = { code: IconCopy, prompt: IconSparkles, markdown: IconMarkdown };
+const icons = { code: IconCopy, markdown: IconMarkdown };
 
 // What each kind is for, said once the text is on the clipboard: a visitor who
 // did not know what "as Markdown" was for learns it at the moment it is useful.
 const copiedLabels: Record<CopyKind, string> = {
   code: 'Copied',
   markdown: 'Copied: paste it into an AI assistant',
-  prompt: 'Copied: paste it into your coding assistant',
 };
 
 /** The label of every button that copies a page of the docs as Markdown. */
 export const COPY_PAGE_LABEL = 'Copy page as Markdown';
 
-// A button that copies text produced on click (so large Markdown or prompts
-// are only built when asked for), and says so for a moment.
+// A button that copies text produced on click (so a page's Markdown is only
+// built when asked for), and says so for a moment.
 export const CopyButton = ({
   getText,
   label,

@@ -16,7 +16,6 @@ import { BRAND } from '../site/config';
 import {
   componentExamples,
   componentPageMarkdown,
-  componentPrompt,
   componentsIndexMarkdown,
   exampleCode,
   exampleView,
@@ -75,7 +74,9 @@ describe('component page', () => {
     const header = article.querySelector('[data-section="header"]')!;
     expect(header.querySelector('h1')!.textContent).toBe(entry.name);
     expect(header.querySelector('.lede')!.textContent!.split(/[.!?]\s/).length).toBe(1);
-    for (const label of ['Copy page as Markdown', 'Copy prompt', 'Open in playground']) expect(count(html, label)).toBe(1);
+    for (const label of ['Copy page as Markdown', 'Open in playground']) expect(count(html, label)).toBe(1);
+    // Removed on 18 Nov 2026 (site/STANDARDS.md, "Known and out of scope").
+    expect(html).not.toContain('Copy prompt');
     expect(header.querySelector(`a[href="${playgroundPath(entry.id)}"]`)).not.toBeNull();
 
     // Preview: the states are a switch on the chart, not sections of their own.
@@ -317,45 +318,6 @@ describe('component Markdown', () => {
     // Nothing to say where the whole family agrees.
     expect(note('kpi')).toBe('');
     expect(note('funnel')).toBe('');
-  });
-});
-
-describe('component prompt', () => {
-  it.each(each)('%s agrees with the code it carries', (_, entry) => {
-    const code = exampleCode(entry, componentExamples(entry)[0]!, base);
-    const prompt = componentPrompt(entry, code);
-
-    expect(prompt).toContain(code);
-    expect(prompt).toContain(`npm install ${BRAND.packageName}`);
-    expect(prompt).toContain(`pnpm add ${BRAND.packageName}`);
-    expect(prompt).toContain(`${BRAND.url}${componentPath(entry.id)}.md`);
-    for (const prop of requiredProps(entry)) expect(prompt).toContain(`\`${prop}\``);
-
-    // One instruction about the provider, matching whether the code has it.
-    expect(prompt).not.toContain('Skip this if it is already there');
-    expect(count(prompt.replace(code, ''), 'ChartsProvider')).toBe(1);
-    expect(prompt.includes('The code includes `<ChartsProvider>`')).toBe(code.includes('<ChartsProvider'));
-    // And one about height, matching whether the code has a sized wrapper. A control sizes itself.
-    if (entry.group === 'Controls') {
-      expect(prompt).toContain('needs no height');
-      return;
-    }
-    expect(prompt.includes('Keep the wrapper’s height')).toBe(/height/i.test(code));
-    expect(prompt.includes('render it inside an element with a height')).toBe(!/height/i.test(code));
-  });
-
-  it('words the steps from the code, either way', () => {
-    const entry = chartEntries[0]!;
-    const bare = componentPrompt(entry, '<KpiNumber measure={revenue} results={results(rows)} />');
-    expect(bare).toContain('Add it if my app has none');
-    expect(bare).toContain('render it inside an element with a height');
-    const complete = componentPrompt(
-      entry,
-      '<ChartsProvider><div style={{ height: 160 }}><KpiNumber measure={revenue} results={results(rows)} /></div></ChartsProvider>',
-    );
-    expect(complete).toContain('The code includes `<ChartsProvider>`');
-    expect(complete).toContain('Keep the wrapper’s height');
-    expect(complete).not.toContain('Add it if my app has none');
   });
 });
 

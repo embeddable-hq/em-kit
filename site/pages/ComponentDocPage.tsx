@@ -21,7 +21,6 @@ import {
   ComponentExample,
   componentExamples,
   componentPageMarkdown,
-  componentPrompt,
   dataStates,
   DEFAULTS_LEGEND,
   exampleText,
@@ -397,12 +396,6 @@ export const ComponentDocPage = ({ entry, route }: { entry: ChartEntry; route: s
               label={COPY_PAGE_LABEL}
               getText={() => componentPageMarkdown(entry)}
               title="Copies this page (examples, props and all) as Markdown text, to paste into an AI assistant such as Claude or ChatGPT"
-            />
-            <CopyButton
-              kind="prompt"
-              label="Copy prompt"
-              title="Copy instructions for an AI coding assistant to add this chart to your app"
-              getText={() => componentPrompt(entry, usageCode)}
             />
             <a className="button button--small" href={playgroundPath(entry.id)}>
               <IconAdjustments size={15} stroke={1.75} aria-hidden />

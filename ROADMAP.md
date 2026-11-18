@@ -49,7 +49,7 @@ The takeaways from the Bklit review:
 
 - [x] **One page per component** (`/docs/components/<id>`): live preview, install, what it does for you (derived from its props), examples, a props table with builder defaults, field options. The shadcn install tab waits for Phase 3.
 - [x] **Named examples on every component page**, each with Preview/Code tabs and an "On this page" entry: 53 presets across the 25 components (1–5 each, beyond the default), each showing a real option (compact numbers, axis ranges, totals, percentages, “Other” buckets, colour scales, thresholds, auto height…), translated de/fr; plus an automatic "Other" example where `xAxisMaxItems` exists, and loading/empty/error. Docs-only presets (`docsOnly`) stay out of the gallery so it remains one screen per group.
-- [x] **"Copy prompt"** on every example and component (code, data contract, and what not to rebuild), and **"Copy Markdown"** on every docs page.
+- [x] **"Copy Markdown"** on every docs page. ("Copy prompt" shipped with it and was removed on 18 Nov 2026: it was not clear what it was for.)
 - [x] **Docs split into pages** (Getting started / Guides / Components) with ⌘K search, path routing and per-page titles.
 - [x] **Sell the benefits:** a "Why EmKit" page (the same card on react-chartjs-2 vs here, and a 12-row comparison of what a chart library leaves to you), the same side-by-side on the landing page, and a "What it does for you" list on every component page.
 - [ ] **Hosting (Phase 5):** deploy on emkit.embeddable.com with an SPA fallback. For search engines, prerender each route to static HTML and add per-page meta descriptions and OG images; per-page titles are done.

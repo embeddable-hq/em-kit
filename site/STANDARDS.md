@@ -103,8 +103,8 @@ fail. 10 means every check passes and nothing on the page gets in the way;
 - Examples show one feature each, in 10 to 25 lines, ordered basic to advanced.
   [Mantine. Avoid: Mantine's 40 flat sections, Tremor's 300-line dumps]
 - Prose is one to three sentences per section. [MUI, Mantine]
-- "Copy page as Markdown" and "Copy prompt" on every page, once. [Bklit, shadcn,
-  Mantine "LLM documentation"]
+- "Copy page as Markdown" on every page, once. [Bklit, shadcn, Mantine "LLM
+  documentation"]
 - Previous and next links at the foot, and an "On this page" list. [shadcn,
   Bklit, Chakra]
 - Accessibility (keyboard, screen reader) is documented where it applies.
@@ -168,8 +168,6 @@ Tested with `curl`, no JavaScript.
 - A "Use with AI" page tells a developer how to point Claude Code, Cursor and
   ChatGPT at the docs, in one command or link each. [shadcn MCP page, Chakra
   "AI tip", Stripe]
-- "Copy prompt" gives an agent everything it needs to add the component:
-  install, provider, code and the props that matter. [Bklit "Open in v0"]
 - A check in the test suite fetches or builds every `.md` URL and every
   `llms.txt` link, so they cannot go stale. [Avoid: MUI]
 - Nice to have: an MCP server, a shadcn-style registry. Not scored yet; both
@@ -212,6 +210,11 @@ Tested with `curl`, no JavaScript.
   score is not final while the audit reports a finding.
 
 ## Known and out of scope
+
+- There is no "Copy prompt" button. It was on every component page until 18
+  November 2026 and was removed after the owner's review: it was not clear what
+  it was for. "Copy page as Markdown" is the one way to hand a page to an
+  agent. Do not mark its absence down, and do not add it back.
 
 - The npm package name in code samples is `em-kit`, not yet published. The display
   name is EmKit. Do not mark this down.
