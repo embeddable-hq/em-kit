@@ -7546,5 +7546,414 @@ export const componentProps: Record<string, PropDoc[]> = {
       "type": "(\"csv\" | \"xlsx\" | \"png\" | \"maximize\")[]",
       "required": false
     }
+  ],
+  "ComparisonPeriodSelect": [
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "primaryDateRange",
+      "type": "TimeRange",
+      "required": false
+    },
+    {
+      "name": "comparisonPeriod",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(newComparisonPeriod: string | undefined) => void",
+      "required": true
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "GranularitySelect": [
+    {
+      "name": "onChange",
+      "type": "(newGranularity: Granularity) => void",
+      "required": true
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "primaryTimeRange",
+      "type": "TimeRange",
+      "required": false
+    },
+    {
+      "name": "granularity",
+      "type": "Granularity",
+      "required": false
+    },
+    {
+      "name": "granularities",
+      "type": "Granularity[]",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "MultiSelect": [
+    {
+      "name": "dimension",
+      "type": "Dimension",
+      "required": true
+    },
+    {
+      "name": "optionalSecondDimension",
+      "type": "Dimension",
+      "required": false
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "results",
+      "type": "DataResponse",
+      "required": true
+    },
+    {
+      "name": "selectedValues",
+      "type": "string[]",
+      "required": false
+    },
+    {
+      "name": "maxOptions",
+      "type": "number",
+      "required": false
+    },
+    {
+      "name": "showSelectAll",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "autoApply",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "setSearchValue",
+      "type": "(search: string) => void",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(newValues: string[]) => void",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "SingleSelect": [
+    {
+      "name": "dimension",
+      "type": "Dimension",
+      "required": true
+    },
+    {
+      "name": "optionalSecondDimension",
+      "type": "Dimension",
+      "required": false
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "results",
+      "type": "DataResponse",
+      "required": true
+    },
+    {
+      "name": "selectedValue",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "maxOptions",
+      "type": "number",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "setSearchValue",
+      "type": "(search: string) => void",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(selectedValue: string | undefined) => void",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "TextField": [
+    {
+      "name": "value",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(value: string) => void",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "DateRangePickerCustom": [
+    {
+      "name": "onChange",
+      "type": "(newDateRange: TimeRange) => void",
+      "required": true
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "selectedValue",
+      "type": "TimeRange",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "showTwoMonths",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "DateRangePicker": [
+    {
+      "name": "onChange",
+      "type": "(newDateRange: TimeRange) => void",
+      "required": true
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "selectedValue",
+      "type": "TimeRange",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "showCustomRangeOptions",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "showTwoMonths",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    }
   ]
 };

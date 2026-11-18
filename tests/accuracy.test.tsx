@@ -284,7 +284,8 @@ describe('a time field’s granularity', () => {
     expect(chartProp.shown).not.toEqual(top.shown.filter((_, i) => i !== 1));
   });
 
-  it.each(each.filter(([, e]) => propsOf(e).some((p) => p.name === 'granularity')))(
+  // The charts that take `granularity` beside a time field; the granularity select's own is its value.
+  it.each(each.filter(([, e]) => e.group !== 'Controls' && propsOf(e).some((p) => p.name === 'granularity')))(
     '%s says which granularity does what',
     (_, entry) => {
       const note = propDescription(propsOf(entry).find((p) => p.name === 'granularity')!, entry);
@@ -618,7 +619,22 @@ describe('notes and the code beside them', () => {
 describe('copy prompt', () => {
   const promptOf = (entry: ChartEntry) => componentPrompt(entry, exampleCode(entry, componentExamples(entry)[0]!, base));
 
-  it.each(each)('%s fits its kind of component', (_, entry) => {
+  const controls = each.filter(([, entry]) => entry.group === 'Controls');
+
+  // A control holds a value and draws nothing from it: its prompt is about
+  // where the value goes, and promises none of a chart's work.
+  it.each(controls)('%s is a control: its prompt is about its value', (_, entry) => {
+    const prompt = promptOf(entry);
+    expect(prompt).toContain('Keep the value in my own state');
+    expect(prompt).toContain('needs no height');
+    expect(prompt).toMatch(/every file that renders the provider or this control starts with `'use client'`/);
+    expect(prompt.includes('one row per option')).toBe(propsOf(entry).some((p) => p.name === 'results'));
+    const steps = prompt.replace(exampleCode(entry, componentExamples(entry)[0]!, base), '');
+    for (const chartWork of ['fills its parent', 'tooltips', 'the legend', 'export', 'colours']) expect(steps).not.toContain(chartWork);
+    expect(prompt).toContain(`${BRAND.url}${componentPath(entry.id)}.md`);
+  });
+
+  it.each(each.filter(([, entry]) => entry.group !== 'Controls'))('%s fits its kind of component', (_, entry) => {
     const prompt = promptOf(entry);
     const props = new Set(propsOf(entry).map((p) => p.name));
     expect(prompt.includes('the legend')).toBe(props.has('showLegend'));
@@ -718,9 +734,20 @@ describe('card menu downloads', () => {
 
   const labels: Record<string, string> = { csv: 'Download CSV', xlsx: 'Download XLSX', png: 'Download PNG' };
 
-  it.each(each)('%s: every download in the default menu finishes', async (_, entry) => {
-    const options = ((buildChart(entry, settings, runtime).props.menuOptions ??
-      (componentDefaults as Record<string, { menuOptions: string[] }>)[nameOf(entry)]!.menuOptions) as string[]).filter((o) => o in labels);
+  // The components with a card menu: every chart and table, and no control.
+  const menus = componentDefaults as unknown as Record<string, { menuOptions?: string[] }>;
+  const withMenu = each.filter(([, entry]) => menus[nameOf(entry)]?.menuOptions);
+
+  it('every chart and table has a card menu', () => {
+    expect(each.filter(([, entry]) => !menus[nameOf(entry)]?.menuOptions).map(([, entry]) => entry.group)).toEqual(
+      each.filter(([, entry]) => entry.group === 'Controls').map(() => 'Controls'),
+    );
+  });
+
+  it.each(withMenu)('%s: every download in the default menu finishes', async (_, entry) => {
+    const options = ((buildChart(entry, settings, runtime).props.menuOptions ?? menus[nameOf(entry)]!.menuOptions) as string[]).filter(
+      (o) => o in labels,
+    );
     const { container, unmount } = mount(<Preview entry={entry} />);
     for (const option of options) {
       downloads.length = 0;

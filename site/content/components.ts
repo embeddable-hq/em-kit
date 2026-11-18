@@ -405,7 +405,9 @@ export const propDefault = (entry: ChartEntry, prop: PropDoc): string => {
   const known =
     prop.name in defaults ? defaults : prop.name in codeDefaults ? codeDefaults : prop.name in pageDefaults ? pageDefaults : undefined;
   if (!known) return '';
-  const value = known[prop.name];
+  // A "key|fallback" default (a control's placeholder) shows as the text it falls back to.
+  const raw = known[prop.name];
+  const value = typeof raw === 'string' && raw.includes('|') ? raw.split('|', 2)[1] : raw;
   return Array.isArray(value) ? `[${value.map((v) => JSON.stringify(v)).join(', ')}]` : JSON.stringify(value);
 };
 
@@ -515,6 +517,8 @@ export const NEXT_LINK = { text: 'The quick start', rest: ' has the Next.js file
 
 /** The one line under a component page's usage code, after the install command: the rest of the setup is on the quick start. */
 export const USAGE_SETUP_LINE = 'Needs `<ChartsProvider>` once and a parent with a height:';
+/** The same line for a control, which sizes itself. */
+export const CONTROL_SETUP_LINE = 'Needs `<ChartsProvider>` once, and your own state for its value:';
 export const USAGE_SETUP_PATH = '/docs/quick-start';
 
 /** The Markdown twin's provider rule for its examples, which each bring their own provider. */
@@ -528,7 +532,8 @@ export const nextNote = (entry: ChartEntry) => (exportOf(entry) === 'HeatMap' ? 
 export const PEER_NOTE = '`react` and `react-dom` 19.1.1 or later are the only peer dependencies; Chart.js installs with the package.';
 
 /** What a reader would call the thing a component draws: a KPI is a card, not a chart. */
-export const nounOf = (entry: ChartEntry): 'chart' | 'card' | 'table' => {
+export const nounOf = (entry: ChartEntry): 'chart' | 'card' | 'table' | 'control' => {
+  if (entry.group === 'Controls') return 'control';
   if (entry.group === 'KPIs') return 'card';
   return /^(Table|Pivot)/.test(exportOf(entry)) ? 'table' : 'chart';
 };
@@ -544,6 +549,7 @@ export const sizingNote = (entry: ChartEntry): string => {
     return 'The table fills its parent and scrolls inside it, so the parent needs a height, unless `heightMode="auto"` lets the card grow to fit its rows.';
   }
   if (noun === 'card') return 'The card fills its parent, so the parent needs a height; the number scales to fit.';
+  if (noun === 'control') return 'A control is as wide as its parent and as tall as its title and field, so it needs no height.';
   return `${noun === 'table' ? 'The table' : 'A chart'} fills its parent, so the parent needs a height.`;
 };
 
@@ -553,8 +559,13 @@ export const sizingNote = (entry: ChartEntry): string => {
  * (\`isLoading && !hasData\` in ChartCard upstream); with rows, it keeps them
  * and shows a spinner in its header. tests/accuracy.test.tsx renders each state.
  */
+/** Whether the component takes rows, and so has a loading, an empty and an error state. A date picker or a text field does not. */
+export const takesResults = (entry: ChartEntry) => propsOf(entry).some((p) => p.name === 'results');
+
 export const statesNote = (entry: ChartEntry) =>
-  `The ${nounOf(entry)} draws its own states from \`results\`: a skeleton while \`isLoading\` is true and it has no rows, a spinner in the header while it reloads rows it already has, an empty state when \`data\` is \`[]\`, and the message when \`error\` is set. Pass your query’s state straight through.`;
+  nounOf(entry) === 'control'
+    ? 'The select draws its own states from `results`: a spinner while `isLoading` is true, and “No options found” when `data` is `[]` or `error` is set. Pass your query’s state straight through.'
+    : `The ${nounOf(entry)} draws its own states from \`results\`: a skeleton while \`isLoading\` is true and it has no rows, a spinner in the header while it reloads rows it already has, an empty state when \`data\` is \`[]\`, and the message when \`error\` is set. Pass your query’s state straight through.`;
 
 // A time dimension with a granularity is read from the row key
 // `name.<granularity>` rather than `name` when it is one of these props
@@ -746,8 +757,7 @@ export const componentMarkdown = (entry: ChartEntry, examples: { example: Compon
     '## Usage',
     ...(usage ? [fence(usage.code)] : []),
     ...(notes.length ? [notes.map((n) => `- ${n}`).join('\n')] : []),
-    '## States',
-    statesNote(entry),
+    ...(takesResults(entry) ? ['## States', statesNote(entry)] : []),
     ...(rest.length || writtenExamplesOf(entry).length
       ? [
           '## Examples',
@@ -848,6 +858,43 @@ export const componentPrompt = (entry: ChartEntry, source: string, exampleName?:
     .filter((m) => m !== 'npm')
     .map((m) => code(installCommand(m)))
     .join(', ');
+
+  // A control holds a value and draws nothing from it: the steps are about
+  // where the value goes, not about rows, heights or exports.
+  if (noun === 'control') {
+    const rows = has(props, 'results');
+    const required = requiredProps(entry);
+    return [
+      `Add a ${what} to my React app with the \`<${name} />\` component from the \`${pkg}\` package.`,
+      '',
+      `1. Install the package if it is missing: \`${installCommand('npm')}\` (or ${others}). ${PEER_NOTE}`,
+      '2. Start from this code:',
+      '',
+      fence(source),
+      '',
+      '3. Fit it into my app:',
+      '   - Keep the value in my own state, as the code does with `useState`, or lift it to wherever my queries are built. The control does not filter anything itself: put the value into my query, and pass the rows that come back to my charts as `results`.',
+      ...(rows
+        ? ['   - Replace the sample rows with one row per option from my own data layer, as `results`: `{ isLoading, error, data: rows }`. Each row holds the `dimension` value.']
+        : []),
+      hasProvider
+        ? '   - The code includes `<ChartsProvider>`. It is needed once, around the app or the part with charts and controls: if my app already has one, remove it from this code; if not, move it up to the app root.'
+        : `   - Controls need \`<ChartsProvider>\` (from \`${pkg}\`) around the app, once. Add it if my app has none.`,
+      '   - The control is as wide as its parent and needs no height: the wrapper in the code only sets the width of the example.',
+      `   - In the Next.js App Router, every file that renders the provider or this control starts with \`'use client'\`.`,
+      required.length
+        ? `4. Required props: ${list(required.map(code))}. Every other prop is optional.`
+        : '4. No prop is required.',
+      `5. Do not rebuild what the control already does: ${list([
+        ...(rows ? ['search', 'the loading and no-options states'] : []),
+        ...(hasTime || /Date|Period/.test(name) ? ['date arithmetic for presets, in the provider’s time zone'] : []),
+        'keyboard handling',
+        'translations',
+      ])}.`,
+      '',
+      `Full reference (every prop, more examples): ${BRAND.url}${componentPath(entry.id)}.md`,
+    ].join('\n');
+  }
 
   // A table that pages is controlled: these are optional in its types, and it
   // cannot page, sort or download without them.

@@ -2,9 +2,10 @@ import * as React from 'react';
 import * as jsxRuntime from 'react/jsx-runtime';
 import { renderToString } from 'react-dom/server';
 import ts from 'typescript';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import * as library from '../src';
 import { componentDefaults } from '../src/componentDefaults.generated';
+import { loadDayjsLocale } from '../src/generated/utils/date.utils';
 import { buildChart, ChartRuntime, ChartSettings, cutRows, MAX_PRINTED_ROWS } from '../site/catalog/build';
 import { datasets, Row } from '../site/catalog/datasets';
 import { MAX_WIDTH, WIDTH } from '../site/catalog/format';
@@ -171,6 +172,22 @@ const read = (sample: Sample) => {
     if (!ts.isVariableStatement(node)) return;
     for (const d of node.declarationList.declarations) if (ts.isIdentifier(d.name) && d.initializer) names.set(d.name.text, d.initializer);
   });
+  // And a control's value in state, which reads as what the state starts at.
+  const findState = (node: ts.Node) => {
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isArrayBindingPattern(node.name) &&
+      node.initializer &&
+      ts.isCallExpression(node.initializer) &&
+      node.initializer.expression.getText() === 'useState'
+    ) {
+      const [value] = node.name.elements;
+      const [initial] = node.initializer.arguments;
+      if (value && ts.isBindingElement(value) && initial) names.set(value.name.getText(), initial);
+    }
+    ts.forEachChild(node, findState);
+  };
+  findState(source);
   const visit = (node: ts.Node) => {
     if (ts.isImportDeclaration(node)) imports.push((node.moduleSpecifier as ts.StringLiteral).text);
     if (ts.isJsxSelfClosingElement(node) && node.tagName.getText() === String(sample.entry.exportName)) {
@@ -218,6 +235,8 @@ const translationOf = (strings: Strings | string | undefined, key: string): stri
 };
 
 const previewProps = (sample: Sample) => buildChart(sample.entry, sample.settings, sample.runtime).props;
+// A control that takes no rows (a date picker, a text field) has none to print and no loading, empty or error state.
+const takesResults = (sample: Sample) => 'results' in previewProps(sample);
 const escaped = (text: string) =>
   text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
 const defaultsOf = (sample: Sample) =>
@@ -261,6 +280,10 @@ const run = (sample: Sample) => {
 // ---- The checks --------------------------------------------------------------
 
 describe('generated examples', () => {
+  // The date controls draw once their language's date names are loaded: at
+  // once in English, after a first render in any other language.
+  beforeAll(() => loadDayjsLocale('de'));
+
   it('cover every component, preset and data state', () => {
     expect(samples.length).toBe(chartEntries.reduce((n, entry) => n + componentExamples(entry).length, 0) * dataStates.length);
     expect(new Set(all.map((s) => s.file)).size).toBe(all.length);
@@ -290,7 +313,9 @@ describe('generated examples', () => {
     expect(sample.code).toContain('<ChartsProvider');
     // A chart fills its container, so the container has a height, unless the table sizes itself.
     // A preset about a small card (the funnel's) gives it a width too.
-    expect(/<div style=\{\{ (width: \d+, )?height: \d+ \}\}>/.test(sample.code) || sample.code.includes('heightMode="auto"'), sample.code).toBe(true);
+    // A control sizes itself: its wrapper sets a width and no height.
+    const wrapper = sample.entry.group === 'Controls' ? /<div style=\{\{ width: \d+ \}\}>/ : /<div style=\{\{ (width: \d+, )?height: \d+ \}\}>/;
+    expect(wrapper.test(sample.code) || sample.code.includes('heightMode="auto"'), sample.code).toBe(true);
     const html = run(sample);
     const title = shown(previewProps(sample).title);
     if (typeof title === 'string' && sample.settings.languageId === 'en') expect(html).toContain(escaped(title));
@@ -318,7 +343,7 @@ describe('generated examples', () => {
 
   // What you paste is what you saw: the preview is handed the very rows the
   // code prints, all of them up to MAX_PRINTED_ROWS (site/STANDARDS.md, B).
-  it.each(table(all.filter((s) => s.settings.dataState === 'ready')))('%s prints exactly the rows its preview draws', (_, sample) => {
+  it.each(table(all.filter((s) => s.settings.dataState === 'ready' && takesResults(s))))('%s prints exactly the rows its preview draws', (_, sample) => {
     const { rowSets } = read(sample);
     const props = previewProps(sample);
     const fieldNames = Object.values(props)
@@ -386,7 +411,7 @@ describe('generated examples', () => {
     expect(counts('pivot')).toEqual({ printed: datasets.saas.byCategoryGroup.length, drawn: datasets.saas.byCategoryGroup.length });
   });
 
-  it.each(table(samples.filter((s) => s.settings.dataState !== 'ready')))('%s passes its state in full', (_, sample) => {
+  it.each(table(samples.filter((s) => s.settings.dataState !== 'ready' && takesResults(s))))('%s passes its state in full', (_, sample) => {
     const expected = {
       loading: 'results={{ isLoading: true }}',
       empty: 'results={results([])}',

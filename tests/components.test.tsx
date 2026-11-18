@@ -1,6 +1,7 @@
 import { renderToString } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { ChartsProvider, TableScrollable, dimension, measure, results } from '../src';
+import { loadDayjsLocale } from '../src/generated/utils/date.utils';
 import { buildChart, ChartSettings } from '../site/catalog/build';
 import { datasets } from '../site/catalog/datasets';
 import { getComponent } from '../site/catalog/chartComponents';
@@ -33,6 +34,10 @@ const render = (node: React.ReactElement, languageId: 'en' | 'de' = 'en') =>
   renderToString(<ChartsProvider theme={buildTheme('default', languageId)}>{node}</ChartsProvider>);
 
 const dataStates: DataState[] = ['ready', 'loading', 'empty', 'error'];
+
+// The date controls draw once their language's date names are loaded: at once
+// in English, after a first render in any other language.
+beforeAll(() => loadDayjsLocale('de'));
 
 describe.each(chartEntries.map((entry) => [entry.exportName, entry] as const))('%s', (_, entry) => {
   const Component = getComponent(entry);

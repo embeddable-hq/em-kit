@@ -28,6 +28,13 @@ import type { KpiChartNumberComparisonProProp as KpiNumberComparisonBaseProps } 
 import type { HeatMapProProps as HeatMapBaseProps } from './generated/components/charts/tables/HeatMapPro';
 import type { PivotTableProProps as PivotTableBaseProps } from './generated/components/charts/tables/PivotTablePro';
 import type { TableChartPaginatedProProps as TablePaginatedBaseProps } from './generated/components/charts/tables/TableChartPaginated';
+import type { DateComparisonSelectFieldPro as ComparisonPeriodSelectBaseProps } from './generated/components/editors/ComparisonPeriodSelectFieldPro';
+import type { GranularitySelectFieldProProps as GranularitySelectBaseProps } from './generated/components/editors/GranularitySelectFieldPro';
+import type { MultiSelectFieldProProps as MultiSelectBaseProps } from './generated/components/editors/MultiSelectFieldPro';
+import type { SingleSelectFieldProProps as SingleSelectBaseProps } from './generated/components/editors/SingleSelectFieldPro';
+import type { TextFieldProProps as TextFieldBaseProps } from './generated/components/editors/TextFieldPro';
+import type { DateRangePickerPresetsProps as DateRangePickerCustomBaseProps } from './generated/components/editors/dates/DateRangePickerCustomPro';
+import type { DateRangePickerPresetsProps as DateRangePickerBaseProps } from './generated/components/editors/dates/DateRangePickerPresetsPro';
 
 import BarChartBase from './generated/components/charts/bars/BarChartDefaultPro';
 export type BarChartProps = BarChartBaseProps;
@@ -124,3 +131,31 @@ export const PivotTable = withDefaults(PivotTableBase, componentDefaults.PivotTa
 import TablePaginatedBase from './generated/components/charts/tables/TableChartPaginated';
 export type TablePaginatedProps = TablePaginatedBaseProps;
 export const TablePaginated = withDefaults(TablePaginatedBase, componentDefaults.TablePaginated, 'TablePaginated');
+
+import ComparisonPeriodSelectBase from './generated/components/editors/ComparisonPeriodSelectFieldPro';
+export type ComparisonPeriodSelectProps = ComparisonPeriodSelectBaseProps;
+export const ComparisonPeriodSelect = withDefaults(ComparisonPeriodSelectBase, componentDefaults.ComparisonPeriodSelect, 'ComparisonPeriodSelect');
+
+import GranularitySelectBase from './generated/components/editors/GranularitySelectFieldPro';
+export type GranularitySelectProps = GranularitySelectBaseProps;
+export const GranularitySelect = withDefaults(GranularitySelectBase, componentDefaults.GranularitySelect, 'GranularitySelect');
+
+import MultiSelectBase from './generated/components/editors/MultiSelectFieldPro';
+export type MultiSelectProps = MultiSelectBaseProps;
+export const MultiSelect = withDefaults(MultiSelectBase, componentDefaults.MultiSelect, 'MultiSelect');
+
+import SingleSelectBase from './generated/components/editors/SingleSelectFieldPro';
+export type SingleSelectProps = SingleSelectBaseProps;
+export const SingleSelect = withDefaults(SingleSelectBase, componentDefaults.SingleSelect, 'SingleSelect');
+
+import TextFieldBase from './generated/components/editors/TextFieldPro';
+export type TextFieldProps = TextFieldBaseProps;
+export const TextField = withDefaults(TextFieldBase, componentDefaults.TextField, 'TextField');
+
+import DateRangePickerCustomBase from './generated/components/editors/dates/DateRangePickerCustomPro';
+export type DateRangePickerCustomProps = DateRangePickerCustomBaseProps;
+export const DateRangePickerCustom = withDefaults(DateRangePickerCustomBase, componentDefaults.DateRangePickerCustom, 'DateRangePickerCustom');
+
+import DateRangePickerBase from './generated/components/editors/dates/DateRangePickerPresetsPro';
+export type DateRangePickerProps = DateRangePickerBaseProps;
+export const DateRangePicker = withDefaults(DateRangePickerBase, componentDefaults.DateRangePicker, 'DateRangePicker');

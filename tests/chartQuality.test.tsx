@@ -52,7 +52,8 @@ describe('chart titles', () => {
 
   it('a title names the measure the chart plots', () => {
     for (const ds of datasetList) {
-      for (const entry of chartEntries) {
+      // A control plots nothing: it is titled with what it sets.
+      for (const entry of chartEntries.filter((e) => e.group !== 'Controls')) {
         const { props } = buildChart(entry, settingsFor(ds.id), runtime);
         const measures = Object.values(props)
           .flat()

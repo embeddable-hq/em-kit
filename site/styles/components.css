@@ -33,6 +33,15 @@
   --em-card-shadow-color: transparent;
 }
 
+/* A control draws no card: the frame pads it as a card would, and lets its
+   dropdown out. */
+.chart-canvas.chart-canvas--control,
+.index-card .chart-canvas.chart-canvas--control,
+.playground__canvas.playground__canvas--control {
+  padding: 1.25rem;
+  overflow: visible;
+}
+
 .chart-canvas.is-dark,
 .playground__canvas.is-dark {
   border-color: #27272a;

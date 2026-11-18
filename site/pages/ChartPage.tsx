@@ -261,6 +261,7 @@ const FieldOptionsControls = ({
 const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: string }) => {
   const { themeId, languageId, datasetId } = useSiteSettings();
   const canvas = useCanvas();
+  const isControl = entry.group === 'Controls';
   const [tab, setTab] = useState<Tab>('preview');
   const [dataState, setDataState] = useState<DataState>('ready');
   const [overrides, setOverrides] = useState<Record<string, unknown>>({});
@@ -349,7 +350,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
         {tab === 'preview' && (
           <>
             <div
-              className={`playground__canvas${canvas.dark ? ' is-dark' : ''}`}
+              className={`playground__canvas${canvas.dark ? ' is-dark' : ''}${isControl ? ' playground__canvas--control' : ''}`}
               style={{ background: canvas.background }}
             >
               {/* A preset about a small card is drawn at the size its code prints (registry `width`). */}
@@ -367,7 +368,11 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
                 )}
               </div>
               {events.length === 0 ? (
-                <p className="muted">Click a data point to see the payload your handler receives.</p>
+                <p className="muted">
+                  {isControl
+                    ? 'A control reports its value through onChange; the Code tab shows the state that holds it.'
+                    : 'Click a data point to see the payload your handler receives.'}
+                </p>
               ) : (
                 <ul className="events__list">
                   {events.map((e) => (
@@ -415,7 +420,7 @@ const Playground = ({ entry, variantId }: { entry: ChartEntry; variantId?: strin
       <aside className="controls" aria-label="Chart settings">
         <div className="controls__group-head">
           <h2>Preview context</h2>
-          <p>How this chart looks in your app.</p>
+          <p>How this {isControl ? 'control' : 'chart'} looks in your app.</p>
         </div>
         <div className="control">
           <span className="control__label">Chart theme</span>

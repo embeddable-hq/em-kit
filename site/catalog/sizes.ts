@@ -36,6 +36,8 @@ const INDEX_CARD_CHROME = 80;
 const TABLE_ROW = 40;
 // The paginated table's pager is 3rem.
 const PAGER = 48;
+// A control: its title, the card's gap and a 40px field, 91px measured.
+const CONTROL_HEIGHT = 100;
 const roundUp = (px: number) => Math.ceil(px / 10) * 10;
 
 /**
@@ -81,6 +83,8 @@ export const hasKpiTabs = (entry: ChartEntry) => String(entry.exportName).includ
 export const exampleHeight = (entry: ChartEntry, props: Props): number | undefined => {
   if (props.heightMode === 'auto') return undefined;
   if (entry.group === 'KPIs') return 120 + 40 * Object.values(props).filter(isResponse).length;
+  // A control is a title over one field.
+  if (entry.group === 'Controls') return CONTROL_HEIGHT;
   if (hasKpiTabs(entry)) return 460;
   // A centre total is drawn at up to 38px and shrinks to touch the ring when the
   // hole is narrower than it: "$1,5 Mio." in German needs a ring about 330px across.
@@ -116,6 +120,7 @@ export const playgroundFrame = (entry: ChartEntry, variantId: string | undefined
 export const cardHeight = (entry: ChartEntry, props: Props): number => {
   // Both KPIs fit 160px at a third of a row (the comparison line included), and share a row.
   if (entry.group === 'KPIs') return 160;
+  if (entry.group === 'Controls') return CONTROL_HEIGHT;
   if (hasKpiTabs(entry)) return 400;
   // A ring 250px across, so an English centre total clears it.
   if (entry.group === 'Pies') return 390;

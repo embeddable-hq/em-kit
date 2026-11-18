@@ -189,8 +189,13 @@ const global: Record<string, string> = {
   timezone: 'IANA timezone used for date display, e.g. "Europe/Berlin".',
   children: 'Your app; every chart inside reads this provider’s theme.',
 
+  // Controls
+  placeholder: 'Text shown while nothing is chosen. Translates like `title`.',
+  clearable: 'Let the reader clear the value.',
+  showTwoMonths: 'Show two months side by side in the calendar.',
+
   // Instrumentation
-  componentName: 'A name for this chart, included in the interaction events it dispatches on the DOM, for your analytics.',
+  componentName: 'A name for this component, included in the interaction events it dispatches on the DOM, for your analytics.',
   trackingId: 'An id included in the same events, to tell two instances apart.',
 };
 
@@ -226,6 +231,59 @@ const byComponentNotes: Record<string, Record<string, string>> = {
     comparisonPeriod: `Names the comparison under the number (“vs previous period”, translated). One of ${oneOf(COMPARISON_PERIODS)}; any other string leaves the name empty.`,
     measure: 'The number to show and compare. Its `inputs` (`prefix`, `suffix`, `decimalPlaces`) set the formatting.',
   },
+  DateRangePicker: {
+    selectedValue: `The chosen range: ${TIME_RANGE}. \`dateRangePreset('Last 30 days')\` starts from a preset.`,
+    onChange:
+      'Called with the range the reader picks: a preset comes with its name and its dates, worked out in the provider’s time zone. A preset passed without dates is reported back with them at once. Called with `undefined` when the reader clears it.',
+    showCustomRangeOptions:
+      'List the presets, with the calendar behind a “Custom” entry. When `false`, the picker opens straight on the calendar. The presets are the provider’s `theme.defaults.dateRangesOptions`.',
+  },
+  DateRangePickerCustom: {
+    selectedValue: `The chosen range: ${TIME_RANGE}.`,
+    onChange:
+      'Called with the range the reader picks, from the start of its first day to the end of its last in the provider’s time zone, or with `undefined` when the reader clears it.',
+  },
+  GranularitySelect: {
+    granularity: 'The chosen granularity.',
+    granularities: 'Which granularities to offer.',
+    primaryTimeRange: `The dates being charted: ${TIME_RANGE}. With it, only the granularities that suit the range are offered, and a choice that no longer suits is replaced through \`onChange\`.`,
+    onChange: 'Called with the granularity the reader picks.',
+  },
+  ComparisonPeriodSelect: {
+    comparisonPeriod: `The chosen comparison, by name: one of ${oneOf(COMPARISON_PERIODS)}. The list, and how each works out its dates, is the provider’s \`theme.defaults.comparisonPeriodsOptions\`.`,
+    primaryDateRange: `The range being compared: ${TIME_RANGE}. With it, each option shows the dates it covers.`,
+    onChange: 'Called with the name of the comparison the reader picks, or with `undefined` when the reader clears it.',
+  },
+  SingleSelect: {
+    dimension: 'The field whose values are the options. Its formatting and translations label them.',
+    results: 'One row per option, holding the `dimension` value. `results(rows)` builds it from an array.',
+    selectedValue: 'The chosen value.',
+    onChange: 'Called with the value the reader picks, or with `undefined` when the reader clears it.',
+    clearable: 'Let the reader clear the choice. When `false` and nothing is chosen, the first option is selected.',
+    optionalSecondDimension:
+      'A second field in the same rows. When set, its value is what is chosen and reported, while `dimension` labels the option: show a name, report an id.',
+    setSearchValue:
+      'Called with what the reader types in the search box, after a pause, so that you can query the matching options. When unset, the options are filtered by label as the reader types.',
+  },
+  MultiSelect: {
+    dimension: 'The field whose values are the options. Its formatting and translations label them.',
+    results: 'One row per option, holding the `dimension` value. `results(rows)` builds it from an array.',
+    selectedValues: 'The chosen values.',
+    onChange: 'Called with the chosen values when the reader presses Apply, or at each tick with `autoApply`.',
+    clearable: 'Let the reader clear the choice. When `false` and nothing is chosen, the first option is selected.',
+    optionalSecondDimension:
+      'A second field in the same rows. When set, its values are what is chosen and reported, while `dimension` labels the options: show a name, report an id.',
+    setSearchValue:
+      'Called with what the reader types in the search box, after a pause, so that you can query the matching options. When unset, the options are filtered by label as the reader types.',
+    maxOptions:
+      'The most options your query loads. “Select all” is offered only when `results` holds fewer rows than this: a full page may not be every value.',
+    showSelectAll: 'Offer “select all” and “deselect all”, when `results` holds fewer rows than `maxOptions`.',
+    autoApply: 'Report each tick as it is made, with no Apply button.',
+  },
+  TextField: {
+    value: 'The text the field starts with. The field then keeps what is typed and reports it through `onChange`.',
+    onChange: 'Called with the text once the reader pauses typing, and once with the starting text when the field mounts.',
+  },
   KpiNumber: { measure: 'The number to show. Its `inputs` (`prefix`, `suffix`, `decimalPlaces`) set the formatting.' },
 
   HeatMap: { measure: 'The number behind each cell’s colour and label.' },
@@ -237,6 +295,14 @@ const byComponentNotes: Record<string, Record<string, string>> = {
 };
 
 const byComponent: Record<string, Record<string, string>> = { ...byComponentNotes };
+// A control has no card: its title sits over its field.
+const controls = ['DateRangePicker', 'DateRangePickerCustom', 'GranularitySelect', 'ComparisonPeriodSelect', 'SingleSelect', 'MultiSelect', 'TextField'];
+for (const name of controls) {
+  byComponent[name] = {
+    title: 'The title over the field. A `"key|fallback"` string is looked up in your translations.',
+    ...byComponent[name],
+  };
+}
 for (const name of seriesCharts) byComponent[name] = { ...byComponent[name], showLegend: SERIES_LEGEND };
 
 export const propNote = (prop: string, component?: string): string | undefined =>
@@ -253,6 +319,8 @@ const ignored: Record<string, string[]> = {
   DonutChart: ['showValueLabelsAsPercentage'],
   DonutLabelChart: ['showValueLabelsAsPercentage'],
   LineChartComparisonWithKpiTabs: ['granularity'],
+  // Only the multi select reads it, for “select all”.
+  SingleSelect: ['maxOptions'],
 };
 
 // Defaults the code applies that componentDefaults does not list, read from

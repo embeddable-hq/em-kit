@@ -42,7 +42,13 @@ const TextFieldPro = (props: TextFieldProProps) => {
 
   return (
     <EditorCard title={title} description={description} tooltip={tooltip}>
-      <TextField value={currentValue} placeholder={placeholder} onChange={handleChange} clearable />
+      <TextField
+        value={currentValue}
+        placeholder={placeholder}
+        onChange={handleChange}
+        clearable
+        aria-label={title || placeholder || undefined}
+      />
     </EditorCard>
   );
 };

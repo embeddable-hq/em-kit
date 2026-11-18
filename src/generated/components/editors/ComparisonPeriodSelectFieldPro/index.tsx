@@ -21,7 +21,7 @@ export type DateComparisonSelectFieldPro = {
   comparisonPeriod?: string;
   componentName?: string;
   trackingId?: string;
-  onChange: (newComparisonPeriod?: string | null) => void;
+  onChange: (newComparisonPeriod: string | undefined) => void;
 } & EditorCardHeaderProps;
 
 const DateComparisonSelectFieldPro = (props: DateComparisonSelectFieldPro) => {
@@ -65,7 +65,7 @@ const DateComparisonSelectFieldPro = (props: DateComparisonSelectFieldPro) => {
 
   const handleChange = (newComparisonPeriod?: string | null) => {
     dispatchEventUserInteraction({ componentName, trackingId, value: newComparisonPeriod });
-    onChange(newComparisonPeriod);
+    onChange(newComparisonPeriod ?? undefined);
   };
 
   return (

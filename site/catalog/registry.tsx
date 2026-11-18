@@ -1,6 +1,6 @@
 import type * as Charts from '../../src';
 // The two values used here, from their own modules: the package's index would bring in every component.
-import { measure } from '../../src/data';
+import { dateRangePreset, measure } from '../../src/data';
 import { TABLE_SCROLLABLE_SIZE } from '../../src/generated/components/charts/tables/TableScrollable/TableScrollable.utils';
 import type { DataResponse, FieldInputs, Granularity } from '../../src';
 import { datasets, extraField, fixedTime, shortenInputs, WINDOWS } from './datasets';
@@ -67,7 +67,14 @@ export type BuildContext = {
   table: { state: CodeRef; setState: CodeRef; rows: CodeRef; total: CodeRef; all: (rows: Row[]) => CodeRef };
   toggles: Record<string, boolean>;
   title: string;
+  // A control's value, held in state: the preview keeps it and the code
+  // declares it with useState. `type` is the state's type where the initial
+  // value does not say it (import it from the package with `imports`), and
+  // `initialCode` prints the initial value as a call.
+  state: (name: string, initial: unknown, options?: StateOptions) => { value: CodeRef; set: CodeRef };
 };
+
+export type StateOptions = { type?: string; imports?: string[]; initialCode?: string };
 
 export type Toggle = { key: string; label: string; default: boolean };
 
@@ -297,6 +304,9 @@ const monthRows = (ds: Dataset): Row[] => {
 // A KPI is a tile, not a banner: at a page's full width its number sits alone
 // in a band of nothing.
 const KPI_WIDTH = 360;
+
+// A control is a field in a filter bar, not a card.
+const CONTROL_WIDTH = 320;
 
 type VariantDef = Omit<ChartVariant, 'title'>;
 type EntryDef = Omit<ChartEntry, 'defaultTitle' | 'variants'> & { variants?: VariantDef[] };
@@ -1483,6 +1493,205 @@ const entryDefs: EntryDef[] = [
       },
     ],
   },
+  // ---- Controls: each holds one value. Your own state wires it to the charts:
+  // the value goes into your query, and the query's rows into `results`.
+  {
+    id: 'date-range-picker',
+    name: 'Date range picker',
+    exportName: 'DateRangePicker',
+    group: 'Controls',
+    width: CONTROL_WIDTH,
+    description: 'Preset ranges such as “Last 30 days”, with a calendar for any other range.',
+    notes: [
+      'A preset is named by `relativeTimeString`; the picker fills in its `from` and `to` and reports them through `onChange`, in the provider’s time zone.',
+    ],
+    toggles: [],
+    props: (ctx) => {
+      const range = ctx.state('range', dateRangePreset('Last 30 days'), {
+        type: 'TimeRange',
+        imports: ['TimeRange'],
+        initialCode: "dateRangePreset('Last 30 days')",
+      });
+      return { title: ctx.title, selectedValue: range.value, onChange: range.set };
+    },
+    variants: [
+      {
+        id: 'two-months',
+        name: 'Date range picker · two months',
+        description: 'The calendar shows two months side by side, for ranges that cross a month.',
+        docsOnly: true,
+        props: () => ({ showTwoMonths: true }),
+      },
+      {
+        id: 'calendar-only',
+        name: 'Date range picker · calendar only',
+        description: 'No preset list: the picker opens straight on the calendar.',
+        docsOnly: true,
+        props: (ctx) => {
+          const range = ctx.state('range', undefined, { type: 'TimeRange', imports: ['TimeRange'] });
+          return { showCustomRangeOptions: false, selectedValue: range.value, onChange: range.set };
+        },
+      },
+    ],
+  },
+  {
+    id: 'date-range-picker-custom',
+    name: 'Custom date range picker',
+    exportName: 'DateRangePickerCustom',
+    group: 'Controls',
+    width: CONTROL_WIDTH,
+    description: 'A calendar for picking any start and end date, with no presets.',
+    toggles: [],
+    props: (ctx) => {
+      const range = ctx.state('range', undefined, { type: 'TimeRange', imports: ['TimeRange'] });
+      return { title: ctx.title, selectedValue: range.value, onChange: range.set };
+    },
+    variants: [
+      {
+        id: 'two-months',
+        name: 'Custom date range picker · two months',
+        description: 'The calendar shows two months side by side, for ranges that cross a month.',
+        docsOnly: true,
+        props: () => ({ showTwoMonths: true }),
+      },
+    ],
+  },
+  {
+    id: 'granularity-select',
+    name: 'Granularity select',
+    exportName: 'GranularitySelect',
+    group: 'Controls',
+    width: CONTROL_WIDTH,
+    description: 'Day, week, month, quarter or year: the period a time series is grouped by.',
+    notes: ['Pass the value to your time dimension as `granularity`, and query rows at that granularity.'],
+    toggles: [],
+    props: (ctx) => {
+      const granularity = ctx.state('granularity', 'month', { type: 'Granularity', imports: ['Granularity'] });
+      return { title: ctx.title, granularity: granularity.value, onChange: granularity.set };
+    },
+    variants: [
+      {
+        id: 'limited',
+        name: 'Granularity select · fewer options',
+        description: 'Only the granularities your data supports.',
+        docsOnly: true,
+        props: () => ({ granularities: ['week', 'month', 'quarter'] }),
+      },
+    ],
+  },
+  {
+    id: 'comparison-period-select',
+    name: 'Comparison period select',
+    exportName: 'ComparisonPeriodSelect',
+    group: 'Controls',
+    width: CONTROL_WIDTH,
+    description: 'Previous period, previous year and the like: what the current figures are compared with.',
+    notes: ['The value is the option’s name, such as “Previous period”.'],
+    toggles: [],
+    props: (ctx) => {
+      const period = ctx.state('period', 'Previous period', { type: 'string | undefined' });
+      return { title: ctx.title, comparisonPeriod: period.value, onChange: period.set };
+    },
+    variants: [
+      {
+        id: 'dates',
+        name: 'Comparison period select · with dates',
+        description: 'Each option shows the dates it covers, worked out from the range being compared.',
+        notes: ['`primaryDateRange` is the range your date picker holds: pass its state here.'],
+        docsOnly: true,
+        props: () => ({
+          primaryDateRange: { __code: "dateRangePreset('Last 30 days')", value: dateRangePreset('Last 30 days') } satisfies CodeRef,
+        }),
+      },
+    ],
+  },
+  {
+    id: 'single-select',
+    name: 'Single select',
+    exportName: 'SingleSelect',
+    group: 'Controls',
+    width: CONTROL_WIDTH,
+    description: 'A searchable dropdown of a field’s values, one of which can be chosen.',
+    notes: [
+      '`results` holds one row per option. Labels are formatted like the field anywhere else, so translated values match the charts.',
+    ],
+    toggles: [],
+    props: (ctx) => {
+      const selected = ctx.state('selected', undefined, { type: 'string' });
+      return {
+        title: ctx.title,
+        dimension: ctx.field('category'),
+        results: ctx.rows('options', keep(ctx.ds.byCategory, names(ctx.ds).category)),
+        selectedValue: selected.value,
+        onChange: selected.set,
+      };
+    },
+    variants: [
+      {
+        id: 'required',
+        name: 'Single select · always a value',
+        description: 'Not clearable: with nothing chosen, the first option is selected.',
+        docsOnly: true,
+        props: () => ({ clearable: false }),
+      },
+    ],
+  },
+  {
+    id: 'multi-select',
+    name: 'Multi select',
+    exportName: 'MultiSelect',
+    group: 'Controls',
+    width: CONTROL_WIDTH,
+    description: 'A searchable dropdown of a field’s values, any number of which can be chosen.',
+    notes: ['`results` holds one row per option. The choice is reported when the reader presses Apply.'],
+    toggles: [],
+    props: (ctx) => {
+      const selected = ctx.state('selected', [], { type: 'string[]' });
+      return {
+        title: ctx.title,
+        dimension: ctx.field('group'),
+        results: ctx.rows('options', keep(ctx.ds.byGroup, names(ctx.ds).group)),
+        selectedValues: selected.value,
+        onChange: selected.set,
+      };
+    },
+    variants: [
+      {
+        id: 'select-all',
+        name: 'Multi select · select all',
+        description: 'A “select all” row, and each tick applied as it is made.',
+        notes: ['“Select all” shows only when every value is loaded: fewer rows than the 200-option limit.'],
+        docsOnly: true,
+        props: () => ({ showSelectAll: true, autoApply: true }),
+      },
+    ],
+  },
+  {
+    id: 'text-field',
+    name: 'Text field',
+    exportName: 'TextField',
+    group: 'Controls',
+    width: CONTROL_WIDTH,
+    description: 'A free-text input, reported once the reader pauses typing.',
+    toggles: [],
+    props: (ctx) => {
+      const text = ctx.state('text', '');
+      return { title: ctx.title, placeholder: 'Type to search', value: text.value, onChange: text.set };
+    },
+    variants: [
+      {
+        id: 'starting-text',
+        name: 'Text field · starting text',
+        description: 'The field opens with text already in it, such as a search carried over from another page.',
+        notes: ['`value` is read once, when the field mounts.'],
+        docsOnly: true,
+        props: (ctx) => {
+          const text = ctx.state('text', 'Enterprise');
+          return { value: text.value, onChange: text.set };
+        },
+      },
+    ],
+  },
 ];
 
 // A chart's title names the fields it plots, so it lives with the field names
@@ -1496,7 +1705,7 @@ export const chartEntries: ChartEntry[] = entryDefs.map((def) => ({
   })),
 }));
 
-export const chartGroups = ['KPIs', 'Bars', 'Stacked', 'Lines', 'Pies', 'Funnels', 'Scatter', 'Tables'] as const;
+export const chartGroups = ['KPIs', 'Bars', 'Stacked', 'Lines', 'Pies', 'Funnels', 'Scatter', 'Tables', 'Controls'] as const;
 
 export const getEntry = (id: string) => chartEntries.find((e) => e.id === id);
 

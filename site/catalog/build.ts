@@ -14,6 +14,7 @@ import {
   FieldSlot,
   getVariant,
   isCodeRef,
+  StateOptions,
   TableState,
   titleId,
   withInputs,
@@ -48,6 +49,9 @@ export type ChartRuntime = {
   tableState: TableState;
   setTableState: React.Dispatch<React.SetStateAction<TableState>>;
   onEvent: (name: string, payload: unknown) => void;
+  // A control's value once the reader has set it; until then the example's own initial value shows.
+  control?: { value: unknown };
+  setControl?: (value: unknown) => void;
 };
 
 /**
@@ -134,7 +138,15 @@ type RowSource = { name: string; rows: Row[] };
 
 // The values this module supplies for a chart's own state. The printed code
 // has to supply them too, so they are recognised by identity.
-type Wiring = { setGranularity: CodeRef; table: BuildContext['table']; downloads: Map<unknown, Row[]> };
+type Wiring = {
+  setGranularity: CodeRef;
+  table: BuildContext['table'];
+  downloads: Map<unknown, Row[]>;
+  states: ControlState[];
+};
+
+// A control's value in state, as the registry asked for it (BuildContext.state).
+type ControlState = { name: string; setter: string; initial: unknown; options: StateOptions; value: CodeRef; set: CodeRef };
 
 // The time field as the charts take it. The card's granularity picker is left
 // off: the printed code wires it only where an example is about it (the line
@@ -173,9 +185,28 @@ export const buildChart = (entry: ChartEntry, settings: ChartSettings, runtime: 
     return ref;
   };
 
+  // One value per name: a preset that declares its component's state again replaces it.
+  const states: ControlState[] = [];
+  const state: BuildContext['state'] = (name, initial, options = {}) => {
+    const setter = `set${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+    const declared: ControlState = {
+      name,
+      setter,
+      initial,
+      options,
+      value: { __code: name, value: runtime.control ? runtime.control.value : initial },
+      set: { __code: setter, value: runtime.setControl ?? (() => {}) },
+    };
+    const at = states.findIndex((s) => s.name === name);
+    if (at >= 0) states[at] = declared;
+    else states.push(declared);
+    return declared;
+  };
+
   const wiring: Wiring = {
     setGranularity: { __code: 'setGranularity', value: runtime.setGranularity },
     downloads,
+    states,
     table: {
       all: allRows,
       state: { __code: 'state', value: runtime.tableState },
@@ -205,6 +236,7 @@ export const buildChart = (entry: ChartEntry, settings: ChartSettings, runtime: 
     setGranularity: wiring.setGranularity,
     table: wiring.table,
     toggles: settings.toggles,
+    state,
     // A preset with no title of its own keeps its component's.
     title:
       variant && chartTitle(ds, titleId(entry, variant)) === undefined
@@ -509,6 +541,8 @@ const printCode = ({ entry, ds, settings, rawProps, sources, wiring, runtime }: 
   const entries = Object.entries(rawProps);
   const values = Object.values(rawProps);
   const stateful = values.includes(wiring.table.state) || values.includes(wiring.table.setState);
+  // The control states the props use (a preset may have replaced its component's).
+  const controls = wiring.states.filter((s) => values.includes(s.value) || values.includes(s.set));
   const preview = new Map<string, unknown>();
 
   // Fields, in the order the props use them. A field used once, or the same
@@ -611,6 +645,8 @@ const printCode = ({ entry, ds, settings, rawProps, sources, wiring, runtime }: 
   const hoisted: string[] = [];
   const hoistedData: string[] = [];
   const expression = (prop: string, raw: unknown): string | null => {
+    const held = controls.find((s) => s.value === raw || s.set === raw);
+    if (held) return held.set === raw ? held.setter : held.name;
     if (raw === wiring.table.state) return 'state';
     if (raw === wiring.table.setState) return 'setState';
     if (raw === wiring.setGranularity) return 'setGranularity';
@@ -640,6 +676,8 @@ const printCode = ({ entry, ds, settings, rawProps, sources, wiring, runtime }: 
   const text = (value: string) => (english && value.includes('|') ? (value.split('|', 2)[1]?.trim() || value) : value);
 
   const attribute = (prop: string, raw: unknown): Attribute | null => {
+    // A control's value and setter are always passed, whatever the value is now.
+    if (controls.some((s) => s.value === raw || s.set === raw)) return { name: prop, code: expression(prop, raw)! };
     // Without the picker, setGranularity has nothing to call it.
     if (raw === wiring.setGranularity && !picker) return null;
     if (settings.omitHandlers && isCodeRef(raw) && raw.__code.startsWith('(event) => console.log(')) return null;
@@ -790,12 +828,19 @@ const printCode = ({ entry, ds, settings, rawProps, sources, wiring, runtime }: 
     }
   }
   if (picker) body.push(...formatStatement(`  const [granularity, setGranularity] = useState<Granularity>(${quote(granularity)});`));
+  for (const held of controls) {
+    const type = held.options.type ? `<${held.options.type}>` : '';
+    const initial = held.options.initialCode ?? (held.initial === undefined ? '' : literal(held.initial));
+    body.push(...formatStatement(`  const [${held.name}, ${held.setter}] = useState${type}(${initial});`));
+  }
   const hasBody = body.length > 0;
   // Sized for the rows the preview draws, which are the rows printed.
   const height = exampleHeight(entry, Object.fromEntries(entries.map(([prop, raw]) => [prop, preview.has(prop) ? preview.get(prop) : unwrap(raw)])));
   // A preset about a small card draws one, as wide as it says.
   const width = height ? exampleWidth(entry, settings.variantId) : undefined;
-  const size = [...(width ? [`width: ${width}`] : []), `height: ${height}`].join(', ');
+  // A control sizes itself: its wrapper only says how wide the example is.
+  const selfSized = entry.group === 'Controls';
+  const size = [...(width ? [`width: ${width}`] : []), ...(selfSized ? [] : [`height: ${height}`])].join(', ');
   const pad = hasBody ? '    ' : '  ';
   const inner = height ? `${pad}    ` : `${pad}  `;
   const open = [`<ChartsProvider${theme.length ? ' theme={theme}' : ''}>`, ...(height ? [`  <div style={{ ${size} }}>`] : [])].map(
@@ -808,8 +853,14 @@ const printCode = ({ entry, ds, settings, rawProps, sources, wiring, runtime }: 
   const usesMemo = body.some((line) => line.includes('useMemo('));
   const reactHooks = [...(hasBody ? ['useState'] : []), ...(usesMemo ? ['useMemo'] : [])].sort();
   const allLines = [...declarations, ...rowParts, ...helperParts].flatMap((p) => p.lines).concat(body, element);
-  const helpers = ['dimension', 'measure', 'results'].filter((name) => allLines.some((line) => new RegExp(`\\b${name}\\(`).test(line)));
-  const types = [...(stateful ? [`${exportName}State`] : []), ...(picker ? ['Granularity'] : [])];
+  const helpers = ['dateRangePreset', 'dimension', 'measure', 'results'].filter((name) => allLines.some((line) => new RegExp(`\\b${name}\\(`).test(line)));
+  const types = [
+    ...new Set([
+      ...(stateful ? [`${exportName}State`] : []),
+      ...(picker ? ['Granularity'] : []),
+      ...controls.flatMap((s) => s.options.imports ?? []),
+    ]),
+  ];
   const imports = [
     ...(reactHooks.length ? [`import { ${reactHooks.join(', ')} } from 'react';`] : []),
     ...formatStatement(`import { ${['ChartsProvider', exportName, ...helpers].join(', ')} } from '${pkg}';`),

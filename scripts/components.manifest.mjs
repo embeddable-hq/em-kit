@@ -52,14 +52,15 @@ export const components = [
   { path: 'components/charts/tables/TableChartPaginated', status: 'exported', name: 'TablePaginated' },
   { path: 'components/charts/tables/TableScrollable', status: 'wrapped', name: 'TableScrollable', reason: 'src/TableScrollable.tsx replaces the Embeddable dataset prop with resetKey' },
 
-  // Editors: standalone-safe ones are candidates for v1 (see ROADMAP.md, "Scope v1")
-  { path: 'components/editors/ComparisonPeriodSelectFieldPro', status: 'skipped', reason: 'editor; v1 scope decision pending' },
-  { path: 'components/editors/GranularitySelectFieldPro', status: 'skipped', reason: 'editor; v1 scope decision pending' },
-  { path: 'components/editors/MultiSelectFieldPro', status: 'skipped', reason: 'editor; v1 scope decision pending' },
-  { path: 'components/editors/SingleSelectFieldPro', status: 'skipped', reason: 'editor; v1 scope decision pending' },
-  { path: 'components/editors/TextFieldPro', status: 'skipped', reason: 'editor; v1 scope decision pending' },
-  { path: 'components/editors/dates/DateRangePickerCustomPro', status: 'skipped', reason: 'editor; v1 scope decision pending' },
-  { path: 'components/editors/dates/DateRangePickerPresetsPro', status: 'skipped', reason: 'editor; v1 scope decision pending' },
+  // Controls. The host's own state wires one to a chart: `value` in, `onChange` out.
+  // The field pickers and filter builders follow once their Embeddable ties are wrapped.
+  { path: 'components/editors/ComparisonPeriodSelectFieldPro', status: 'exported', name: 'ComparisonPeriodSelect', props: 'DateComparisonSelectFieldPro' },
+  { path: 'components/editors/GranularitySelectFieldPro', status: 'exported', name: 'GranularitySelect' },
+  { path: 'components/editors/MultiSelectFieldPro', status: 'exported', name: 'MultiSelect' },
+  { path: 'components/editors/SingleSelectFieldPro', status: 'exported', name: 'SingleSelect' },
+  { path: 'components/editors/TextFieldPro', status: 'exported', name: 'TextField' },
+  { path: 'components/editors/dates/DateRangePickerCustomPro', status: 'exported', name: 'DateRangePickerCustom' },
+  { path: 'components/editors/dates/DateRangePickerPresetsPro', status: 'exported', name: 'DateRangePicker' },
   { path: 'components/editors/DimensionOrMeasureMultiSelectFieldPro', status: 'skipped', reason: "bound to Embeddable's dimension/measure model" },
   { path: 'components/editors/DimensionSingleSelectFieldPro', status: 'skipped', reason: "bound to Embeddable's dimension/measure model" },
   { path: 'components/editors/MeasureMultiSelectFieldPro', status: 'skipped', reason: "bound to Embeddable's dimension/measure model" },

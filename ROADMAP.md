@@ -11,7 +11,7 @@ Work top to bottom. Each phase can ship on its own. Estimates assume one person.
 1. ~~**Licence.**~~ Decided 2026-11-10: **MIT.** The upstream remarkable-pro and remarkable-ui repos are already public under MIT, so a no-resale licence on this package couldn't stop anyone reselling the same components taken from upstream. It would only add friction for users.
 2. ~~**Public name.**~~ Decided 2026-11-17: **EmKit**, npm package `em-kit`, docs at **emkit.embeddable.com**, repo `embeddable-hq/em-kit`. ("em" is the prefix of every theme variable, `--em-*`, and short for Embeddable.) It was R Kit from 2026-11-11 until then; dropped because `rkit` on npm is someone else's React UI kit.
 3. ~~**Embeddable's place in the brand.**~~ Settled by the domain: EmKit lives under embeddable.com.
-4. **Scope v1.** Charts and tables only, or also the standalone-safe editors (date range pickers, granularity and comparison-period selects)? Bklit has no editors, so these pair well with the charts.
+4. ~~**Scope v1.**~~ Decided 2026-11-18: **charts, tables and controls.** Controls work without Embeddable: a value in, `onChange` out, wired to the charts by the app's own state.
 
 ## Phase 0: Secure the work (~1 hour)
 
@@ -36,7 +36,12 @@ Before this phase, `sync.mjs` copied every upstream component, but `src/index.ts
   - By design upstream, not to be changed: CSS variables read from `document.documentElement` (no per-provider CSS scoping); `hideMenu` hiding the whole header, title included; `TableChartPaginated` reading row heights once at import (rows have a fixed height).
   - Not rechecked: y-axis labels clip their first character when a locale widens numbers (French `$7 000`).
 - [x] **Builder defaults:** the sync found upstream's export menu is now opt-in, with its default set only in Embeddable's builder input, so standalone users silently lost CSV/PNG export. Fixed generally: the sync records every input's `defaultValue` from the definitions, and each exported component applies the ones that are props (`withDefaults`, type-checked with `satisfies`). Standalone charts now match Embeddable's out-of-the-box look, including value labels on bar, line, pie and scatter charts.
-- [ ] **Editors (if in scope):** extend the shim so the standalone-safe editors sync. The Embeddable-bound pickers (dimension/measure selects, filter builder) stay excluded.
+- [ ] **Controls**, in four parts:
+  - [x] The seven simple ones (18 Nov 2026): `DateRangePicker`, `DateRangePickerCustom`, `GranularitySelect`, `ComparisonPeriodSelect`, `SingleSelect`, `MultiSelect`, `TextField`, each with a docs page, examples and builder defaults, and `dateRangePreset()` for a picker's starting value. The calendar and its locales load on demand.
+  - [ ] A "Controls" guide with one worked example (date range, granularity and a multi select driving a line chart), and helpers: the options of a field from rows, and a comparison period's dates.
+  - [ ] The filter builders, wrapped: plain `value` / `onChange` in place of `embeddableState`, one `loadOptions(field, search)` in place of the `filterResults<id>` props, and `applyFilters(rows, clause)` for in-memory data.
+  - [ ] The dimension and measure pickers, which only need a list of fields.
+  - Open: a date picker in another language draws after its date names load, so not in server HTML; the landing page loads 448 KB of JavaScript against a 450 KB budget.
 
 ## Phase 2: Docs site on Bklit's level (~4 days)
 
