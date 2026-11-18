@@ -95,7 +95,7 @@ const MenuButton = ({ route }: { route: string }) => {
       </button>
       <div id={panelId} ref={panelRef} className="mobile-menu" hidden={!open}>
         {open && (
-          <div className="mobile-menu__body" data-sidebar-scroll>
+          <div className="mobile-menu__body" data-sidebar-scroll="menu">
             <div className="mobile-menu__links">
               <NavLinks route={route} label="Site pages" onNavigate={() => close()} />
             </div>
