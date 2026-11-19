@@ -10,7 +10,7 @@
 //     (bar, line and area charts; pies and funnels keep theirs)
 //
 //   npm run audit                  every page, English, default theme, 1440 and 390
-//   npm run audit -- --themes      also German with the Mono theme, and the dark Uluru theme, on chart pages
+//   npm run audit -- --themes      also German with the Mono theme, and the light Default theme, on chart pages
 //   npm run audit -- /docs/why     only the pages given
 // Reads dist-site/ (run npm run site:build first) through scripts/site-preview.mjs.
 // Exits 1 when anything fails, with one line per finding.
@@ -253,7 +253,7 @@ const inPage = async (opts) => {
 // Pages that must draw at least one canvas chart: guards the chart checks against passing because they found nothing.
 const mustDrawCharts = (path) => path === '/' || path === '/docs/components' || path === '/examples' || /\/docs\/components\/(bar|line|area|pie|donut|funnel|scatter|bubble)[\w-]*$/.test(path);
 
-const visit = async (path, { width, height = 900, theme = 'default', lang = 'en', structure = true }) => {
+const visit = async (path, { width, height = 900, theme = 'uluru', lang = 'en', structure = true }) => {
   events = [];
   await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 600 });
   await send('Page.navigate', { url: `http://localhost:${sitePort}/` });
@@ -303,7 +303,7 @@ try {
     const chartPage = path === '/' || path.startsWith('/docs/components') || path.startsWith('/examples');
     if (withThemes && chartPage) {
       for (const f of await visit(path, { width: 1440, theme: 'mono', lang: 'de' })) failures.push(`${path} [mono de] ${f.rule}: ${f.detail}`);
-      for (const f of await visit(path, { width: 1440, theme: 'uluru' })) failures.push(`${path} [uluru] ${f.rule}: ${f.detail}`);
+      for (const f of await visit(path, { width: 1440, theme: 'default' })) failures.push(`${path} [default] ${f.rule}: ${f.detail}`);
     }
     process.stdout.write('.');
   }
