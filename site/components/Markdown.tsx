@@ -1,5 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { gtmEventFor } from '../config';
 import { CodeBlock } from './CodeBlock';
 
 // Docs prose. Internal links are plain paths, which the router intercepts.
@@ -20,6 +21,7 @@ export const Markdown = ({ children }: { children: string }) => (
       ),
       blockquote: ({ children: quote }) => <div className="callout">{quote}</div>,
       ul: ({ children: list }) => <ul className="doc-list">{list}</ul>,
+      a: ({ node: _, ...props }) => <a {...props} data-gtm-event={gtmEventFor(props.href)} />,
     }}
   >
     {children}

@@ -18,6 +18,23 @@ export const BRAND = {
   platform: 'Embeddable adds the data layer, multi-tenant security and self-serve dashboards for your customers.',
 };
 
+// Tracking as embeddable.com does it (public-website repo, src/lib/analytics.ts):
+// Consent Mode denied by default, the Usercentrics banner, then GTM once the
+// banner sends UC_CONSENT. Only on BRAND.url's host, so previews and local
+// builds send nothing. Links to the maker carry `outboundEvent` as
+// data-gtm-event, which the container's click trigger matches.
+export const TRACKING = {
+  host: new URL(BRAND.url).hostname,
+  gtmId: 'GTM-5JVQ8XW',
+  gtmScript: 'https://t.embeddable.com/gtm.js',
+  usercentricsRuleset: 'hqENIjhi_48l7t',
+  usercentricsLoader: 'https://web.cmp.usercentrics.eu/ui/loader.js',
+  outboundEvent: 'emkit_to_embeddable',
+};
+
+/** A link's data-gtm-event: set on links to the maker only. */
+export const gtmEventFor = (href?: string) => (href?.startsWith(BRAND.maker.url) ? TRACKING.outboundEvent : undefined);
+
 /** The maker as a Markdown link, and the platform sentence with the maker linked. */
 export const makerLink = `[${BRAND.maker.name}](${BRAND.maker.url})`;
 export const platformMarkdown = BRAND.platform.replace(BRAND.maker.name, makerLink);

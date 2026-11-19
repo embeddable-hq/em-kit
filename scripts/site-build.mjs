@@ -179,7 +179,7 @@ const checkAgentFiles = (pages, markdownPath, origin, BRAND) => {
 try {
   const { withDom, generateAgentFiles } = await server.ssrLoadModule('/agent-plugin.ts');
   const failures = await withDom(async () => {
-    const { BRAND } = await server.ssrLoadModule('/config.ts');
+    const { BRAND, TRACKING } = await server.ssrLoadModule('/config.ts');
     const { sitePages, legacyRedirects, markdownPath, markdownRedirectTarget } = await server.ssrLoadModule('/content/pages.ts');
     const { headFor, applyHead } = await server.ssrLoadModule('/head.ts');
     const { renderRoute } = await server.ssrLoadModule('/prerender.tsx');
@@ -273,6 +273,7 @@ try {
           }
         }
         if (/<div id="root"><\/div>/.test(html)) fail('empty #root');
+        if (!html.includes(`${TRACKING.gtmScript}?id=${TRACKING.gtmId}`)) fail('no tracking snippet');
       }
       for (const [title, paths] of titles) if (paths.length > 1) problems.push(`duplicate title ${title}: ${paths.join(', ')}`);
     }

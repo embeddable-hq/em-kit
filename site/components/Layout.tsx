@@ -1,6 +1,6 @@
 import { IconMenu2, IconX } from '@tabler/icons-react';
 import { ReactNode, useEffect, useId, useRef, useState } from 'react';
-import { BRAND } from '../config';
+import { BRAND, TRACKING } from '../config';
 import { Sidebar } from './DocsLayout';
 import { SearchButton } from './SearchButton';
 
@@ -123,7 +123,7 @@ export const Layout = ({ route, children }: { route: string; children: ReactNode
             </span>
             {BRAND.name}
           </a>
-          <a className="nav__by" href={BRAND.maker.url}>
+          <a className="nav__by" href={BRAND.maker.url} data-gtm-event={TRACKING.outboundEvent}>
             by {BRAND.maker.name}
           </a>
         </div>
@@ -141,11 +141,11 @@ export const Layout = ({ route, children }: { route: string; children: ReactNode
       <div className="container container--wide footer__inner">
         <div className="footer__about">
           <p>
-            {BRAND.name} is by <a href={BRAND.maker.url}>{BRAND.maker.name}</a>, MIT licensed and built on{' '}
+            {BRAND.name} is by <a href={BRAND.maker.url} data-gtm-event={TRACKING.outboundEvent}>{BRAND.maker.name}</a>, MIT licensed and built on{' '}
             <a href="https://www.chartjs.org">Chart.js</a>.
           </p>
           <p>
-            Need more than charts? <a href={BRAND.maker.url}>{BRAND.maker.name}</a>
+            Need more than charts? <a href={BRAND.maker.url} data-gtm-event={TRACKING.outboundEvent}>{BRAND.maker.name}</a>
             {BRAND.platform.slice(BRAND.maker.name.length)}
           </p>
         </div>
