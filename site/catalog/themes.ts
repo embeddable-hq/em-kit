@@ -117,7 +117,7 @@ const contentTranslations = siteTranslations(datasetList);
 export const getThemePreset = (id: ThemeId) => themePresets.find((t) => t.id === id) ?? themePresets[0]!;
 
 // The theme the site opens with.
-export const DEFAULT_THEME_ID: ThemeId = 'default';
+export const DEFAULT_THEME_ID: ThemeId = 'uluru';
 
 export const buildTheme = (themeId: ThemeId, languageId: LanguageId): ThemeOverride => {
   const preset = getThemePreset(themeId);

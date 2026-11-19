@@ -10,7 +10,7 @@ import { buildChart, ChartRuntime, ChartSettings, cutRows, MAX_PRINTED_ROWS } fr
 import { datasets, Row } from '../site/catalog/datasets';
 import { MAX_WIDTH, WIDTH } from '../site/catalog/format';
 import { ChartEntry, chartEntries, DataState } from '../site/catalog/registry';
-import { themePresets } from '../site/catalog/themes';
+import { DEFAULT_THEME_ID, themePresets } from '../site/catalog/themes';
 import { BRAND } from '../site/config';
 import { componentExamples, EXCERPT_LINES, exampleCode, exampleView, helperComment } from '../site/content/components';
 
@@ -436,7 +436,7 @@ describe('generated examples', () => {
 
   it('prints no theme for the library look or the look the site opens with, and a short one otherwise', () => {
     for (const sample of variations.filter((s) => s.id.endsWith('theme)'))) {
-      const themed = !['default', 'studio'].includes(sample.settings.themeId);
+      const themed = !['default', DEFAULT_THEME_ID].includes(sample.settings.themeId);
       expect(sample.code.includes('const theme'), sample.id).toBe(themed);
       expect(sample.code.includes('<ChartsProvider theme={theme}>'), sample.id).toBe(themed);
     }
