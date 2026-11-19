@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BRAND } from './config';
+import { BRAND, TRACKING } from './config';
 import { getVariant } from './catalog/registry';
 import { markdownPath, sitePages } from './content/pages';
 import { getEntryBySlug } from './content/routes';
@@ -69,6 +69,33 @@ export const headFor = (path: string, origin: string = BRAND.url): Head => {
 const escapeHtml = (text: string) =>
   text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+// The CMP loader finds its ruleset on the script with id "usercentrics-cmp".
+// GTM loads once, on the first UC_CONSENT (sent at start-up too, all denied,
+// for a visitor who has not answered); Consent Mode holds its tags until then.
+const trackingScript = `<script>
+(function () {
+  if (location.hostname !== ${JSON.stringify(TRACKING.host)}) return;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+  gtag('consent', 'default', { ad_user_data: 'denied', ad_personalization: 'denied', ad_storage: 'denied', analytics_storage: 'denied' });
+  window.addEventListener('UC_CONSENT', function () {
+    if (window.ucAlreadyLoaded) return;
+    window.ucAlreadyLoaded = true;
+    dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+    var gtm = document.createElement('script');
+    gtm.async = true;
+    gtm.src = ${JSON.stringify(`${TRACKING.gtmScript}?id=${TRACKING.gtmId}`)};
+    document.head.appendChild(gtm);
+  });
+  var cmp = document.createElement('script');
+  cmp.id = 'usercentrics-cmp';
+  cmp.async = true;
+  cmp.src = ${JSON.stringify(TRACKING.usercentricsLoader)};
+  cmp.setAttribute('data-ruleset-id', ${JSON.stringify(TRACKING.usercentricsRuleset)});
+  document.head.appendChild(cmp);
+})();
+</script>`;
+
 /** The head tags as HTML, for static pages. A tag with no value is left out. */
 export const headTags = (head: Head) =>
   [
@@ -85,6 +112,7 @@ export const headTags = (head: Head) =>
     `<meta property="og:image:height" content="${OG_IMAGE.height}" />`,
     `<meta property="og:image:alt" content="${escapeHtml(OG_IMAGE.alt)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
+    trackingScript,
   ]
     .filter(Boolean)
     .join('\n    ');

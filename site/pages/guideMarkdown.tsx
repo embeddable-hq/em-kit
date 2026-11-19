@@ -1,4 +1,5 @@
 import { createElement, type Key, type ReactNode } from 'react';
+import { gtmEventFor } from '../config';
 
 // The prose in guides is Markdown of a small kind: paragraphs, lists, tables
 // and quotes, with links, bold and inline code. lightMarkdown() draws that
@@ -66,7 +67,7 @@ const inline = (src: string, inLink = false): ReactNode[] | undefined => {
       const href = src.slice(close + 2, end);
       const children = !/[[\]]/.test(label) && SAFE_HREF.test(href) ? inline(label, true) : undefined;
       if (!label || !children) return undefined;
-      push(createElement('a', { key: out.length, href }, ...children));
+      push(createElement('a', { key: out.length, href, 'data-gtm-event': gtmEventFor(href) }, ...children));
       i = end + 1;
       continue;
     }
