@@ -1,4 +1,4 @@
-import { act } from 'react';
+import { act, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
@@ -110,6 +110,27 @@ describe.each([
     expect(loadOptions.mock.calls[0]![0].name).toBe('region');
     expect(loadOptions.mock.calls[0]![1]).toBe('');
     expect(shown.container.textContent).toContain('Region');
+
+    shown.unmount();
+  });
+
+  it('loads once with an inline loadOptions while the app re-renders', async () => {
+    let calls = 0;
+    const value = and({ property: 'region', operator: 'equals', value: 'EMEA' });
+    const Host = () => {
+      const [, setRenders] = useState(0);
+      return (
+        <Builder
+          dimensionsAndMeasures={fields}
+          value={value}
+          onChange={() => setRenders((n) => n + 1)}
+          loadOptions={(_field, search) => (calls++, optionsOf(rows, region, search).data!)}
+        />
+      );
+    };
+    const shown = mount(<Host />);
+    await act(async () => {});
+    expect(calls).toBe(1);
     shown.unmount();
   });
 });

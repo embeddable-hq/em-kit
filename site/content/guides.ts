@@ -774,6 +774,34 @@ export const guides: Guide[] = [
       {
         md: 'A select’s `results` holds one row per option. When you already hold the rows, `optionsOf(rows, field)` picks out each value once, in the order first seen. For many values, query the distinct values instead and pass `setSearchValue` to search on your server.',
       },
+      { h2: 'Filter clauses', id: 'filters' },
+      {
+        md: 'A filter builder reports a clause tree, or `null` when no filter is complete. A group is `{ operator: \'and\' | \'or\', clauses }`, and each filter is `{ property, operator, value }`, where `property` is the field’s name.',
+      },
+      {
+        md: 'The operators are `equals`, `notEquals`, `contains` and `notContains`, plus `gt`, `gte`, `lt` and `lte` for numbers. With a list of values, `contains` keeps rows holding any of them; with text, rows whose value includes it, ignoring case.',
+      },
+      {
+        code: [
+          "import { applyFilters, type FilterBuilderClause } from 'em-kit';",
+          '',
+          'const clause: FilterBuilderClause = {',
+          "  operator: 'and',",
+          "  clauses: [",
+          "    { property: 'region', operator: 'contains', value: ['EMEA', 'APAC'] },",
+          "    { property: 'revenue', operator: 'gte', value: 1000 },",
+          '  ],',
+          '};',
+          '',
+          "const rows = [{ region: 'EMEA', revenue: 1200 }, { region: 'Americas', revenue: 900 }];",
+          '// [{ region: \'EMEA\', revenue: 1200 }]',
+          'export const kept = applyFilters(rows, clause);',
+        ].join('\n'),
+        lang: 'ts',
+      },
+      {
+        md: '`applyFilters(rows, clause)` returns the rows a clause keeps, with the rows’ own type, and every row for `null`. A builder caches each filter’s options by field, search and the other filters, so to load them again after your data changes, give the builder a new `key`.',
+      },
       { h2: 'Comparison dates', id: 'comparison' },
       {
         md: '`useComparisonRange(range, period)` turns the date range and the comparison select’s choice into the dates to compare with: `const compared = useComparisonRange(range, period)`. Query those as the comparison rows. It returns `undefined` until both are set, and it uses the provider’s time zone and its `defaults.comparisonPeriodsOptions`.',

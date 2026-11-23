@@ -133,7 +133,7 @@ ${BRAND.name} is finished React chart, table and control components. Use a built
 ## Using the components
 
 - Wrap the app once in \`ChartsProvider\`. Describe fields with \`dimension()\` and \`measure()\`, and pass rows as \`results(rows)\`, keyed by each field's \`name\`.
-- Time values are ISO strings with no zone suffix. A time dimension with a granularity reads \`\${name}.\${granularity}\` too, so supply both keys.
+- Time values are ISO strings with no zone suffix. A row holds a time dimension's value under its \`name\`. Only a time dimension used as a stacked or grouped bar chart's \`groupBy\`, or as a scatter or bubble chart's point or group field, is read from \`\${name}.\${granularity}\` instead (\`month.month\`).
 - Loading is \`results(undefined)\`; an error is \`{ isLoading: false, error: message }\`. Do not draw your own spinner or empty state.
 - Controls take a value and report through \`onChange\`. Keep the value in state and query with it: ${origin}/docs/controls.md.
 

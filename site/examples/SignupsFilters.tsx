@@ -53,11 +53,7 @@ const query = (range: TimeRange, granularity: Granularity, regions: string[]) =>
     sum.signups += row.signups;
     sums.set(key, sum);
   }
-  return [...sums.values()].map(({ period, ...rest }) => ({
-    ...rest,
-    day: period,
-    [`day.${granularity}`]: period,
-  }));
+  return [...sums.values()].map(({ period, ...rest }) => ({ ...rest, day: period }));
 };
 
 const bar = { display: 'flex', flexWrap: 'wrap', gap: 16 } as const;

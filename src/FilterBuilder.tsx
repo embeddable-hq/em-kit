@@ -55,6 +55,9 @@ export type FilterBuilderWithGroupingProps = Omit<FilterBuilderWithGroupingProPr
 const useFilterResults = (filters: FilterBuilderFilter[], loadOptions?: LoadFilterOptions) => {
   const [loaded, setLoaded] = useState<Record<string, DataResponse>>({});
   const started = useRef(new Set<string>());
+  // The latest loadOptions, so an inline function neither reloads every render nor goes stale.
+  const load = useRef(loadOptions);
+  load.current = loadOptions;
 
   const requests = filters.flatMap((filter) => {
     const field = filter.dimensionOrMeasure ?? undefined;
@@ -68,19 +71,23 @@ const useFilterResults = (filters: FilterBuilderFilter[], loadOptions?: LoadFilt
   });
 
   useEffect(() => {
-    if (!loadOptions) return;
+    if (!load.current) return;
     for (const { field, search, others, key } of requests) {
       if (started.current.has(key)) continue;
       started.current.add(key);
       Promise.resolve()
-        .then(() => loadOptions(field, search, others))
+        .then(() => load.current!(field, search, others))
         .then(
           (data) => setLoaded((prev) => ({ ...prev, [key]: { isLoading: false, data } })),
-          (error: unknown) => setLoaded((prev) => ({ ...prev, [key]: { isLoading: false, error: String(error) } })),
+          (error: unknown) => {
+            // Lets the same filter retry when it next changes.
+            started.current.delete(key);
+            setLoaded((prev) => ({ ...prev, [key]: { isLoading: false, error: String(error) } }));
+          },
         );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requests.map((r) => r.key).join('\n'), loadOptions]);
+  }, [requests.map((r) => r.key).join('\n'), Boolean(loadOptions)]);
 
   return Object.fromEntries(
     requests.map(({ id, key }) => [`filterResults${id}`, loaded[key] ?? { isLoading: Boolean(loadOptions) }]),
