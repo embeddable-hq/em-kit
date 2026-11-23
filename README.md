@@ -4,7 +4,7 @@ Finished React chart, KPI and table components by [Embeddable](https://embeddabl
 
 EmKit is Embeddable’s chart components as a standalone React library: you bring the data. Inside Embeddable the same components are called Remarkable Pro. [Embeddable](https://embeddable.com) adds the data layer, multi-tenant security and self-serve dashboards for your customers.
 
-Code samples import from `em-kit`; the package is not published yet (ROADMAP.md, Phase 5). This repository is the standalone build of the Remarkable Pro components: no Embeddable runtime, builder metadata, or data loading.
+Code samples import from `em-kit`; the package is not published yet. This repository is the standalone build of the Remarkable Pro components: no Embeddable runtime, builder metadata, or data loading.
 
 ## Commands
 
@@ -101,7 +101,7 @@ The sync drops `*.emb.ts`, `definition.ts`, `*.loadData.utils.ts`, builder input
 - `results`: `{ isLoading, data?: Row[], error?, total? }`, the rows from your own query.
 - `dimension`/`measure`: `name` is the row key. `type` is a native type (`string | number | time | boolean`); numbers are only formatted when `type` is `number`.
 - Display options go on `inputs`, e.g. `prefix`, `suffix`, `decimalPlaces`, `displayName`, `displayNullAs`.
-- Time values are ISO strings without a zone: `YYYY-MM-DDTHH:mm:ss.sss`. For a time dimension with a granularity, supply the value under both `name` and `name.granularity` (line charts read the first, grouping charts the second; Cube returns both).
+- Time values are ISO strings without a zone: `YYYY-MM-DDTHH:mm:ss.sss`. A time dimension's value goes under its `name`. Only a time `groupBy` on a stacked or grouped bar chart, or a scatter or bubble chart's point or group field, is read from `name.granularity` (Cube returns both).
 - Tables are controlled: pass `state`/`setState` from `useState`, then slice and sort your data from `state.page`, `state.pageSize`, `state.sort`.
 - `TableScrollable` (default `heightMode: 'fixed'`) accumulates pages as the user scrolls: serve pages of `TABLE_SCROLLABLE_SIZE` rows (fewer means no more data), and change `resetKey` whenever the query behind the rows changes so it resets to the first page. With `heightMode: 'auto'` the card grows to fit: pass every row at once (up to your own cap) with `results.total`, and the table says when rows were left out.
 
@@ -111,7 +111,7 @@ MIT, like the upstream remarkable-pro and remarkable-ui repositories it is built
 
 ## Todo
 
-- [ ] **Publish as EmKit, last.** Name decided 2026-11-17: **EmKit**, npm package `em-kit` (free on npm that day), docs at **emkit.embeddable.com**. Build everything first; packaging and publishing come at the end (ROADMAP.md, Phase 5).
+- [ ] **Publish as EmKit, last.** Name decided 2026-11-17: **EmKit**, npm package `em-kit` (free on npm that day), docs at **emkit.embeddable.com**. Build everything first; packaging and publishing come at the end.
 - [ ] **Localise percentages everywhere** (low impact, later). Six places format percentages by hand (`toFixed` + `%`), so German shows `12.5%` instead of `12,5 %`: remarkable-ui `KpiChartChange.tsx` (PR [remarkable-ui#445](https://github.com/embeddable-hq/remarkable-ui/pull/445) adds `percentageFormatter`), `PivotTable.utils.ts`, `funnel.utils.ts`; remarkable-pro `charts.utils.ts` (pie/donut labels as %), `LineChartComparisonWithKpiTabsPro.utils.tsx`, `FunnelChartPro.utils.ts`. Fix: one `themeFormatter.percent(value, decimals)` in remarkable-pro (Intl, theme locale), used directly in the three Pro spots and passed as `percentageFormatter` to the three ui ones. ~half a day.
 
 ## Open findings

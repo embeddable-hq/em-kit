@@ -3,3 +3,8 @@ dist
 dist-site
 .DS_Store
 *.log
+
+# Internal working notes, kept local
+PROGRESS.md
+PLAN.md
+ROADMAP.md
