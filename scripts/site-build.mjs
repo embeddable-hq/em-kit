@@ -67,9 +67,10 @@ const pageScriptBytes = (html) => pageScripts(html).reduce((sum, file) => sum + 
 // No page may load more gzipped JavaScript than this, and a page that draws no
 // chart (pageDrawsCharts in site/App.tsx) loads no chart code, so far less.
 // The site was one 560 KB script on every page; raise a number only with a reason.
-// Text 152 (was 150): the nav and routes import the whole chart registry, which
-// grows with each component (the four field pickers tipped it over).
-const SCRIPT_BUDGET_KB = { text: 152, charts: 450 };
+// Raised 5 KB each (was 150 and 450) for the field pickers and the Controls
+// guide: App.tsx imports every guide's text and the whole chart registry, so
+// each new page or component costs every page. Splitting those out is the fix.
+const SCRIPT_BUDGET_KB = { text: 155, charts: 455 };
 
 // Only for ssrLoadModule, which runs node_modules as they are: the client's
 // dependency optimiser has nothing to do here, so it does not run.

@@ -10,6 +10,7 @@ import { RevenueByPlanAndMonth } from '../examples/RevenueByPlanAndMonth';
 import { RevenueChart } from '../examples/RevenueChart';
 import { RevenueTarget } from '../examples/RevenueTarget';
 import { SignupsByWeek } from '../examples/SignupsByWeek';
+import { SignupsFilters } from '../examples/SignupsFilters';
 import type { ChartBlockId } from './guideChunks';
 
 // The examples from site/examples that guides show running, under the code
@@ -36,6 +37,7 @@ export const chartDemos: ChartDemos = {
   'chart-states': withCharts(ChartStates),
   'region-filter': withCharts(RegionFilter),
   'customers-table': withCharts(CustomersTable),
+  'signups-filters': withCharts(SignupsFilters),
   'answer-chart': withCharts(AnswerChart),
   'target-line-demo': withCharts(RevenueTarget),
 };

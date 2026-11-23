@@ -29,6 +29,7 @@ import revenueByPlanAndMonthSource from '../examples/RevenueByPlanAndMonth.tsx?r
 import revenueChartSource from '../examples/RevenueChart.tsx?raw';
 import revenueTargetSource from '../examples/RevenueTarget.tsx?raw';
 import signupsByWeekSource from '../examples/SignupsByWeek.tsx?raw';
+import signupsFiltersSource from '../examples/SignupsFilters.tsx?raw';
 import spanishChartsSource from '../examples/SpanishCharts.tsx?raw';
 import themeTypesSource from '../../src/generated/theme/theme.types.ts?raw';
 import targetLineChartSource from '../examples/TargetLineChart.tsx?raw';
@@ -59,6 +60,7 @@ export type LiveBlockId =
   | 'chart-states'
   | 'region-filter'
   | 'customers-table'
+  | 'signups-filters'
   | 'answer-chart'
   | 'ai-schema'
   | 'target-line-demo';
@@ -706,6 +708,50 @@ export const guides: Guide[] = [
       { h2: 'Other tables', id: 'other-tables' },
       {
         md: 'The [scrollable table](/docs/components/table-scrollable) loads more rows as the reader scrolls. The [pivot table](/docs/components/pivot-table) and the [heat map](/docs/components/heat-map) take the same fields and the same `results`.',
+      },
+    ],
+  },
+  {
+    slug: 'controls',
+    title: 'Controls',
+    section: 'Guides',
+    description: 'Date ranges, granularity, selects and field pickers wired to charts through your own state.',
+    blocks: [
+      {
+        md: 'A control takes a value and calls `onChange` with the reader’s choice. Keep the value in your state, query with it and pass the rows to the charts: nothing else connects them.',
+      },
+      { h2: 'Filter a chart with three controls', id: 'example' },
+      {
+        md: 'A date range, a granularity and a region select drive one line chart. Here `query` stands in for your API.',
+      },
+      { code: sample(signupsFiltersSource), file: 'SignupsFilters.tsx' },
+      {
+        live: 'signups-filters',
+        md: 'Result: a date range picker, a granularity select and a region multi select above a line chart of signups with one line per region. Each choice redraws the chart.',
+      },
+      { h2: 'What each control reports', id: 'values' },
+      {
+        md: [
+          '| Control | Value | Use it for |',
+          '|---|---|---|',
+          '| [`DateRangePicker`](/docs/components/date-range-picker), [`DateRangePickerCustom`](/docs/components/date-range-picker-custom) | A `TimeRange`: `from` and `to` dates, and the preset’s name when one was picked | The rows you query |',
+          '| [`GranularitySelect`](/docs/components/granularity-select) | A `Granularity` | The time dimension’s `granularity`, and how you group rows |',
+          '| [`ComparisonPeriodSelect`](/docs/components/comparison-period-select) | A comparison’s name | `useComparisonRange`, below |',
+          '| [`SingleSelect`](/docs/components/single-select), [`MultiSelect`](/docs/components/multi-select) | A value, or values, of a field | A filter on the rows |',
+          '| [`TextField`](/docs/components/text-field) | Text, once the reader pauses | A search |',
+          '| [`DimensionSelect`](/docs/components/dimension-select), [`MeasureSelect`](/docs/components/measure-select), [`MeasureMultiSelect`](/docs/components/measure-multi-select), [`DimensionOrMeasureMultiSelect`](/docs/components/dimension-or-measure-multi-select) | One or more of the fields you offer | A chart’s `dimension`, `measure` or `measures`, or a table’s columns |',
+        ].join('\n'),
+      },
+      {
+        md: 'A preset such as `dateRangePreset(\'Last 6 months\')` starts with no dates. The picker works them out in the provider’s time zone and reports them once it mounts, so query once `from` and `to` are set.',
+      },
+      { h2: 'Options from your rows', id: 'options' },
+      {
+        md: 'A select’s `results` holds one row per option. When you already hold the rows, `optionsOf(rows, field)` picks out each value once, in the order first seen. For many values, query the distinct values instead and pass `setSearchValue` to search on your server.',
+      },
+      { h2: 'Comparison dates', id: 'comparison' },
+      {
+        md: '`useComparisonRange(range, period)` turns the date range and the comparison select’s choice into the dates to compare with: `const compared = useComparisonRange(range, period)`. Query those as the comparison rows. It returns `undefined` until both are set, and it uses the provider’s time zone and its `defaults.comparisonPeriodsOptions`.',
       },
     ],
   },

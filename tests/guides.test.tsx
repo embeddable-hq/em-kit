@@ -134,6 +134,7 @@ describe('guide structure', () => {
       'loading-empty-and-errors',
       'events',
       'tables',
+      'controls',
       'theming',
       'localisation',
       'card-menu',
