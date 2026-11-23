@@ -34,6 +34,10 @@ import type { SingleSelectFieldProProps as SingleSelectBaseProps } from './gener
 import type { TextFieldProProps as TextFieldBaseProps } from './generated/components/editors/TextFieldPro';
 import type { DateRangePickerPresetsProps as DateRangePickerCustomBaseProps } from './generated/components/editors/dates/DateRangePickerCustomPro';
 import type { DateRangePickerPresetsProps as DateRangePickerBaseProps } from './generated/components/editors/dates/DateRangePickerPresetsPro';
+import type { DimensionMeasureMultiSelectFieldProProps as DimensionOrMeasureMultiSelectBaseProps } from './generated/components/editors/DimensionOrMeasureMultiSelectFieldPro';
+import type { DimensionSingleSelectFieldProProps as DimensionSelectBaseProps } from './generated/components/editors/DimensionSingleSelectFieldPro';
+import type { MeasureMultiSelectFieldProProps as MeasureMultiSelectBaseProps } from './generated/components/editors/MeasureMultiSelectFieldPro';
+import type { MeasureSingleSelectFieldProProps as MeasureSelectBaseProps } from './generated/components/editors/MeasureSingleSelectFieldPro';
 
 export const componentDefaults = {
   BarChart: {
@@ -254,4 +258,22 @@ export const componentDefaults = {
     showTwoMonths: false,
     clearable: true,
   } satisfies Partial<DateRangePickerBaseProps>,
+  DimensionOrMeasureMultiSelect: {
+    placeholder: "controls.placeholder.dimensionOrMeasureMultiSelect|Select values...",
+    clearable: false,
+    autoApply: false,
+  } satisfies Partial<DimensionOrMeasureMultiSelectBaseProps>,
+  DimensionSelect: {
+    placeholder: "controls.placeholder.dimensionSelect|Select value...",
+    clearable: false,
+  } satisfies Partial<DimensionSelectBaseProps>,
+  MeasureMultiSelect: {
+    placeholder: "controls.placeholder.measureMultiSelect|Select values...",
+    clearable: false,
+    autoApply: false,
+  } satisfies Partial<MeasureMultiSelectBaseProps>,
+  MeasureSelect: {
+    placeholder: "controls.placeholder.measureSelect|Select value...",
+    clearable: false,
+  } satisfies Partial<MeasureSelectBaseProps>,
 };

@@ -329,6 +329,15 @@
   "components/editors/ComparisonPeriodSelectFieldPro": {
     "placeholder": "Select a date-comparison"
   },
+  "components/editors/DimensionOrMeasureMultiSelectFieldPro": {
+    "placeholder": "Select values...",
+    "clearable": false,
+    "autoApply": false
+  },
+  "components/editors/DimensionSingleSelectFieldPro": {
+    "placeholder": "Select value...",
+    "clearable": false
+  },
   "components/editors/GranularitySelectFieldPro": {
     "placeholder": "Select a granularity",
     "granularities": [
@@ -339,6 +348,15 @@
       "quarter",
       "year"
     ],
+    "clearable": false
+  },
+  "components/editors/MeasureMultiSelectFieldPro": {
+    "placeholder": "Select values...",
+    "clearable": false,
+    "autoApply": false
+  },
+  "components/editors/MeasureSingleSelectFieldPro": {
+    "placeholder": "Select value...",
     "clearable": false
   },
   "components/editors/MultiSelectFieldPro": {

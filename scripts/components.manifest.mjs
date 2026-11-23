@@ -53,7 +53,7 @@ export const components = [
   { path: 'components/charts/tables/TableScrollable', status: 'wrapped', name: 'TableScrollable', reason: 'src/TableScrollable.tsx replaces the Embeddable dataset prop with resetKey' },
 
   // Controls. The host's own state wires one to a chart: `value` in, `onChange` out.
-  // The field pickers and filter builders follow once their Embeddable ties are wrapped.
+  // The filter builders follow once their Embeddable ties are wrapped.
   { path: 'components/editors/ComparisonPeriodSelectFieldPro', status: 'exported', name: 'ComparisonPeriodSelect', props: 'DateComparisonSelectFieldPro' },
   { path: 'components/editors/GranularitySelectFieldPro', status: 'exported', name: 'GranularitySelect' },
   { path: 'components/editors/MultiSelectFieldPro', status: 'exported', name: 'MultiSelect' },
@@ -61,10 +61,10 @@ export const components = [
   { path: 'components/editors/TextFieldPro', status: 'exported', name: 'TextField' },
   { path: 'components/editors/dates/DateRangePickerCustomPro', status: 'exported', name: 'DateRangePickerCustom' },
   { path: 'components/editors/dates/DateRangePickerPresetsPro', status: 'exported', name: 'DateRangePicker' },
-  { path: 'components/editors/DimensionOrMeasureMultiSelectFieldPro', status: 'skipped', reason: "bound to Embeddable's dimension/measure model" },
-  { path: 'components/editors/DimensionSingleSelectFieldPro', status: 'skipped', reason: "bound to Embeddable's dimension/measure model" },
-  { path: 'components/editors/MeasureMultiSelectFieldPro', status: 'skipped', reason: "bound to Embeddable's dimension/measure model" },
-  { path: 'components/editors/MeasureSingleSelectFieldPro', status: 'skipped', reason: "bound to Embeddable's dimension/measure model" },
+  { path: 'components/editors/DimensionOrMeasureMultiSelectFieldPro', status: 'exported', name: 'DimensionOrMeasureMultiSelect' },
+  { path: 'components/editors/DimensionSingleSelectFieldPro', status: 'exported', name: 'DimensionSelect' },
+  { path: 'components/editors/MeasureMultiSelectFieldPro', status: 'exported', name: 'MeasureMultiSelect' },
+  { path: 'components/editors/MeasureSingleSelectFieldPro', status: 'exported', name: 'MeasureSelect' },
   { path: 'components/editors/filters/FilterBuilderPro', status: 'skipped', reason: "bound to Embeddable's dimension/measure model" },
   { path: 'components/editors/filters/FilterBuilderWithGroupingPro', status: 'skipped', reason: "bound to Embeddable's dimension/measure model" },
 

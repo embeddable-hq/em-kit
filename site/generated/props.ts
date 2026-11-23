@@ -7955,5 +7955,243 @@ export const componentProps: Record<string, PropDoc[]> = {
       "type": "string",
       "required": false
     }
+  ],
+  "DimensionOrMeasureMultiSelect": [
+    {
+      "name": "selectedDimensionsAndMeasures",
+      "type": "DimensionOrMeasure[]",
+      "required": false
+    },
+    {
+      "name": "dimensionAndMeasureOptions",
+      "type": "DimensionOrMeasure[]",
+      "required": false
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "autoApply",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(value: DimensionOrMeasure[]) => void",
+      "required": true
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "DimensionSelect": [
+    {
+      "name": "selectedDimension",
+      "type": "Dimension",
+      "required": false
+    },
+    {
+      "name": "dimensionOptions",
+      "type": "Dimension[]",
+      "required": true
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(value: Dimension | undefined) => void",
+      "required": true
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "hideMenu",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "menuOptions",
+      "type": "(\"csv\" | \"xlsx\" | \"png\" | \"maximize\")[]",
+      "required": false
+    }
+  ],
+  "MeasureMultiSelect": [
+    {
+      "name": "selectedMeasures",
+      "type": "Measure[]",
+      "required": false
+    },
+    {
+      "name": "measureOptions",
+      "type": "Measure[]",
+      "required": false
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "autoApply",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(value: Measure[]) => void",
+      "required": true
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "MeasureSelect": [
+    {
+      "name": "selectedMeasure",
+      "type": "Measure",
+      "required": false
+    },
+    {
+      "name": "measureOptions",
+      "type": "Measure[]",
+      "required": true
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(value: Measure | undefined) => void",
+      "required": true
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "hideMenu",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "menuOptions",
+      "type": "(\"csv\" | \"xlsx\" | \"png\" | \"maximize\")[]",
+      "required": false
+    }
   ]
 };

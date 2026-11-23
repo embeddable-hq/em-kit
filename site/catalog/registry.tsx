@@ -1667,6 +1667,120 @@ const entryDefs: EntryDef[] = [
     ],
   },
   {
+    id: 'dimension-select',
+    name: 'Dimension select',
+    exportName: 'DimensionSelect',
+    group: 'Controls',
+    width: CONTROL_WIDTH,
+    description: 'A dropdown of fields: which one a chart groups its rows by.',
+    notes: ['Pass the chosen field to a chart as its `dimension`, and query rows grouped by it.'],
+    toggles: [],
+    props: (ctx) => {
+      const selected = ctx.state('dimension', undefined, { type: 'Dimension', imports: ['Dimension'] });
+      return {
+        title: ctx.title,
+        dimensionOptions: [ctx.field('category'), ctx.field('group')],
+        selectedDimension: selected.value,
+        onChange: selected.set,
+      };
+    },
+    variants: [
+      {
+        id: 'clearable',
+        name: 'Dimension select · clearable',
+        description: 'The reader can clear the choice, and you fall back to a field of your own.',
+        notes: ['Cleared, `onChange` reports `undefined`: pass `dimension ?? region` to the chart.'],
+        docsOnly: true,
+        props: () => ({ clearable: true }),
+      },
+    ],
+  },
+  {
+    id: 'measure-select',
+    name: 'Measure select',
+    exportName: 'MeasureSelect',
+    group: 'Controls',
+    width: CONTROL_WIDTH,
+    description: 'A dropdown of fields: which number a chart shows.',
+    notes: ['Pass the chosen field to a chart as its `measure`.'],
+    toggles: [],
+    props: (ctx) => {
+      const selected = ctx.state('measure', undefined, { type: 'Measure', imports: ['Measure'] });
+      return {
+        title: ctx.title,
+        measureOptions: [ctx.field('primary'), ctx.field('secondary')],
+        selectedMeasure: selected.value,
+        onChange: selected.set,
+      };
+    },
+    variants: [
+      {
+        id: 'clearable',
+        name: 'Measure select · clearable',
+        description: 'The reader can clear the choice, and you fall back to a field of your own.',
+        notes: ['Cleared, `onChange` reports `undefined`: pass a default measure to the chart.'],
+        docsOnly: true,
+        props: () => ({ clearable: true }),
+      },
+    ],
+  },
+  {
+    id: 'measure-multi-select',
+    name: 'Measure multi select',
+    exportName: 'MeasureMultiSelect',
+    group: 'Controls',
+    width: CONTROL_WIDTH,
+    description: 'A dropdown of fields, any number of which can be chosen: the numbers a chart shows.',
+    notes: ['Pass the chosen fields to a chart as its `measures`. The choice is reported when the reader presses Apply.'],
+    toggles: [],
+    props: (ctx) => {
+      const selected = ctx.state('measures', [], { type: 'Measure[]', imports: ['Measure'] });
+      return {
+        title: ctx.title,
+        measureOptions: [ctx.field('primary'), ctx.field('secondary')],
+        selectedMeasures: selected.value,
+        onChange: selected.set,
+      };
+    },
+    variants: [
+      {
+        id: 'auto-apply',
+        name: 'Measure multi select · applied at once',
+        description: 'Each tick is reported as it is made, with no Apply button.',
+        docsOnly: true,
+        props: () => ({ autoApply: true }),
+      },
+    ],
+  },
+  {
+    id: 'dimension-or-measure-multi-select',
+    name: 'Field multi select',
+    exportName: 'DimensionOrMeasureMultiSelect',
+    group: 'Controls',
+    width: CONTROL_WIDTH,
+    description: 'A dropdown of dimensions and measures alike, any number of which can be chosen: the columns of a table.',
+    notes: ['The choice is reported when the reader presses Apply.'],
+    toggles: [],
+    props: (ctx) => {
+      const selected = ctx.state('fields', [], { type: 'DimensionOrMeasure[]', imports: ['DimensionOrMeasure'] });
+      return {
+        title: ctx.title,
+        dimensionAndMeasureOptions: [ctx.field('category'), ctx.field('primary'), ctx.field('secondary')],
+        selectedDimensionsAndMeasures: selected.value,
+        onChange: selected.set,
+      };
+    },
+    variants: [
+      {
+        id: 'auto-apply',
+        name: 'Field multi select · applied at once',
+        description: 'Each tick is reported as it is made, with no Apply button.',
+        docsOnly: true,
+        props: () => ({ autoApply: true }),
+      },
+    ],
+  },
+  {
     id: 'text-field',
     name: 'Text field',
     exportName: 'TextField',

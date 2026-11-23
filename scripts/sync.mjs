@@ -40,8 +40,6 @@ const EXCLUDE_PRO = [
   /\.loadData\.utils\.ts$/,
   // Editors bound to Embeddable's dimension/measure model
   /^components\/editors\/filters\//,
-  /^components\/editors\/(DimensionOrMeasureMultiSelectFieldPro|DimensionSingleSelectFieldPro|MeasureMultiSelectFieldPro|MeasureSingleSelectFieldPro)\//,
-  /^components\/editors\/shared\/DimensionAndMeasureSingleSelectField\//,
   // Tests run against Embeddable mocks upstream
   /\.test\.tsx?$/,
   /(^|\/)test-utils\//,
