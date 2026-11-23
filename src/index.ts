@@ -92,3 +92,12 @@ export {
   type TableScrollableProps,
   type TableScrollableState,
 } from './TableScrollable';
+export {
+  FilterBuilder,
+  FilterBuilderWithGrouping,
+  applyFilters,
+  type FilterBuilderProps,
+  type FilterBuilderWithGroupingProps,
+  type FilterBuilderClause,
+  type LoadFilterOptions,
+} from './FilterBuilder';

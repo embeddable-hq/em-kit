@@ -382,5 +382,15 @@
     "showCustomRangeOptions": true,
     "showTwoMonths": false,
     "clearable": true
+  },
+  "components/editors/filters/FilterBuilderPro": {
+    "defaultFilters": null,
+    "applyCascadingFilters": false,
+    "syncDefaultFilters": false
+  },
+  "components/editors/filters/FilterBuilderWithGroupingPro": {
+    "defaultFilters": null,
+    "applyCascadingFilters": false,
+    "syncDefaultFilters": false
   }
 }

@@ -4610,6 +4610,104 @@ export const componentProps: Record<string, PropDoc[]> = {
       "required": false
     }
   ],
+  "FilterBuilder": [
+    {
+      "name": "dimensionsAndMeasures",
+      "type": "DimensionOrMeasure[]",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "syncDefaultFilters",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "value",
+      "type": "FilterBuilderClause | null",
+      "required": false,
+      "doc": "The filters the builder starts with. With `syncDefaultFilters`, later changes replace the reader's."
+    },
+    {
+      "name": "onChange",
+      "type": "(value: FilterBuilderClause | null) => void",
+      "required": false,
+      "doc": "Called with the filters as a clause tree, or `null` when there are none."
+    },
+    {
+      "name": "loadOptions",
+      "type": "(field: Dimension, search: string, otherFilters: FilterBuilderClause | null) => Record<string, unknown>[] | Promise<Record<string, unknown>[]>",
+      "required": false
+    }
+  ],
+  "FilterBuilderWithGrouping": [
+    {
+      "name": "dimensionsAndMeasures",
+      "type": "DimensionOrMeasure[]",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "syncDefaultFilters",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "value",
+      "type": "FilterBuilderClause | null",
+      "required": false,
+      "doc": "The filters the builder starts with. With `syncDefaultFilters`, later changes replace the reader's."
+    },
+    {
+      "name": "onChange",
+      "type": "(value: FilterBuilderClause | null) => void",
+      "required": false,
+      "doc": "Called with the filters as a clause tree, or `null` when there are none."
+    },
+    {
+      "name": "loadOptions",
+      "type": "(field: Dimension, search: string, otherFilters: FilterBuilderClause | null) => Record<string, unknown>[] | Promise<Record<string, unknown>[]>",
+      "required": false
+    }
+  ],
   "BarChart": [
     {
       "name": "dimension",

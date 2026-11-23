@@ -178,6 +178,7 @@ const sentences = {
   groupBy: { en: 'Group by', de: 'Gruppieren nach', fr: 'Grouper par' },
   show: { en: 'Show', de: 'Anzeigen', fr: 'Afficher' },
   columns: { en: 'Columns', de: 'Spalten', fr: 'Colonnes' },
+  filters: { en: 'Filters', de: 'Filter', fr: 'Filtres' },
   search: { en: 'Search', de: 'Suche', fr: 'Recherche' },
   growth: { en: '{a} growth, month on month', de: '{a}: Wachstum zum Vormonat', fr: '{a} : croissance mensuelle' },
 } satisfies Record<string, Sentence>;
@@ -207,6 +208,10 @@ const chartTitles: Record<string, TitleSpec> = {
   'dimension-or-measure-multi-select--auto-apply': ['columns', 'category'],
   'measure-multi-select': ['show', 'primary'],
   'dimension-or-measure-multi-select': ['columns', 'category'],
+  'filter-builder': ['filters', 'category'],
+  'filter-builder--starting-filters': ['filters', 'category'],
+  'filter-builder-with-grouping': ['filters', 'category'],
+  'filter-builder-with-grouping--starting-filters': ['filters', 'category'],
   'text-field': ['search', 'category'],
   'text-field--starting-text': ['search', 'category'],
   kpi: ['last30', 'secondary'],

@@ -20,7 +20,8 @@ export type TableState = {
 export type CodeRef = {
   __code: string;
   value: unknown;
-  declare?: string;
+  // One statement, or several.
+  declare?: string | string[];
   // The declaration is sample data (a date range), printed with the rows after the component.
   data?: boolean;
   // Set by withInputs: the declared field it spreads and the inputs layered on top.
@@ -307,6 +308,48 @@ const KPI_WIDTH = 360;
 
 // A control is a field in a filter bar, not a card.
 const CONTROL_WIDTH = 320;
+// A filter builder lays its filters out in a row.
+const FILTER_BUILDER_WIDTH = 640;
+
+// A filter builder's options: a stand-in for an API that returns a field's
+// distinct values, declared beside the example as sample data.
+const filterOptions = (ctx: BuildContext): CodeRef => {
+  const n = names(ctx.ds);
+  const rows = [
+    ...ctx.ds.byCategory.map((r) => ({ [n.category]: String(r[n.category]) })),
+    ...[...new Set(ctx.ds.byGroup.map((r) => String(r[n.group])))].map((v) => ({ [n.group]: v })),
+  ];
+  return {
+    __code: 'loadOptions',
+    data: true,
+    declare: [
+      `const options = ${JSON.stringify(rows).replace(/"([a-zA-Z_]+)":/g, '$1: ').replace(/"/g, "'").replace(/,/g, ', ')};`,
+      'const loadOptions = (field: Dimension, search: string) => optionsOf(options, field, search).data!;',
+    ],
+    // What optionsOf returns, without loading the library into the site's shell.
+    value: (field: { name: string }, search: string) =>
+      rows.filter((r) => r[field.name]?.toLowerCase().includes(search.toLowerCase())),
+  };
+};
+
+const FILTER_STATE = { type: 'FilterBuilderClause | null', imports: ['FilterBuilderClause', 'Dimension'] };
+
+const filterBuilderProps = (ctx: BuildContext) => {
+  const filters = ctx.state('filters', null, FILTER_STATE);
+  return {
+    title: ctx.title,
+    dimensionsAndMeasures: [ctx.field('category'), ctx.field('group'), ctx.field('primary')],
+    loadOptions: filterOptions(ctx),
+    value: filters.value,
+    onChange: filters.set,
+  };
+};
+
+// Filters saved from an earlier visit: the builder starts from them.
+const savedFilters = (ctx: BuildContext) => {
+  const filters = ctx.state('filters', { operator: 'and', clauses: [{ property: names(ctx.ds).primary, operator: 'gte', value: 1000 }] }, FILTER_STATE);
+  return { value: filters.value, onChange: filters.set };
+};
 
 type VariantDef = Omit<ChartVariant, 'title'>;
 type EntryDef = Omit<ChartEntry, 'defaultTitle' | 'variants'> & { variants?: VariantDef[] };
@@ -1777,6 +1820,49 @@ const entryDefs: EntryDef[] = [
         description: 'Each tick is reported as it is made, with no Apply button.',
         docsOnly: true,
         props: () => ({ autoApply: true }),
+      },
+    ],
+  },
+  {
+    id: 'filter-builder',
+    name: 'Filter builder',
+    exportName: 'FilterBuilder',
+    group: 'Controls',
+    width: FILTER_BUILDER_WIDTH,
+    description: 'Filters the reader puts together: a field, a condition and a value, joined by “and” or “or”.',
+    notes: [
+      'The reader’s filters come back as a clause tree through `onChange`: send it to your API, or keep the matching rows with `applyFilters(rows, clause)`.',
+      '`loadOptions` gives a filter on a dimension its values to pick from.',
+    ],
+    toggles: [],
+    props: filterBuilderProps,
+    variants: [
+      {
+        id: 'starting-filters',
+        name: 'Filter builder · starting filters',
+        description: 'The builder opens with filters already set, such as ones saved from an earlier visit.',
+        docsOnly: true,
+        props: savedFilters,
+      },
+    ],
+  },
+  {
+    id: 'filter-builder-with-grouping',
+    name: 'Filter builder with groups',
+    exportName: 'FilterBuilderWithGrouping',
+    group: 'Controls',
+    width: FILTER_BUILDER_WIDTH,
+    description: 'The filter builder with groups of filters, each joined by its own “and” or “or”.',
+    notes: ['The clause tree nests a group’s filters under it. `applyFilters(rows, clause)` reads it the same way.'],
+    toggles: [],
+    props: filterBuilderProps,
+    variants: [
+      {
+        id: 'starting-filters',
+        name: 'Filter builder with groups · starting filters',
+        description: 'The builder opens with filters already set, such as ones saved from an earlier visit.',
+        docsOnly: true,
+        props: savedFilters,
       },
     ],
   },

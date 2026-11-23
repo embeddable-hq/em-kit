@@ -320,9 +320,22 @@ const byComponentNotes: Record<string, Record<string, string>> = {
   },
 };
 
-const byComponent: Record<string, Record<string, string>> = { ...byComponentNotes };
+const filterBuilderNotes = {
+  dimensionsAndMeasures: 'The fields the reader can filter on. Text, number and true/false fields are offered; others are left out.',
+  value: 'The filters the builder starts with, as a clause tree: the shape `onChange` reports. Later changes are ignored unless `syncDefaultFilters` is set.',
+  onChange: 'Called with the reader’s filters as a clause tree, `{ operator, clauses }`, or with `null` when none is complete. Pass it to your API, or to `applyFilters(rows, clause)` for rows in memory.',
+  loadOptions:
+    'Called for each filter on a dimension, with the field, what the reader typed and the other filters, for the values to pick from: rows holding the field’s value, or a promise of them. `optionsOf(rows, field, search).data` builds them from rows in memory.',
+  syncDefaultFilters: 'Replace the reader’s filters whenever `value` changes, so the app can set or reset them. Left off, `value` only sets where the builder starts.',
+};
+
+const byComponent: Record<string, Record<string, string>> = {
+  ...byComponentNotes,
+  FilterBuilder: filterBuilderNotes,
+  FilterBuilderWithGrouping: filterBuilderNotes,
+};
 // A control has no card: its title sits over its field.
-const controls = ['DateRangePicker', 'DateRangePickerCustom', 'GranularitySelect', 'ComparisonPeriodSelect', 'SingleSelect', 'MultiSelect', 'TextField', 'DimensionSelect', 'MeasureSelect', 'MeasureMultiSelect', 'DimensionOrMeasureMultiSelect'];
+const controls = ['DateRangePicker', 'DateRangePickerCustom', 'GranularitySelect', 'ComparisonPeriodSelect', 'SingleSelect', 'MultiSelect', 'TextField', 'DimensionSelect', 'MeasureSelect', 'MeasureMultiSelect', 'DimensionOrMeasureMultiSelect', 'FilterBuilder', 'FilterBuilderWithGrouping'];
 for (const name of controls) {
   byComponent[name] = {
     title: 'The title over the field. A `"key|fallback"` string is looked up in your translations.',

@@ -53,7 +53,6 @@ export const components = [
   { path: 'components/charts/tables/TableScrollable', status: 'wrapped', name: 'TableScrollable', reason: 'src/TableScrollable.tsx replaces the Embeddable dataset prop with resetKey' },
 
   // Controls. The host's own state wires one to a chart: `value` in, `onChange` out.
-  // The filter builders follow once their Embeddable ties are wrapped.
   { path: 'components/editors/ComparisonPeriodSelectFieldPro', status: 'exported', name: 'ComparisonPeriodSelect', props: 'DateComparisonSelectFieldPro' },
   { path: 'components/editors/GranularitySelectFieldPro', status: 'exported', name: 'GranularitySelect' },
   { path: 'components/editors/MultiSelectFieldPro', status: 'exported', name: 'MultiSelect' },
@@ -65,8 +64,8 @@ export const components = [
   { path: 'components/editors/DimensionSingleSelectFieldPro', status: 'exported', name: 'DimensionSelect' },
   { path: 'components/editors/MeasureMultiSelectFieldPro', status: 'exported', name: 'MeasureMultiSelect' },
   { path: 'components/editors/MeasureSingleSelectFieldPro', status: 'exported', name: 'MeasureSelect' },
-  { path: 'components/editors/filters/FilterBuilderPro', status: 'skipped', reason: "bound to Embeddable's dimension/measure model" },
-  { path: 'components/editors/filters/FilterBuilderWithGroupingPro', status: 'skipped', reason: "bound to Embeddable's dimension/measure model" },
+  { path: 'components/editors/filters/FilterBuilderPro', status: 'wrapped', name: 'FilterBuilder', reason: 'src/FilterBuilder.tsx keeps its state and loads value options through loadOptions' },
+  { path: 'components/editors/filters/FilterBuilderWithGroupingPro', status: 'wrapped', name: 'FilterBuilderWithGrouping', reason: 'src/FilterBuilder.tsx keeps its state and loads value options through loadOptions' },
 
   // Layout blocks and builder-only editors
   { path: 'components/shared/EmptyContainerPro', status: 'skipped', reason: 'dashboard layout block, not a chart' },

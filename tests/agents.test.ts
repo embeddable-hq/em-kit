@@ -315,7 +315,7 @@ describe('Claude Code skill', () => {
     expect(agentFiles(ORIGIN).find((f) => f.path === SKILL_PATH)?.body).toBe(skill);
     const [, front] = skill.match(/^---\n([\s\S]+?)\n---\n/)!;
     expect(front).toMatch(new RegExp(`^name: ${SKILL_NAME}$`, 'm'));
-    expect(front.match(/^description: (.+)$/m)![1]!.length).toBeLessThan(1024);
+    expect(front!.match(/^description: (.+)$/m)![1]!.length).toBeLessThan(1024);
   });
 
   it('links only to pages that exist, at the given origin', () => {

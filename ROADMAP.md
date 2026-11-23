@@ -39,7 +39,7 @@ Before this phase, `sync.mjs` copied every upstream component, but `src/index.ts
 - [ ] **Controls**, in four parts:
   - [x] The seven simple ones (18 Nov 2026): `DateRangePicker`, `DateRangePickerCustom`, `GranularitySelect`, `ComparisonPeriodSelect`, `SingleSelect`, `MultiSelect`, `TextField`, each with a docs page, examples and builder defaults, and `dateRangePreset()` for a picker's starting value. The calendar and its locales load on demand.
   - [x] A "Controls" guide with one worked example (date range, granularity and a multi select driving a line chart), and helpers: `optionsOf` (a select's options from rows) and `useComparisonRange` (a comparison period's dates). (23 Nov 2026)
-  - [ ] The filter builders, wrapped: plain `value` / `onChange` in place of `embeddableState`, one `loadOptions(field, search)` in place of the `filterResults<id>` props, and `applyFilters(rows, clause)` for in-memory data.
+  - [x] The filter builders, wrapped (`src/FilterBuilder.tsx`): plain `value` / `onChange` in place of `embeddableState`, one `loadOptions(field, search, otherFilters)` in place of the `filterResults<id>` props, and `applyFilters(rows, clause)` for in-memory data. (23 Nov 2026)
   - [x] The dimension and measure pickers, which only need a list of fields: `DimensionSelect`, `MeasureSelect`, `MeasureMultiSelect`, `DimensionOrMeasureMultiSelect`. (23 Nov 2026)
   - Open: a date picker in another language draws after its date names load, so not in server HTML; the landing page loads 448 KB of JavaScript against a 450 KB budget.
 

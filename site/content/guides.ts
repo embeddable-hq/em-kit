@@ -739,7 +739,7 @@ export const guides: Guide[] = [
     slug: 'controls',
     title: 'Controls',
     section: 'Guides',
-    description: 'Date ranges, granularity, selects and field pickers wired to charts through your own state.',
+    description: 'Date ranges, granularity, selects, field pickers and filter builders wired to charts through your own state.',
     blocks: [
       {
         md: 'A control takes a value and calls `onChange` with the reader’s choice. Keep the value in your state, query with it and pass the rows to the charts: nothing else connects them.',
@@ -763,6 +763,7 @@ export const guides: Guide[] = [
           '| [`ComparisonPeriodSelect`](/docs/components/comparison-period-select) | A comparison’s name | `useComparisonRange`, below |',
           '| [`SingleSelect`](/docs/components/single-select), [`MultiSelect`](/docs/components/multi-select) | A value, or values, of a field | A filter on the rows |',
           '| [`TextField`](/docs/components/text-field) | Text, once the reader pauses | A search |',
+          '| [`FilterBuilder`](/docs/components/filter-builder), [`FilterBuilderWithGrouping`](/docs/components/filter-builder-with-grouping) | The reader’s filters as a clause tree, `{ operator, clauses }` | Your API’s filters, or `applyFilters(rows, clause)` for rows in memory |',
           '| [`DimensionSelect`](/docs/components/dimension-select), [`MeasureSelect`](/docs/components/measure-select), [`MeasureMultiSelect`](/docs/components/measure-multi-select), [`DimensionOrMeasureMultiSelect`](/docs/components/dimension-or-measure-multi-select) | One or more of the fields you offer | A chart’s `dimension`, `measure` or `measures`, or a table’s columns |',
         ].join('\n'),
       },

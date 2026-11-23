@@ -7,13 +7,18 @@ import { getComparisonPeriodDateRange } from './generated/components/utils/timeR
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Row = Record<string, any>;
 
-/** A select's options from rows you already hold: one row per distinct value of the field, in first-seen order. */
-export const optionsOf = (rows: Row[] | undefined, field: Dimension): DataResponse => {
+/**
+ * A select's options from rows you already hold: one row per distinct value of
+ * the field, in first-seen order, and only values containing `search` when set.
+ */
+export const optionsOf = (rows: Row[] | undefined, field: Dimension, search = ''): DataResponse => {
   if (!rows) return results(undefined);
   const seen = new Map<unknown, Row>();
+  const term = search.toLowerCase();
   for (const row of rows) {
     const value = row[field.name];
-    if (value != null && !seen.has(value)) seen.set(value, { [field.name]: value });
+    if (value == null || seen.has(value) || !String(value).toLowerCase().includes(term)) continue;
+    seen.set(value, { [field.name]: value });
   }
   return results([...seen.values()]);
 };

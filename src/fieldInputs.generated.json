@@ -5232,5 +5232,125 @@
   "DateRangeSelectFieldPro": {
     "label": "Date-Range Picker - Presets",
     "fields": {}
+  },
+  "FilterBuilderPro": {
+    "label": "Filter Builder",
+    "fields": {
+      "dimensionsAndMeasures": {
+        "kind": "dimensionOrMeasure",
+        "label": "Dimensions and measures",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "FilterBuilderWithGroupingPro": {
+    "label": "Filter Builder (with grouping)",
+    "fields": {
+      "dimensionsAndMeasures": {
+        "kind": "dimensionOrMeasure",
+        "label": "Dimensions and measures",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
   }
 }

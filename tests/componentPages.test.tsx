@@ -328,7 +328,7 @@ describe('components index', () => {
   it('shows every component once, grouped by type, with counts that add up', () => {
     const cards = [...page.querySelectorAll('.index-card')];
     expect(cards.length).toBe(chartEntries.length);
-    expect(chartEntries.length).toBe(36);
+    expect(chartEntries.length).toBe(38);
 
     const groups = [...page.querySelectorAll('.index-group')];
     expect(groups.map((g) => g.getAttribute('data-group'))).toEqual([...chartGroups]);

@@ -665,7 +665,7 @@ const printCode = ({ entry, ds, settings, rawProps, sources, wiring, runtime }: 
     if (!isIdentifier(raw.__code)) return raw.__code;
     if (raw.declare) {
       const into = raw.data ? hoistedData : hoisted;
-      if (!into.includes(raw.declare)) into.push(raw.declare);
+      for (const line of [raw.declare].flat()) if (!into.includes(line)) into.push(line);
       return raw.__code;
     }
     // A name the module does not define: print what it stood for.
@@ -852,8 +852,8 @@ const printCode = ({ entry, ds, settings, rawProps, sources, wiring, runtime }: 
   // ---- Imports, from what the module ended up using
   const usesMemo = body.some((line) => line.includes('useMemo('));
   const reactHooks = [...(hasBody ? ['useState'] : []), ...(usesMemo ? ['useMemo'] : [])].sort();
-  const allLines = [...declarations, ...rowParts, ...helperParts].flatMap((p) => p.lines).concat(body, element);
-  const helpers = ['dateRangePreset', 'dimension', 'measure', 'results'].filter((name) => allLines.some((line) => new RegExp(`\\b${name}\\(`).test(line)));
+  const allLines = [...declarations, ...dataDeclarations, ...rowParts, ...helperParts].flatMap((p) => p.lines).concat(body, element);
+  const helpers = ['dateRangePreset', 'dimension', 'measure', 'optionsOf', 'results'].filter((name) => allLines.some((line) => new RegExp(`\\b${name}\\(`).test(line)));
   const types = [
     ...new Set([
       ...(stateful ? [`${exportName}State`] : []),
