@@ -134,6 +134,7 @@ describe('guide structure', () => {
       'loading-empty-and-errors',
       'events',
       'tables',
+      'controls',
       'theming',
       'localisation',
       'card-menu',
@@ -266,7 +267,9 @@ describe('use with AI', () => {
     }
     expect(markdown).not.toContain('Copy prompt');
     expect(h2s(guideOf('ai')).map((h) => h.h2)).toEqual(expect.arrayContaining(['Claude Code', 'Cursor', 'ChatGPT']));
-    expect(guideOf('ai').blocks.filter((b) => 'code' in b)).toHaveLength(3);
+    // Claude Code gets the skill's install command as well as the rule.
+    expect(guideOf('ai').blocks.filter((b) => 'code' in b)).toHaveLength(4);
+    expect(markdown).toContain(`${BRAND.url}/skills/emkit/SKILL.md`);
   });
 
   it('does not claim an MCP server', () => {

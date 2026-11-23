@@ -38,9 +38,9 @@ Before this phase, `sync.mjs` copied every upstream component, but `src/index.ts
 - [x] **Builder defaults:** the sync found upstream's export menu is now opt-in, with its default set only in Embeddable's builder input, so standalone users silently lost CSV/PNG export. Fixed generally: the sync records every input's `defaultValue` from the definitions, and each exported component applies the ones that are props (`withDefaults`, type-checked with `satisfies`). Standalone charts now match Embeddable's out-of-the-box look, including value labels on bar, line, pie and scatter charts.
 - [ ] **Controls**, in four parts:
   - [x] The seven simple ones (18 Nov 2026): `DateRangePicker`, `DateRangePickerCustom`, `GranularitySelect`, `ComparisonPeriodSelect`, `SingleSelect`, `MultiSelect`, `TextField`, each with a docs page, examples and builder defaults, and `dateRangePreset()` for a picker's starting value. The calendar and its locales load on demand.
-  - [ ] A "Controls" guide with one worked example (date range, granularity and a multi select driving a line chart), and helpers: the options of a field from rows, and a comparison period's dates.
-  - [ ] The filter builders, wrapped: plain `value` / `onChange` in place of `embeddableState`, one `loadOptions(field, search)` in place of the `filterResults<id>` props, and `applyFilters(rows, clause)` for in-memory data.
-  - [ ] The dimension and measure pickers, which only need a list of fields.
+  - [x] A "Controls" guide with one worked example (date range, granularity and a multi select driving a line chart), and helpers: `optionsOf` (a select's options from rows) and `useComparisonRange` (a comparison period's dates). (23 Nov 2026)
+  - [x] The filter builders, wrapped (`src/FilterBuilder.tsx`): plain `value` / `onChange` in place of `embeddableState`, one `loadOptions(field, search, otherFilters)` in place of the `filterResults<id>` props, and `applyFilters(rows, clause)` for in-memory data. (23 Nov 2026)
+  - [x] The dimension and measure pickers, which only need a list of fields: `DimensionSelect`, `MeasureSelect`, `MeasureMultiSelect`, `DimensionOrMeasureMultiSelect`. (23 Nov 2026)
   - Open: a date picker in another language draws after its date names load, so not in server HTML; the landing page loads 448 KB of JavaScript against a 450 KB budget.
 
 ## Phase 2: Docs site on Bklit's level (~4 days)

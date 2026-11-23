@@ -4,6 +4,8 @@ import { BRAND, makerLink, platformMarkdown } from '../config';
 import { PEER_NOTE } from './components';
 import { docsNav } from './nav';
 import { markdownPath, sitePages, type SitePage } from './pages';
+import { BUILD_RULES, BUILD_TOOLKIT } from './guides';
+import { SKILL_NAME, SKILL_PATH } from './skill';
 
 // llms.txt (llmstxt.org), llms-full.txt, robots.txt and sitemap.xml, all
 // built from sitePages() so they cannot drift from the site.
@@ -108,6 +110,49 @@ export const sitemapXml = (origin: string = BRAND.url) =>
 
 export type AgentFile = { path: string; contentType: string; body: string };
 
+// A Claude Code skill (Agent Skills format). It sends the agent to the docs for
+// the built-in components and carries the toolkit and rules for a component of
+// its own, the same text as Build your own chart.
+export const skillMarkdown = (origin: string = BRAND.url) => {
+  const pkg = BRAND.packageName;
+  return `---
+name: ${SKILL_NAME}
+description: Use when building charts, KPIs, data tables or dashboard controls in React with ${BRAND.name} (the \`${pkg}\` package), or when adding a chart of your own that must match them. Triggers on "add a chart", "build a dashboard", "KPI tile", "date range filter", "custom chart", or any file importing \`${pkg}\`.
+---
+
+# ${BRAND.name}
+
+${BRAND.name} is finished React chart, table and control components. Use a built-in component when one fits; build your own from \`${pkg}/build\` only when none does.
+
+## Before writing code
+
+1. Fetch ${origin}/llms.txt with curl. It lists every component with a link to its Markdown page.
+2. Fetch the .md page of each component you use. Copy prop names and the example from it; do not guess them.
+3. Use curl, not WebFetch: a summary loses the code and the props table.
+
+## Using the components
+
+- Wrap the app once in \`ChartsProvider\`. Describe fields with \`dimension()\` and \`measure()\`, and pass rows as \`results(rows)\`, keyed by each field's \`name\`.
+- Time values are ISO strings with no zone suffix. A row holds a time dimension's value under its \`name\`. Only a time dimension used as a stacked or grouped bar chart's \`groupBy\`, or as a scatter or bubble chart's point or group field, is read from \`\${name}.\${granularity}\` instead (\`month.month\`).
+- Loading is \`results(undefined)\`; an error is \`{ isLoading: false, error: message }\`. Do not draw your own spinner or empty state.
+- Controls take a value and report through \`onChange\`. Keep the value in state and query with it: ${origin}/docs/controls.md.
+
+## A component of your own
+
+Build on the toolkit, so the chart formats, colours, fills time gaps and draws its states like the rest. Reference: ${origin}/docs/build-your-own-chart.md.
+
+${BUILD_TOOLKIT}
+
+${BUILD_RULES}
+
+## Before you finish
+
+- Every value on screen goes through the formatter, and every series colour through \`getChartColors\`.
+- The component renders loading, empty and error states through \`ChartCard\` or \`EditorCard\`.
+- Labels a reader sees go through \`resolveI18nProps\` or the theme's translations.
+`;
+};
+
 const TEXT = 'text/plain; charset=utf-8';
 const MARKDOWN = 'text/markdown; charset=utf-8';
 
@@ -120,5 +165,6 @@ export const agentFiles = (origin: string = BRAND.url): AgentFile[] => {
     { path: '/robots.txt', contentType: TEXT, body: robotsTxt(origin) },
     { path: '/sitemap.xml', contentType: 'application/xml; charset=utf-8', body: sitemapXml(origin) },
     ...sitePages().map((p) => ({ path: markdownPath(p.path), contentType: MARKDOWN, body: pageMarkdown(p, origin) })),
+    { path: SKILL_PATH, contentType: MARKDOWN, body: skillMarkdown(origin) },
   ];
 };

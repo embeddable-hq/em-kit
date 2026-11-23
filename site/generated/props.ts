@@ -4610,6 +4610,104 @@ export const componentProps: Record<string, PropDoc[]> = {
       "required": false
     }
   ],
+  "FilterBuilder": [
+    {
+      "name": "dimensionsAndMeasures",
+      "type": "DimensionOrMeasure[]",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "syncDefaultFilters",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "value",
+      "type": "FilterBuilderClause | null",
+      "required": false,
+      "doc": "The filters the builder starts with. With `syncDefaultFilters`, later changes replace the reader's."
+    },
+    {
+      "name": "onChange",
+      "type": "(value: FilterBuilderClause | null) => void",
+      "required": false,
+      "doc": "Called with the filters as a clause tree, or `null` when there are none."
+    },
+    {
+      "name": "loadOptions",
+      "type": "(field: Dimension, search: string, otherFilters: FilterBuilderClause | null) => Record<string, unknown>[] | Promise<Record<string, unknown>[]>",
+      "required": false
+    }
+  ],
+  "FilterBuilderWithGrouping": [
+    {
+      "name": "dimensionsAndMeasures",
+      "type": "DimensionOrMeasure[]",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "syncDefaultFilters",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "value",
+      "type": "FilterBuilderClause | null",
+      "required": false,
+      "doc": "The filters the builder starts with. With `syncDefaultFilters`, later changes replace the reader's."
+    },
+    {
+      "name": "onChange",
+      "type": "(value: FilterBuilderClause | null) => void",
+      "required": false,
+      "doc": "Called with the filters as a clause tree, or `null` when there are none."
+    },
+    {
+      "name": "loadOptions",
+      "type": "(field: Dimension, search: string, otherFilters: FilterBuilderClause | null) => Record<string, unknown>[] | Promise<Record<string, unknown>[]>",
+      "required": false
+    }
+  ],
   "BarChart": [
     {
       "name": "dimension",
@@ -7953,6 +8051,244 @@ export const componentProps: Record<string, PropDoc[]> = {
     {
       "name": "tooltip",
       "type": "string",
+      "required": false
+    }
+  ],
+  "DimensionOrMeasureMultiSelect": [
+    {
+      "name": "selectedDimensionsAndMeasures",
+      "type": "DimensionOrMeasure[]",
+      "required": false
+    },
+    {
+      "name": "dimensionAndMeasureOptions",
+      "type": "DimensionOrMeasure[]",
+      "required": false
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "autoApply",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(value: DimensionOrMeasure[]) => void",
+      "required": true
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "DimensionSelect": [
+    {
+      "name": "selectedDimension",
+      "type": "Dimension",
+      "required": false
+    },
+    {
+      "name": "dimensionOptions",
+      "type": "Dimension[]",
+      "required": true
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(value: Dimension | undefined) => void",
+      "required": true
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "hideMenu",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "menuOptions",
+      "type": "(\"csv\" | \"xlsx\" | \"png\" | \"maximize\")[]",
+      "required": false
+    }
+  ],
+  "MeasureMultiSelect": [
+    {
+      "name": "selectedMeasures",
+      "type": "Measure[]",
+      "required": false
+    },
+    {
+      "name": "measureOptions",
+      "type": "Measure[]",
+      "required": false
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "autoApply",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(value: Measure[]) => void",
+      "required": true
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "MeasureSelect": [
+    {
+      "name": "selectedMeasure",
+      "type": "Measure",
+      "required": false
+    },
+    {
+      "name": "measureOptions",
+      "type": "Measure[]",
+      "required": true
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "clearable",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "componentName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "trackingId",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "onChange",
+      "type": "(value: Measure | undefined) => void",
+      "required": true
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "tooltip",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "hideMenu",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "menuOptions",
+      "type": "(\"csv\" | \"xlsx\" | \"png\" | \"maximize\")[]",
       "required": false
     }
   ]

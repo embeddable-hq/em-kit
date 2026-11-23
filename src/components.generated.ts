@@ -35,6 +35,10 @@ import type { SingleSelectFieldProProps as SingleSelectBaseProps } from './gener
 import type { TextFieldProProps as TextFieldBaseProps } from './generated/components/editors/TextFieldPro';
 import type { DateRangePickerPresetsProps as DateRangePickerCustomBaseProps } from './generated/components/editors/dates/DateRangePickerCustomPro';
 import type { DateRangePickerPresetsProps as DateRangePickerBaseProps } from './generated/components/editors/dates/DateRangePickerPresetsPro';
+import type { DimensionMeasureMultiSelectFieldProProps as DimensionOrMeasureMultiSelectBaseProps } from './generated/components/editors/DimensionOrMeasureMultiSelectFieldPro';
+import type { DimensionSingleSelectFieldProProps as DimensionSelectBaseProps } from './generated/components/editors/DimensionSingleSelectFieldPro';
+import type { MeasureMultiSelectFieldProProps as MeasureMultiSelectBaseProps } from './generated/components/editors/MeasureMultiSelectFieldPro';
+import type { MeasureSingleSelectFieldProProps as MeasureSelectBaseProps } from './generated/components/editors/MeasureSingleSelectFieldPro';
 
 import BarChartBase from './generated/components/charts/bars/BarChartDefaultPro';
 export type BarChartProps = BarChartBaseProps;
@@ -159,3 +163,19 @@ export const DateRangePickerCustom = withDefaults(DateRangePickerCustomBase, com
 import DateRangePickerBase from './generated/components/editors/dates/DateRangePickerPresetsPro';
 export type DateRangePickerProps = DateRangePickerBaseProps;
 export const DateRangePicker = withDefaults(DateRangePickerBase, componentDefaults.DateRangePicker, 'DateRangePicker');
+
+import DimensionOrMeasureMultiSelectBase from './generated/components/editors/DimensionOrMeasureMultiSelectFieldPro';
+export type DimensionOrMeasureMultiSelectProps = DimensionOrMeasureMultiSelectBaseProps;
+export const DimensionOrMeasureMultiSelect = withDefaults(DimensionOrMeasureMultiSelectBase, componentDefaults.DimensionOrMeasureMultiSelect, 'DimensionOrMeasureMultiSelect');
+
+import DimensionSelectBase from './generated/components/editors/DimensionSingleSelectFieldPro';
+export type DimensionSelectProps = DimensionSelectBaseProps;
+export const DimensionSelect = withDefaults(DimensionSelectBase, componentDefaults.DimensionSelect, 'DimensionSelect');
+
+import MeasureMultiSelectBase from './generated/components/editors/MeasureMultiSelectFieldPro';
+export type MeasureMultiSelectProps = MeasureMultiSelectBaseProps;
+export const MeasureMultiSelect = withDefaults(MeasureMultiSelectBase, componentDefaults.MeasureMultiSelect, 'MeasureMultiSelect');
+
+import MeasureSelectBase from './generated/components/editors/MeasureSingleSelectFieldPro';
+export type MeasureSelectProps = MeasureSelectBaseProps;
+export const MeasureSelect = withDefaults(MeasureSelectBase, componentDefaults.MeasureSelect, 'MeasureSelect');

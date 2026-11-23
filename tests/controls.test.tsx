@@ -15,7 +15,9 @@ import {
   defaultComparisonPeriodOptions,
   defaultDateRangeOptions,
   dimension,
+  optionsOf,
   results,
+  useComparisonRange,
 } from '../src';
 import type { Granularity, TimeRange } from '../src';
 import { loadDayjsLocale } from '../src/generated/utils/date.utils';
@@ -197,5 +199,39 @@ describe('TextField', () => {
     expect(onChange).toHaveBeenLastCalledWith('Enterprise plus');
     unmount();
     vi.useRealTimers();
+  });
+});
+
+describe('optionsOf', () => {
+  it('keeps one row per value, in first-seen order, and waits for rows', () => {
+    const rows = [{ region: 'EMEA', n: 1 }, { region: 'APAC', n: 2 }, { region: 'EMEA', n: 3 }, { region: null, n: 4 }];
+    expect(optionsOf(rows, region).data).toEqual([{ region: 'EMEA' }, { region: 'APAC' }]);
+    expect(optionsOf(undefined, region).isLoading).toBe(true);
+  });
+});
+
+describe('useComparisonRange', () => {
+  const Show = ({ range, period }: { range?: TimeRange; period?: string }) => {
+    const compared = useComparisonRange(range, period);
+    return <span>{compared ? `${compared.from?.toISOString()} ${compared.to?.toISOString()}` : 'none'}</span>;
+  };
+
+  it('works out the previous period of a range, and nothing without a period', () => {
+    const range = { from: new Date('2026-03-01T00:00:00Z'), to: new Date('2026-03-10T23:59:59.999Z') };
+    const shown = mount(<Show range={range} period="Previous period" />);
+    const [from, to] = shown.container.textContent!.split(' ').map((d) => new Date(d).getTime());
+    expect(to! - from!).toBe(range.to.getTime() - range.from.getTime());
+    expect(to!).toBeLessThan(range.from.getTime());
+    shown.unmount();
+
+    const none = mount(<Show range={range} />);
+    expect(none.container.textContent).toBe('none');
+    none.unmount();
+  });
+
+  it('resolves a preset range first', () => {
+    const shown = mount(<Show range={dateRangePreset('Last 30 days')} period="Previous period" />);
+    expect(shown.container.textContent).not.toBe('none');
+    shown.unmount();
   });
 });

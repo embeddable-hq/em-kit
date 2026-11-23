@@ -75,7 +75,9 @@ for (const component of published) {
 
   // Builder inputs that aren't props (query settings such as maxResults) are
   // the data layer's business here.
-  const entries = Object.entries(builderDefaults[component.path] ?? {}).filter(([key]) => {
+  // A null default sets nothing, so it is left out.
+  const entries = Object.entries(builderDefaults[component.path] ?? {}).filter(([key, value]) => {
+    if (value === null) return false;
     if (propsType.propNames.has(key)) return true;
     dropped.push(`${component.name}.${key}`);
     return false;

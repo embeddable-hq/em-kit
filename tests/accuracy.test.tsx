@@ -529,7 +529,7 @@ const exported = new Set(
   checker.getExportsOfModule(checker.getSymbolAtLocation(program.getSourceFile(`${process.cwd()}/src/index.ts`)!)!).map((s) => s.name),
 );
 // Names TypeScript and React define, which every reader already has.
-const GLOBAL_TYPES = new Set(['Date', 'Record', 'Partial', 'Array', 'SetStateAction']);
+const GLOBAL_TYPES = new Set(['Date', 'Record', 'Partial', 'Array', 'SetStateAction', 'Promise']);
 const typeNames = (text: string) => [...text.matchAll(/\b[A-Z][A-Za-z0-9]*\b/g)].map((m) => m[0]);
 
 describe('type names', () => {

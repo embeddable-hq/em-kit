@@ -377,8 +377,9 @@ export const propDescription = (prop: PropDoc, entry?: ChartEntry) =>
 
 // `x: string | undefined` in a payload reads as `x?: string`, and a prop that
 // accepts `undefined` while its query loads is still shown by its real type.
+// A handler's last parameter keeps it: the handler must accept `undefined`.
 const tidyType = (type: string) =>
-  type.replace(/(\w+)\??: ([^;{}]+?) \| undefined;/g, '$1?: $2;').replace(/ \| undefined\b/g, '');
+  type.replace(/(\w+)\??: ([^;{}]+?) \| undefined;/g, '$1?: $2;').replace(/ \| undefined\b(?!\))/g, '');
 
 /** A prop's type as the reference shows it. */
 export const propType = (prop: PropDoc) => tidyType(prop.type);
@@ -721,7 +722,7 @@ export const componentMarkdown = (entry: ChartEntry, examples: { example: Compon
     purposeOf(entry),
     [
       `- Component: \`<${name} />\`, imported from \`${pkg}\``,
-      `- Required props: ${list(requiredProps(entry).map(code))}`,
+      `- Required props: ${list(requiredProps(entry).map(code)) || 'none'}`,
       `- HTML page, with live previews: ${BRAND.url}${componentPath(entry.id)}`,
       `- Playground (needs a browser): ${BRAND.url}${playgroundPath(entry.id)}`,
     ].join('\n'),

@@ -38,10 +38,6 @@ const EXCLUDE_PRO = [
   /^components\/component\.(sub)?inputs\.constants\.ts$/,
   /^components\/preview\.data\.constants\.ts$/,
   /\.loadData\.utils\.ts$/,
-  // Editors bound to Embeddable's dimension/measure model
-  /^components\/editors\/filters\//,
-  /^components\/editors\/(DimensionOrMeasureMultiSelectFieldPro|DimensionSingleSelectFieldPro|MeasureMultiSelectFieldPro|MeasureSingleSelectFieldPro)\//,
-  /^components\/editors\/shared\/DimensionAndMeasureSingleSelectField\//,
   // Tests run against Embeddable mocks upstream
   /\.test\.tsx?$/,
   /(^|\/)test-utils\//,
@@ -242,6 +238,18 @@ const SOURCES = [
     // Targeted source edits that must keep applying; the sync fails when one
     // stops matching so upstream drift surfaces here instead of at runtime.
     contentRewrites: [
+      {
+        file: 'components/editors/filters/filters.utils.ts',
+        from: "import { inputs } from '../../component.inputs.constants';\n\n/** Shared \"Track default filters\" input, used by both filter-builder metas. */\nexport const syncDefaultFiltersInput = {\n  ...inputs.boolean,\n  name: 'syncDefaultFilters',\n  label: 'Track default filters',\n  defaultValue: false,\n  category: 'Component Settings',\n  description:\n    'When on, the filter tracks changes to its bound Default filters after load — so the host can update or reset it at runtime. When off (default), Default filters only seeds the initial value.',\n} as const;\n",
+        to: '',
+        why: 'a builder input for the Embeddable metas, which are not synced',
+      },
+      {
+        file: 'components/editors/filters/FilterBuilderPro/index.tsx',
+        from: "import { FilterBuilderState } from './definition';",
+        to: 'export type FilterBuilderState = { filters: FilterBuilderFilter[]; operator: FilterBuilderAndOrOperator };',
+        why: 'the state type lives in definition.ts, which is not synced',
+      },
       {
         file: 'components/charts/bars/bars.types.ts',
         from: 'export type BarChartProOptionsClickArg = {\n  dimensionValue: string | number | undefined;\n  dimensionTimeRange: TimeRange | undefined;\n};',

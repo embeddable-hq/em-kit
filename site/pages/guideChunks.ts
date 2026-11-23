@@ -23,6 +23,7 @@ export const chartBlockIds = [
   'chart-states',
   'region-filter',
   'customers-table',
+  'signups-filters',
   'answer-chart',
   'target-line-demo',
 ] as const satisfies readonly LiveBlockId[];

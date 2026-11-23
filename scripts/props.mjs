@@ -154,7 +154,9 @@ for (const exported of exports) {
       const param = signature.getParameters()[0];
       if (param) {
         const paramType = checker.getTypeOfSymbolAtLocation(param, declaration);
-        if (paramType.getProperties().length && !checker.typeToString(paramType).startsWith('{')) {
+        // Fields are described on their own page, not spelled out per prop.
+        const isField = ['Dimension', 'Measure', 'DimensionOrMeasure'].includes(checker.typeToString(paramType));
+        if (!isField && paramType.getProperties().length && !checker.typeToString(paramType).startsWith('{')) {
           payload = checker.typeToString(
             paramType,
             undefined,

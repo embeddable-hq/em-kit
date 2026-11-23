@@ -28,7 +28,9 @@ import regionFilterSource from '../examples/RegionFilter.tsx?raw';
 import revenueByPlanAndMonthSource from '../examples/RevenueByPlanAndMonth.tsx?raw';
 import revenueChartSource from '../examples/RevenueChart.tsx?raw';
 import revenueTargetSource from '../examples/RevenueTarget.tsx?raw';
+import { skillInstall } from './skill';
 import signupsByWeekSource from '../examples/SignupsByWeek.tsx?raw';
+import signupsFiltersSource from '../examples/SignupsFilters.tsx?raw';
 import spanishChartsSource from '../examples/SpanishCharts.tsx?raw';
 import themeTypesSource from '../../src/generated/theme/theme.types.ts?raw';
 import targetLineChartSource from '../examples/TargetLineChart.tsx?raw';
@@ -59,6 +61,7 @@ export type LiveBlockId =
   | 'chart-states'
   | 'region-filter'
   | 'customers-table'
+  | 'signups-filters'
   | 'answer-chart'
   | 'ai-schema'
   | 'target-line-demo';
@@ -206,6 +209,29 @@ export async function chartFor(question: string, rows: object[]): Promise<ChartS
 
 const schemaJson = JSON.stringify(renderChartTool.input_schema, null, 2);
 export const aiSchemaJson = schemaJson;
+
+// The toolkit and rules for a chart of your own: shown on Build your own chart
+// and in the Claude Code skill (skill.ts), so the two say the same.
+export const BUILD_TOOLKIT = [
+  '| For | Use |',
+  '|---|---|',
+  '| Theme and translations | `useChartsTheme`, `i18nSetup`, `resolveI18nProps` |',
+  '| Formatting every value | `getThemeFormatter(theme).data(field, value)` |',
+  '| Time series | `useFillGaps`, `getDimensionWithGranularity`, `getTimeRangeFromDimensionValue` |',
+  '| Comparison periods | `defaultComparisonPeriodOptions`, `getComparisonPeriodDateRange` |',
+  '| Series colours | `getChartColors`, `getDimensionMeasureColor` |',
+  '| Theme tokens | `getStyle`, `getStyleNumber` |',
+  '| Card, states and menu | `ChartCard`, `EditorCard` |',
+  '| Chart.js primitives | `BarChart`, `LineChart`, `PieChart`, `DonutChart`, `KpiChart` |',
+  '| Data and option builders | `getBarChartProData`, `getBarChartProOptions`, `getLineChartProData`, `getLineChartProOptions`, `getPieChartProData`, `getPieChartProOptions` |',
+].join('\n');
+
+export const BUILD_RULES = [
+  '- Format every value with `getThemeFormatter(theme).data(field, value)`, so the field’s options and the locale apply.',
+  '- A `Pro` options builder only formats values. Pass it as `options` to a primitive, which merges it onto its themed base.',
+  '- Take data colours from `getChartColors()` and `getDimensionMeasureColor()`, so a value keeps its colour across charts. Read everything else from a theme token with `getStyle()` during render, so it follows theme changes.',
+  '- Wrap the chart in `ChartCard` and pass it the filled `results`. It draws the skeleton, the empty and error states and the export menu.',
+].join('\n');
 
 const agentRule = `For charts, KPIs and data tables, use the ${pkg} package (${BRAND.name}). Read ${url}/llms.txt first, then the .md page of each component you use. Fetch them with curl, not WebFetch, which returns a summary: the code and the props table must come through word for word.`;
 
@@ -710,6 +736,79 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: 'controls',
+    title: 'Controls',
+    section: 'Guides',
+    description: 'Date ranges, granularity, selects, field pickers and filter builders wired to charts through your own state.',
+    blocks: [
+      {
+        md: 'A control takes a value and calls `onChange` with the reader’s choice. Keep the value in your state, query with it and pass the rows to the charts: nothing else connects them.',
+      },
+      { h2: 'Filter a chart with three controls', id: 'example' },
+      {
+        md: 'A date range, a granularity and a region select drive one line chart. Here `query` stands in for your API.',
+      },
+      { code: sample(signupsFiltersSource), file: 'SignupsFilters.tsx' },
+      {
+        live: 'signups-filters',
+        md: 'Result: a date range picker, a granularity select and a region multi select above a line chart of signups with one line per region. Each choice redraws the chart.',
+      },
+      { h2: 'What each control reports', id: 'values' },
+      {
+        md: [
+          '| Control | Value | Use it for |',
+          '|---|---|---|',
+          '| [`DateRangePicker`](/docs/components/date-range-picker), [`DateRangePickerCustom`](/docs/components/date-range-picker-custom) | A `TimeRange`: `from` and `to` dates, and the preset’s name when one was picked | The rows you query |',
+          '| [`GranularitySelect`](/docs/components/granularity-select) | A `Granularity` | The time dimension’s `granularity`, and how you group rows |',
+          '| [`ComparisonPeriodSelect`](/docs/components/comparison-period-select) | A comparison’s name | `useComparisonRange`, below |',
+          '| [`SingleSelect`](/docs/components/single-select), [`MultiSelect`](/docs/components/multi-select) | A value, or values, of a field | A filter on the rows |',
+          '| [`TextField`](/docs/components/text-field) | Text, once the reader pauses | A search |',
+          '| [`FilterBuilder`](/docs/components/filter-builder), [`FilterBuilderWithGrouping`](/docs/components/filter-builder-with-grouping) | The reader’s filters as a clause tree, `{ operator, clauses }` | Your API’s filters, or `applyFilters(rows, clause)` for rows in memory |',
+          '| [`DimensionSelect`](/docs/components/dimension-select), [`MeasureSelect`](/docs/components/measure-select), [`MeasureMultiSelect`](/docs/components/measure-multi-select), [`DimensionOrMeasureMultiSelect`](/docs/components/dimension-or-measure-multi-select) | One or more of the fields you offer | A chart’s `dimension`, `measure` or `measures`, or a table’s columns |',
+        ].join('\n'),
+      },
+      {
+        md: 'A preset such as `dateRangePreset(\'Last 6 months\')` starts with no dates. The picker works them out in the provider’s time zone and reports them once it mounts, so query once `from` and `to` are set.',
+      },
+      { h2: 'Options from your rows', id: 'options' },
+      {
+        md: 'A select’s `results` holds one row per option. When you already hold the rows, `optionsOf(rows, field)` picks out each value once, in the order first seen. For many values, query the distinct values instead and pass `setSearchValue` to search on your server.',
+      },
+      { h2: 'Filter clauses', id: 'filters' },
+      {
+        md: 'A filter builder reports a clause tree, or `null` when no filter is complete. A group is `{ operator: \'and\' | \'or\', clauses }`, and each filter is `{ property, operator, value }`, where `property` is the field’s name.',
+      },
+      {
+        md: 'The operators are `equals`, `notEquals`, `contains` and `notContains`, plus `gt`, `gte`, `lt` and `lte` for numbers. With a list of values, `contains` keeps rows holding any of them; with text, rows whose value includes it, ignoring case.',
+      },
+      {
+        code: [
+          "import { applyFilters, type FilterBuilderClause } from 'em-kit';",
+          '',
+          'const clause: FilterBuilderClause = {',
+          "  operator: 'and',",
+          "  clauses: [",
+          "    { property: 'region', operator: 'contains', value: ['EMEA', 'APAC'] },",
+          "    { property: 'revenue', operator: 'gte', value: 1000 },",
+          '  ],',
+          '};',
+          '',
+          "const rows = [{ region: 'EMEA', revenue: 1200 }, { region: 'Americas', revenue: 900 }];",
+          '// [{ region: \'EMEA\', revenue: 1200 }]',
+          'export const kept = applyFilters(rows, clause);',
+        ].join('\n'),
+        lang: 'ts',
+      },
+      {
+        md: '`applyFilters(rows, clause)` returns the rows a clause keeps, with the rows’ own type, and every row for `null`. A builder caches each filter’s options by field, search and the other filters, so to load them again after your data changes, give the builder a new `key`.',
+      },
+      { h2: 'Comparison dates', id: 'comparison' },
+      {
+        md: '`useComparisonRange(range, period)` turns the date range and the comparison select’s choice into the dates to compare with: `const compared = useComparisonRange(range, period)`. Query those as the comparison rows. It returns `undefined` until both are set, and it uses the provider’s time zone and its `defaults.comparisonPeriodsOptions`.',
+      },
+    ],
+  },
+  {
     slug: 'theming',
     title: 'Theming',
     section: 'Guides',
@@ -922,7 +1021,11 @@ export const guides: Guide[] = [
         ].join('\n'),
       },
       { h2: 'Claude Code', id: 'claude-code' },
-      { md: 'Add this to `CLAUDE.md` at the root of your repository.' },
+      {
+        md: `Install the ${BRAND.name} skill in your repository. Claude Code then reads the docs before it uses a component, and builds a chart of its own from the same toolkit as the built-in ones ([Build your own chart](/docs/build-your-own-chart)).`,
+      },
+      { code: skillInstall(url), lang: 'bash' },
+      { md: 'Or add this rule to `CLAUDE.md` at the root of your repository.' },
       { code: agentRule, lang: 'text', file: 'CLAUDE.md' },
       { h2: 'Cursor', id: 'cursor' },
       {
@@ -998,19 +1101,7 @@ export const guides: Guide[] = [
         md: `When no component fits, build one from the toolkit the built-in charts use, imported from \`${pkg}/build\`. Your chart then formats values, picks colours, fills time gaps and draws the same states as the rest.`,
       },
       {
-        md: [
-          '| For | Use |',
-          '|---|---|',
-          '| Theme and translations | `useChartsTheme`, `i18nSetup`, `resolveI18nProps` |',
-          '| Formatting every value | `getThemeFormatter(theme).data(field, value)` |',
-          '| Time series | `useFillGaps`, `getDimensionWithGranularity`, `getTimeRangeFromDimensionValue` |',
-          '| Comparison periods | `defaultComparisonPeriodOptions`, `getComparisonPeriodDateRange` |',
-          '| Series colours | `getChartColors`, `getDimensionMeasureColor` |',
-          '| Theme tokens | `getStyle`, `getStyleNumber` |',
-          '| Card, states and menu | `ChartCard`, `EditorCard` |',
-          '| Chart.js primitives | `BarChart`, `LineChart`, `PieChart`, `DonutChart`, `KpiChart` |',
-          '| Data and option builders | `getBarChartProData`, `getBarChartProOptions`, `getLineChartProData`, `getLineChartProOptions`, `getPieChartProData`, `getPieChartProOptions` |',
-        ].join('\n'),
+        md: BUILD_TOOLKIT,
       },
       { h2: 'Example: a line with a target', id: 'example' },
       {
@@ -1022,12 +1113,7 @@ export const guides: Guide[] = [
       { live: 'target-line-demo', md: 'Result: the revenue line with a dashed line at $55,000 and “Target” in the legend.' },
       { h2: 'Rules that keep it consistent', id: 'rules' },
       {
-        md: [
-          '- Format every value with `getThemeFormatter(theme).data(field, value)`, so the field’s options and the locale apply.',
-          '- A `Pro` options builder only formats values. Pass it as `options` to a primitive, which merges it onto its themed base.',
-          '- Take data colours from `getChartColors()` and `getDimensionMeasureColor()`, so a value keeps its colour across charts. Read everything else from a theme token with `getStyle()` during render, so it follows theme changes.',
-          '- Wrap the chart in `ChartCard` and pass it the filled `results`. It draws the skeleton, the empty and error states and the export menu.',
-        ].join('\n'),
+        md: BUILD_RULES,
       },
     ],
   },

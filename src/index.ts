@@ -35,6 +35,7 @@ export type {
 
 // Data contract
 export { dateRangePreset, dimension, measure, results } from './data';
+export { optionsOf, useComparisonRange } from './controls';
 export type { FieldInputs } from './fieldInputs';
 export type {
   DataResponse,
@@ -91,3 +92,12 @@ export {
   type TableScrollableProps,
   type TableScrollableState,
 } from './TableScrollable';
+export {
+  FilterBuilder,
+  FilterBuilderWithGrouping,
+  applyFilters,
+  type FilterBuilderProps,
+  type FilterBuilderWithGroupingProps,
+  type FilterBuilderClause,
+  type LoadFilterOptions,
+} from './FilterBuilder';

@@ -4527,9 +4527,471 @@
     "label": "Comparison Period Select Field",
     "fields": {}
   },
+  "DimensionMeasureMultiSelectFieldPro": {
+    "label": "Dimension and Measure Multi Select Field",
+    "fields": {
+      "dimensionAndMeasureOptions": {
+        "kind": "dimensionOrMeasure",
+        "label": "Dimension and measure options",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "selectedDimensionsAndMeasures": {
+        "kind": "dimensionOrMeasure",
+        "label": "Selected dimensions and measures",
+        "array": true,
+        "required": false,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "DimensionSingleSelectFieldPro": {
+    "label": "Dimension Single Select Field",
+    "fields": {
+      "dimensionOptions": {
+        "kind": "dimension",
+        "label": "Dimension options",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "selectedDimension": {
+        "kind": "dimension",
+        "label": "Selected dimension",
+        "required": false,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
   "GranularitySelectFieldPro": {
     "label": "Granularity Select Field",
     "fields": {}
+  },
+  "MeasureMultiSelectFieldPro": {
+    "label": "Measure Multi Select Field",
+    "fields": {
+      "measureOptions": {
+        "kind": "measure",
+        "label": "Measure options",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "selectedMeasures": {
+        "kind": "measure",
+        "label": "Selected measures",
+        "array": true,
+        "required": false,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "MeasureSingleSelectFieldPro": {
+    "label": "Measure Single Select Field",
+    "fields": {
+      "measureOptions": {
+        "kind": "measure",
+        "label": "Measure options",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      },
+      "selectedMeasure": {
+        "kind": "measure",
+        "label": "Selected measure",
+        "required": false,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
   },
   "MultiSelectFieldPro": {
     "label": "Multi Select Field",
@@ -4770,5 +5232,125 @@
   "DateRangeSelectFieldPro": {
     "label": "Date-Range Picker - Presets",
     "fields": {}
+  },
+  "FilterBuilderPro": {
+    "label": "Filter Builder",
+    "fields": {
+      "dimensionsAndMeasures": {
+        "kind": "dimensionOrMeasure",
+        "label": "Dimensions and measures",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "FilterBuilderWithGroupingPro": {
+    "label": "Filter Builder (with grouping)",
+    "fields": {
+      "dimensionsAndMeasures": {
+        "kind": "dimensionOrMeasure",
+        "label": "Dimensions and measures",
+        "array": true,
+        "inputs": [
+          {
+            "name": "prefix",
+            "label": "Prefix",
+            "type": "string"
+          },
+          {
+            "name": "suffix",
+            "label": "Suffix",
+            "type": "string"
+          },
+          {
+            "name": "displayName",
+            "label": "Display name",
+            "type": "string"
+          },
+          {
+            "name": "maxCharacters",
+            "label": "Maximum characters",
+            "type": "number",
+            "supportedTypes": [
+              "string"
+            ]
+          },
+          {
+            "name": "decimalPlaces",
+            "label": "Decimal places",
+            "type": "number",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "currency",
+            "label": "Currency",
+            "type": "string",
+            "description": "e.g. EUR",
+            "supportedTypes": [
+              "number"
+            ]
+          },
+          {
+            "name": "abbreviateLargeNumber",
+            "label": "Abbreviate large number",
+            "type": "boolean",
+            "supportedTypes": [
+              "number"
+            ]
+          }
+        ]
+      }
+    }
   }
 }

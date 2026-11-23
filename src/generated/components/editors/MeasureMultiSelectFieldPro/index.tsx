@@ -1,0 +1,109 @@
+import { Measure } from '../../../../runtime/core';
+import { useTheme } from '../../../../runtime/react';
+import { MultiSelectField } from '../../../../generated-ui/index';
+import { useState, useEffect } from 'react';
+import { Theme } from '../../../theme/theme.types';
+import { i18nSetup, i18n } from '../../../theme/i18n/i18n';
+import { EditorCard, EditorCardHeaderProps } from '../shared/EditorCard/EditorCard';
+import { resolveI18nProps } from '../../component.utils';
+import { getDimensionAndMeasureOptions } from '../utils/dimensionsAndMeasures.utils';
+import { dispatchEventUserInteraction } from '../../../utils/events.utils';
+
+export type MeasureMultiSelectFieldProProps = {
+  selectedMeasures?: Measure[];
+  measureOptions?: Measure[];
+  placeholder?: string;
+  clearable?: boolean;
+  autoApply?: boolean;
+  componentName?: string;
+  trackingId?: string;
+  onChange: (value: Measure[]) => void;
+} & EditorCardHeaderProps;
+
+const MeasureMultiSelectFieldPro = (props: MeasureMultiSelectFieldProProps) => {
+  const theme = useTheme() as Theme;
+  i18nSetup(theme);
+
+  const {
+    selectedMeasures = [],
+    measureOptions = [],
+    clearable,
+    autoApply,
+    componentName,
+    trackingId,
+    onChange,
+  } = props;
+  const { title, description, tooltip, placeholder } = resolveI18nProps(props);
+
+  const [searchValue, setSearchValue] = useState('');
+  const [pendingValues, setPendingValues] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (clearable) return;
+    if (selectedMeasures.length > 0) return;
+    const first = measureOptions[0];
+    if (!first) return;
+
+    onChange([first]);
+  }, [clearable, selectedMeasures.length, measureOptions, onChange]);
+
+  // Normalize selectedMeasures titles by resolving them against measureOptions.
+  // Variable defaults may store measures with model-qualified titles (e.g. "Products # of orders"),
+  // while measureOptions always has the correct display title (e.g. "# of orders").
+  // Firing onChange with the resolved measure objects ensures the variable and any dependent
+  // components (e.g. charts) receive correctly-formatted measures.
+  useEffect(() => {
+    if (!selectedMeasures.length || !measureOptions.length) return;
+
+    const normalized = selectedMeasures.map(
+      (m) => measureOptions.find((o) => o.name === m.name) ?? m,
+    );
+
+    if (normalized.every((norm, i) => norm.title === selectedMeasures[i]?.title)) return;
+
+    onChange(normalized);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    JSON.stringify(selectedMeasures.map((m) => `${m.name}:${m.title}`)),
+    JSON.stringify(measureOptions.map((m) => `${m.name}:${m.title}`)),
+    onChange,
+  ]);
+
+  const currentMeasureName = selectedMeasures.map((m) => m.name);
+
+  const options = getDimensionAndMeasureOptions({
+    dimensionsAndMeasures: measureOptions,
+    searchValue,
+    theme,
+  });
+
+  const handleChange = (newValues: string[]) => {
+    const selectedNamesSet = new Set(newValues);
+    const newMeasures = measureOptions.filter((m) => selectedNamesSet.has(m.name));
+    dispatchEventUserInteraction({ componentName, trackingId, value: newMeasures });
+    onChange(newMeasures);
+  };
+
+  return (
+    <EditorCard title={title} description={description} tooltip={tooltip}>
+      <MultiSelectField
+        isClearable={clearable}
+        disableApplyButton={!clearable && pendingValues.length === 0}
+        isSearchable
+        autoApply={autoApply}
+        values={currentMeasureName}
+        options={options}
+        placeholder={placeholder}
+        searchPlaceholder={i18n.t('common.search')}
+        submitLabel={i18n.t('common.apply')}
+        noOptionsMessage={i18n.t('common.noOptionsFound')}
+        onChange={handleChange}
+        onPendingChange={setPendingValues}
+        onSearch={setSearchValue}
+        avoidCollisions={false}
+      />
+    </EditorCard>
+  );
+};
+
+export default MeasureMultiSelectFieldPro;

@@ -1,0 +1,61 @@
+import { useTheme } from '../../../../../runtime/react';
+import { Theme } from '../../../../theme/theme.types';
+import { useEffect, useState } from 'react';
+import { SingleSelectField } from '../../../../../generated-ui/index';
+import { getDimensionAndMeasureOptions } from '../../utils/dimensionsAndMeasures.utils';
+import { Dimension, Measure } from '../../../../../runtime/core';
+import { i18n } from '../../../../theme/i18n/i18n';
+
+export type DimensionAndMeasureSingleSelectFieldProps<T> = {
+  selectedValue?: T;
+  options: T[];
+  placeholder?: string;
+  clearable?: boolean;
+  onChange: (value: T | undefined, isUserAction?: boolean) => void;
+};
+
+export const DimensionAndMeasureSingleSelectField = <T extends Dimension | Measure>(
+  props: DimensionAndMeasureSingleSelectFieldProps<T>,
+) => {
+  const theme = useTheme() as Theme;
+
+  const [searchValue, setSearchValue] = useState<string>('');
+
+  const { selectedValue, options, clearable, placeholder, onChange } = props;
+
+  const handleChange = (newValue: string | null) => {
+    const newSelection = options.find((option) => option.name === newValue);
+    onChange(newSelection, true);
+  };
+
+  // Auto-select first dimensionOrMeasure when is not clearable and there is no selection
+  useEffect(() => {
+    const autoSelectActive = !clearable && !selectedValue;
+
+    if (!autoSelectActive) return;
+
+    const firstDimension = options?.[0];
+
+    if (firstDimension) {
+      onChange(firstDimension);
+    }
+  }, [clearable, selectedValue, options, onChange]);
+
+  return (
+    <SingleSelectField
+      searchable
+      clearable={clearable}
+      placeholder={placeholder}
+      searchPlaceholder={i18n.t('common.search')}
+      value={selectedValue?.name}
+      onChange={handleChange}
+      onSearch={setSearchValue}
+      options={getDimensionAndMeasureOptions({
+        dimensionsAndMeasures: options,
+        searchValue,
+        theme,
+      })}
+      avoidCollisions={false}
+    />
+  );
+};
