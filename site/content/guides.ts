@@ -28,6 +28,7 @@ import regionFilterSource from '../examples/RegionFilter.tsx?raw';
 import revenueByPlanAndMonthSource from '../examples/RevenueByPlanAndMonth.tsx?raw';
 import revenueChartSource from '../examples/RevenueChart.tsx?raw';
 import revenueTargetSource from '../examples/RevenueTarget.tsx?raw';
+import { skillInstall } from './skill';
 import signupsByWeekSource from '../examples/SignupsByWeek.tsx?raw';
 import signupsFiltersSource from '../examples/SignupsFilters.tsx?raw';
 import spanishChartsSource from '../examples/SpanishCharts.tsx?raw';
@@ -208,6 +209,29 @@ export async function chartFor(question: string, rows: object[]): Promise<ChartS
 
 const schemaJson = JSON.stringify(renderChartTool.input_schema, null, 2);
 export const aiSchemaJson = schemaJson;
+
+// The toolkit and rules for a chart of your own: shown on Build your own chart
+// and in the Claude Code skill (skill.ts), so the two say the same.
+export const BUILD_TOOLKIT = [
+  '| For | Use |',
+  '|---|---|',
+  '| Theme and translations | `useChartsTheme`, `i18nSetup`, `resolveI18nProps` |',
+  '| Formatting every value | `getThemeFormatter(theme).data(field, value)` |',
+  '| Time series | `useFillGaps`, `getDimensionWithGranularity`, `getTimeRangeFromDimensionValue` |',
+  '| Comparison periods | `defaultComparisonPeriodOptions`, `getComparisonPeriodDateRange` |',
+  '| Series colours | `getChartColors`, `getDimensionMeasureColor` |',
+  '| Theme tokens | `getStyle`, `getStyleNumber` |',
+  '| Card, states and menu | `ChartCard`, `EditorCard` |',
+  '| Chart.js primitives | `BarChart`, `LineChart`, `PieChart`, `DonutChart`, `KpiChart` |',
+  '| Data and option builders | `getBarChartProData`, `getBarChartProOptions`, `getLineChartProData`, `getLineChartProOptions`, `getPieChartProData`, `getPieChartProOptions` |',
+].join('\n');
+
+export const BUILD_RULES = [
+  '- Format every value with `getThemeFormatter(theme).data(field, value)`, so the field’s options and the locale apply.',
+  '- A `Pro` options builder only formats values. Pass it as `options` to a primitive, which merges it onto its themed base.',
+  '- Take data colours from `getChartColors()` and `getDimensionMeasureColor()`, so a value keeps its colour across charts. Read everything else from a theme token with `getStyle()` during render, so it follows theme changes.',
+  '- Wrap the chart in `ChartCard` and pass it the filled `results`. It draws the skeleton, the empty and error states and the export menu.',
+].join('\n');
 
 const agentRule = `For charts, KPIs and data tables, use the ${pkg} package (${BRAND.name}). Read ${url}/llms.txt first, then the .md page of each component you use. Fetch them with curl, not WebFetch, which returns a summary: the code and the props table must come through word for word.`;
 
@@ -968,7 +992,11 @@ export const guides: Guide[] = [
         ].join('\n'),
       },
       { h2: 'Claude Code', id: 'claude-code' },
-      { md: 'Add this to `CLAUDE.md` at the root of your repository.' },
+      {
+        md: `Install the ${BRAND.name} skill in your repository. Claude Code then reads the docs before it uses a component, and builds a chart of its own from the same toolkit as the built-in ones ([Build your own chart](/docs/build-your-own-chart)).`,
+      },
+      { code: skillInstall(url), lang: 'bash' },
+      { md: 'Or add this rule to `CLAUDE.md` at the root of your repository.' },
       { code: agentRule, lang: 'text', file: 'CLAUDE.md' },
       { h2: 'Cursor', id: 'cursor' },
       {
@@ -1044,19 +1072,7 @@ export const guides: Guide[] = [
         md: `When no component fits, build one from the toolkit the built-in charts use, imported from \`${pkg}/build\`. Your chart then formats values, picks colours, fills time gaps and draws the same states as the rest.`,
       },
       {
-        md: [
-          '| For | Use |',
-          '|---|---|',
-          '| Theme and translations | `useChartsTheme`, `i18nSetup`, `resolveI18nProps` |',
-          '| Formatting every value | `getThemeFormatter(theme).data(field, value)` |',
-          '| Time series | `useFillGaps`, `getDimensionWithGranularity`, `getTimeRangeFromDimensionValue` |',
-          '| Comparison periods | `defaultComparisonPeriodOptions`, `getComparisonPeriodDateRange` |',
-          '| Series colours | `getChartColors`, `getDimensionMeasureColor` |',
-          '| Theme tokens | `getStyle`, `getStyleNumber` |',
-          '| Card, states and menu | `ChartCard`, `EditorCard` |',
-          '| Chart.js primitives | `BarChart`, `LineChart`, `PieChart`, `DonutChart`, `KpiChart` |',
-          '| Data and option builders | `getBarChartProData`, `getBarChartProOptions`, `getLineChartProData`, `getLineChartProOptions`, `getPieChartProData`, `getPieChartProOptions` |',
-        ].join('\n'),
+        md: BUILD_TOOLKIT,
       },
       { h2: 'Example: a line with a target', id: 'example' },
       {
@@ -1068,12 +1084,7 @@ export const guides: Guide[] = [
       { live: 'target-line-demo', md: 'Result: the revenue line with a dashed line at $55,000 and “Target” in the legend.' },
       { h2: 'Rules that keep it consistent', id: 'rules' },
       {
-        md: [
-          '- Format every value with `getThemeFormatter(theme).data(field, value)`, so the field’s options and the locale apply.',
-          '- A `Pro` options builder only formats values. Pass it as `options` to a primitive, which merges it onto its themed base.',
-          '- Take data colours from `getChartColors()` and `getDimensionMeasureColor()`, so a value keeps its colour across charts. Read everything else from a theme token with `getStyle()` during render, so it follows theme changes.',
-          '- Wrap the chart in `ChartCard` and pass it the filled `results`. It draws the skeleton, the empty and error states and the export menu.',
-        ].join('\n'),
+        md: BUILD_RULES,
       },
     ],
   },

@@ -7,7 +7,8 @@ import * as aiExports from '../src/ai';
 import * as buildExports from '../src/build';
 import { chartEntries } from '../site/catalog/registry';
 import { BRAND } from '../site/config';
-import { agentFiles, forOrigin, llmsFullTxt, llmsTxt, robotsTxt, sitemapXml } from '../site/content/llms';
+import { agentFiles, forOrigin, llmsFullTxt, llmsTxt, robotsTxt, sitemapXml, skillMarkdown } from '../site/content/llms';
+import { SKILL_NAME, SKILL_PATH } from '../site/content/skill';
 import { docsNav } from '../site/content/nav';
 import { markdownAnchor } from '../site/content/guides';
 import { markdownPath, pageForMarkdownPath, sitePages } from '../site/content/pages';
@@ -133,7 +134,7 @@ describe('llms-full.txt, sitemap and robots', () => {
     const paths = agentFiles(ORIGIN).map((f) => f.path);
     expect(new Set(paths).size).toBe(paths.length);
     expect(paths).toEqual(expect.arrayContaining(['/llms.txt', '/llms-full.txt', '/robots.txt', '/sitemap.xml', '/index.md']));
-    expect(paths.filter((p) => p.endsWith('.md'))).toHaveLength(pages.length);
+    expect(paths.filter((p) => p.endsWith('.md') && p !== SKILL_PATH)).toHaveLength(pages.length);
   });
 });
 
@@ -304,5 +305,31 @@ describe('the example twins carry the source', () => {
     expect(md('/examples/ai-chat')).toContain('export function AssistantMessage');
     expect(md('/examples/ai-chat')).toContain('`ChartFromSpec`');
     expect(md('/examples/ai-chat')).not.toContain('chartFromSpec');
+  });
+});
+
+describe('Claude Code skill', () => {
+  const skill = skillMarkdown(ORIGIN);
+
+  it('is served with Agent Skills frontmatter', () => {
+    expect(agentFiles(ORIGIN).find((f) => f.path === SKILL_PATH)?.body).toBe(skill);
+    const [, front] = skill.match(/^---\n([\s\S]+?)\n---\n/)!;
+    expect(front).toMatch(new RegExp(`^name: ${SKILL_NAME}$`, 'm'));
+    expect(front.match(/^description: (.+)$/m)![1]!.length).toBeLessThan(1024);
+  });
+
+  it('links only to pages that exist, at the given origin', () => {
+    for (const [link] of skill.matchAll(/https?:\/\/[^\s)]+[^\s).,:]/g)) {
+      expect(link.startsWith(ORIGIN), link).toBe(true);
+      const path = link.slice(ORIGIN.length);
+      if (path !== '/llms.txt') expect(pageForMarkdownPath(path), path).toBeDefined();
+    }
+  });
+
+  it('names only toolkit exports that exist', () => {
+    const rows = skill.split('\n').filter((l) => l.startsWith('| ') && !l.startsWith('| For '));
+    const names = rows.flatMap((row) => [...row.split('|')[2]!.matchAll(/`([A-Za-z0-9]+)/g)].map((m) => m[1]!));
+    expect(names.length).toBeGreaterThan(20);
+    for (const name of names) expect(name in buildExports, name).toBe(true);
   });
 });
